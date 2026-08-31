@@ -1,0 +1,4 @@
+/syn-api/.env
+/syn-api/vendor/
+/.idea/
+/.vscode/
