@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Exceptions\ConflitoPessoaException;
 use App\Exceptions\DadosInvalidosException;
 use App\Exceptions\FuncaoNaoEncontradaException;
 use App\Exceptions\ParticipacaoNaoEncontradaException;
@@ -22,7 +23,8 @@ use App\Repositories\ParticipacaoRepository;
  * 4. o usuário precisa possuir atualmente a função;
  * 5. a função precisa ser autorizada para o tipo da programação;
  * 6. a participação grava snapshots históricos;
- * 7. respostas alteram status, mas não apagam o registro.
+ * 7. respostas alteram status, mas não apagam o registro;
+ * 8. a mesma pessoa em programações sobrepostas gera ALERTA.
  */
 final class ParticipacaoService
 {
@@ -32,8 +34,6 @@ final class ParticipacaoService
     }
 
     /**
-     * Lista a escala e um resumo por status.
-     *
      * @return array<string, mixed>
      */
     public function listarPorProgramacao(
@@ -65,10 +65,6 @@ final class ParticipacaoService
     }
 
     /**
-     * Lista candidatos NORMAIS da programação.
-     *
-     * Regras de elegibilidade são baseadas no estado atual.
-     *
      * @return array<string, mixed>
      */
     public function listarCandidatos(
@@ -116,6 +112,17 @@ final class ParticipacaoService
 
     /**
      * Cria uma nova escala.
+     *
+     * NOVO nesta etapa:
+     *
+     * se a pessoa já estiver comprometida em outra programação
+     * que se sobreponha, lançamos ConflitoPessoaException.
+     *
+     * O cliente recebe HTTP 409 e pode repetir o POST com:
+     *
+     * "confirmar_conflito_pessoa": true
+     *
+     * A regra é de alerta, não de bloqueio absoluto.
      *
      * @param array<string, mixed> $dados
      * @return array<string, mixed>
@@ -232,11 +239,8 @@ final class ParticipacaoService
         }
 
         /**
-         * A chave UNIQUE no banco é:
-         *
-         * programacao_id + usuario_id + funcao_id
-         *
-         * Se já existir, retornamos o registro sem duplicar.
+         * Se exatamente a mesma combinação já existe, não devemos
+         * criar outra nem disparar conflito contra ela mesma.
          */
         $existente =
             $this->repository
@@ -253,7 +257,43 @@ final class ParticipacaoService
                         $existente
                     ),
                 'ja_existia' => true,
+                'conflito_pessoa_confirmado' => false,
+                'conflitos_detectados' => [],
             ];
+        }
+
+        /**
+         * DETECÇÃO DO CONFLITO DE PESSOA.
+         */
+        $conflitos =
+            $this->repository
+                ->buscarConflitosDePessoa(
+                    $usuarioId,
+                    $programacaoId,
+                    $programacao['inicio_em'],
+                    $programacao['fim_em']
+                );
+
+        $conflitosFormatados =
+            $this->formatarConflitosPessoa(
+                $conflitos
+            );
+
+        $confirmarConflito =
+            $this->normalizarBooleano(
+                $dados[
+                    'confirmar_conflito_pessoa'
+                ] ?? false,
+                'confirmar_conflito_pessoa'
+            );
+
+        if (
+            $conflitosFormatados !== []
+            && !$confirmarConflito
+        ) {
+            throw new ConflitoPessoaException(
+                $conflitosFormatados
+            );
         }
 
         $participacaoId =
@@ -265,9 +305,6 @@ final class ParticipacaoService
                 'funcao_id' =>
                     $funcaoId,
 
-                /**
-                 * Snapshots históricos.
-                 */
                 'usuario_nome_historico' =>
                     $usuario['nome'],
                 'funcao_nome_historico' =>
@@ -285,6 +322,11 @@ final class ParticipacaoService
                     $participacaoId
                 ),
             'ja_existia' => false,
+            'conflito_pessoa_confirmado' =>
+                $conflitosFormatados !== []
+                && $confirmarConflito,
+            'conflitos_detectados' =>
+                $conflitosFormatados,
         ];
     }
 
@@ -310,7 +352,7 @@ final class ParticipacaoService
     }
 
     /**
-     * Respostas do participante.
+     * Respostas do usuário autenticado.
      *
      * @param array<string, mixed> $dados
      * @return array<string, mixed>
@@ -414,16 +456,6 @@ final class ParticipacaoService
     }
 
     /**
-     * Implementação compartilhada dos três estados de resposta.
-     *
-     * O documento define os estados, mas não detalha uma máquina
-     * rígida de transições. Nesta etapa permitimos que a pessoa
-     * altere sua resposta enquanto:
-     *
-     * - a escala não estiver CANCELADA;
-     * - a programação não estiver CANCELADA/REALIZADA;
-     * - permite_resposta estiver habilitado.
-     *
      * @param array<string, mixed> $dados
      * @return array<string, mixed>
      */
@@ -438,10 +470,6 @@ final class ParticipacaoService
                 $participacaoId
             );
 
-        /**
-         * Regra de segurança:
-         * o usuário autenticado só responde às próprias escalas.
-         */
         if (
             (int) $participacao['usuario_id']
             !== $usuarioAutenticadoId
@@ -588,6 +616,45 @@ final class ParticipacaoService
         return (int) $id;
     }
 
+    /**
+     * Normaliza o booleano de confirmação explícita.
+     */
+    private function normalizarBooleano(
+        mixed $valor,
+        string $campo
+    ): bool {
+        if (is_bool($valor)) {
+            return $valor;
+        }
+
+        if ($valor === 1 || $valor === '1') {
+            return true;
+        }
+
+        if ($valor === 0 || $valor === '0') {
+            return false;
+        }
+
+        if (is_string($valor)) {
+            $texto = mb_strtolower(
+                trim($valor)
+            );
+
+            if ($texto === 'true') {
+                return true;
+            }
+
+            if ($texto === 'false') {
+                return false;
+            }
+        }
+
+        throw new DadosInvalidosException([
+            $campo =>
+                'Informe true ou false.',
+        ]);
+    }
+
     private function textoOpcional(
         mixed $valor
     ): ?string {
@@ -732,10 +799,6 @@ final class ParticipacaoService
             'cancelado_em' =>
                 $participacao['cancelado_em'],
 
-            /**
-             * O bloco histórico é o que representa o fato
-             * registrado no momento da escala.
-             */
             'historico' => [
                 'usuario_nome' =>
                     $participacao[
@@ -751,10 +814,6 @@ final class ParticipacaoService
                     ],
             ],
 
-            /**
-             * IDs atuais continuam disponíveis para navegação,
-             * mas não substituem os snapshots históricos.
-             */
             'usuario' => [
                 'id' =>
                     (int) $participacao['usuario_id'],
@@ -807,5 +866,61 @@ final class ParticipacaoService
             'atualizado_em' =>
                 $participacao['atualizado_em'],
         ];
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $conflitos
+     * @return array<int, array<string, mixed>>
+     */
+    private function formatarConflitosPessoa(
+        array $conflitos
+    ): array {
+        return array_map(
+            static fn (
+                array $conflito
+            ): array => [
+                'participacao_id' =>
+                    (int) $conflito[
+                        'participacao_id'
+                    ],
+                'participacao_status' =>
+                    $conflito[
+                        'participacao_status'
+                    ],
+                'funcao' =>
+                    $conflito[
+                        'funcao_nome_historico'
+                    ],
+                'programacao' => [
+                    'id' =>
+                        (int) $conflito[
+                            'programacao_id'
+                        ],
+                    'titulo' =>
+                        $conflito['titulo'],
+                    'inicio_em' =>
+                        $conflito['inicio_em'],
+                    'fim_em' =>
+                        $conflito['fim_em'],
+                    'status' =>
+                        $conflito[
+                            'programacao_status'
+                        ],
+                    'local' =>
+                        $conflito[
+                            'local_nome_historico'
+                        ],
+                    'tipo_programacao' =>
+                        $conflito[
+                            'tipo_programacao_nome_historico'
+                        ],
+                    'organizador' =>
+                        $conflito[
+                            'organizador_nome_historico'
+                        ],
+                ],
+            ],
+            $conflitos
+        );
     }
 }

@@ -1,443 +1,142 @@
-# SYN API — Etapa 18 — Autenticação e Autorização
+# SYN API — Etapa 35
+## CORS + contrato HTTP para o React
 
-Nesta etapa implementamos:
+Esta etapa prepara a comunicação entre:
 
-- login com e-mail e senha;
-- JWT Bearer;
-- GET /auth/me;
-- bloqueio de usuário INATIVO;
-- autorização básica por papel;
-- Minha Semana baseada no usuário autenticado;
-- confirmação/recusa/indisponibilidade somente da própria participação;
-- proteção das rotas administrativas.
+Frontend React/Vite:
+http://localhost:5173
 
----
+API Slim:
+http://localhost:8282
 
-# 1. Instalar a biblioteca JWT
+## Não há alteração no banco
 
-Dentro de syn-api:
+Nenhum SQL precisa ser executado.
 
-composer require firebase/php-jwt:^6.11
+## Novos arquivos
 
-Depois:
+src/Middlewares/CorsMiddleware.php
+src/Http/ApiResponse.php
+routes/cors.php
 
-composer dump-autoload
+documentos/10_configuracao_cors_env.txt
+documentos/11_contrato_http_frontend.md
 
-Não basta apenas copiar os arquivos deste ZIP.
-A biblioteca precisa existir em vendor/.
-
----
-
-# 2. Configurar .env
+## Configuração do .env
 
 Acrescente:
 
-JWT_SECRET=SEU_SEGREDO_AQUI
-JWT_TTL_SECONDS=3600
+CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
 
-Para gerar um segredo seguro no PowerShell:
+## O que o CORS permite
 
-php -r "echo bin2hex(random_bytes(32)), PHP_EOL;"
+Métodos:
 
-Copie o resultado para JWT_SECRET.
+GET
+POST
+PUT
+PATCH
+DELETE
+OPTIONS
 
-Exemplo:
+Cabeçalhos:
 
-JWT_SECRET=9b...cole_o_valor_completo...
-JWT_TTL_SECONDS=3600
+Authorization
+Content-Type
+Accept
 
-Não versione o .env no Git.
+## Preflight
 
----
+O navegador pode enviar automaticamente:
 
-# 3. Reiniciar a API
+OPTIONS /alguma-rota
 
-php -S localhost:8282 -t public
+A API responde:
 
----
+204 No Content
 
-# 4. Usuários de desenvolvimento
+e informa os cabeçalhos CORS.
 
-O script 02_dados_iniciais_syn.sql criou:
+## Segurança
 
-Administrador:
-admin@syn.local
+Não usamos:
 
-Organizador:
-organizador@syn.local
+Access-Control-Allow-Origin: *
 
-Membro:
-maria@syn.local
+O SYN trabalha com uma lista explícita de origens permitidas.
 
-Senha de desenvolvimento para os três:
+Também não habilitamos credenciais por cookie nesta versão,
+pois a autenticação atual utiliza Bearer Token.
 
-123456
+## Postman
 
-Essa senha existe apenas para testes locais.
+Postman não depende de CORS.
 
----
+Portanto os testes atuais continuam funcionando normalmente.
 
-# 5. Teste de login
+## ApiResponse
 
-POST {{base_url}}/auth/login
+Foi adicionada a classe:
 
-Body JSON:
+App\Http\ApiResponse
 
-{
-  "email": "admin@syn.local",
-  "senha": "123456"
-}
+Ela centraliza o formato recomendado de resposta JSON para novos
+Controllers.
 
-Esperado:
+Não refatoramos todos os Controllers antigos nesta etapa para evitar
+introduzir regressões desnecessárias antes dos testes completos.
 
-HTTP 200
+O contrato adotado continua:
+
+Sucesso:
 
 {
   "status": "ok",
-  "dados": {
-    "token": "...",
-    "token_tipo": "Bearer",
-    "expira_em_segundos": 3600,
-    "usuario": {
-      "papel": {
-        "codigo": "ADMINISTRADOR"
-      }
-    }
-  }
+  "dados": {}
 }
 
-Copie apenas o valor de "token".
-
----
-
-# 6. Configurar Bearer Token no Postman
-
-Crie uma variável de ambiente:
-
-token
-
-com o JWT retornado.
-
-Depois nas requisições protegidas use:
-
-Authorization
-Type: Bearer Token
-
-Token:
-
-{{token}}
-
-Ou configure o Bearer Token no nível da Collection.
-
----
-
-# 7. Testar /auth/me
-
-GET {{base_url}}/auth/me
-
-Header:
-
-Authorization: Bearer {{token}}
-
-Esperado:
-
-HTTP 200
-
-com o usuário autenticado.
-
----
-
-# 8. Testar sem token
-
-GET {{base_url}}/auth/me
-
-sem Authorization.
-
-Esperado:
-
-HTTP 401
-
-"Token de autenticação não informado."
-
----
-
-# 9. Testar token inválido
-
-Authorization:
-
-Bearer abc123
-
-Esperado:
-
-HTTP 401
-
-"Token inválido ou expirado."
-
----
-
-# 10. Minha Semana agora não recebe ID
-
-ANTES:
-
-GET /usuarios/3/minha-semana
-
-AGORA:
-
-GET /minha-semana
-
-A API usa o ID presente no token autenticado.
-
-Para testar o cenário inicial:
-
-Faça login como Maria:
-
-POST /auth/login
+Erro:
 
 {
-  "email": "maria@syn.local",
-  "senha": "123456"
+  "status": "erro",
+  "mensagem": "...",
+  "erros": {}
 }
 
-Salve o token da Maria.
+## Configuração futura do frontend
 
-Depois:
+No projeto React/Vite:
 
-GET {{base_url}}/minha-semana?data_referencia=2026-09-06
+.env
 
-Authorization:
-Bearer TOKEN_DA_MARIA
+VITE_API_URL=http://localhost:8282
 
-A API mostrará apenas os compromissos da Maria autenticada.
+Uso:
 
----
+const API_URL = import.meta.env.VITE_API_URL;
 
-# 11. Regra de respostas à escala
+## Teste do preflight no PowerShell
 
-Maria só pode responder a uma participação cujo:
-
-participacoes.usuario_id
-
-seja o mesmo usuário do token.
-
-Exemplo correto:
-
-Maria autenticada
-PATCH /participacoes/1/confirmar
-
-se participação 1 pertence a Maria.
-
-Se Maria tentar confirmar uma participação de João:
-
-HTTP 422
-
-"Você não pode responder à participação de outro usuário."
-
----
-
-# 12. Papéis implementados
-
-ADMINISTRADOR
-
-Pode:
-- gerenciar igreja;
-- usuários;
-- departamentos;
-- funções;
-- tipos de programação;
-- locais;
-- programações;
-- escalas.
-
-ORGANIZADOR
-
-Nesta etapa pode:
-- consultar usuários/funções/departamentos/locais;
-- criar/editar/cancelar/realizar programações;
-- montar e acompanhar escalas.
-
-MEMBRO
-
-Pode:
-- consultar programação geral autenticada;
-- ver Minha Semana;
-- confirmar;
-- recusar;
-- informar indisponibilidade nas próprias escalas.
-
----
-
-# 13. Testar autorização por papel
-
-## Como Maria
-
-Login:
-
-maria@syn.local
-123456
-
-Tente:
-
-POST {{base_url}}/usuarios
+Invoke-WebRequest `
+  -Method OPTIONS `
+  -Uri "http://localhost:8282/dashboard" `
+  -Headers @{
+      Origin = "http://localhost:5173"
+      "Access-Control-Request-Method" = "GET"
+      "Access-Control-Request-Headers" = "Authorization"
+  }
 
 Esperado:
 
-HTTP 403
+StatusCode: 204
 
-"Você não possui permissão para executar esta operação."
+e cabeçalhos como:
 
----
+Access-Control-Allow-Origin: http://localhost:5173
+Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS
 
-# 14. Como Organizador
+## Depois de copiar
 
-Login:
+composer dump-autoload
 
-organizador@syn.local
-123456
-
-Tente:
-
-POST {{base_url}}/programacoes
-
-Com Body válido.
-
-A rota passa pelo controle de papel ADMINISTRADOR ou ORGANIZADOR.
-
-Mas tente:
-
-POST {{base_url}}/usuarios
-
-Esperado:
-
-HTTP 403
-
-porque cadastrar usuário é responsabilidade do Administrador.
-
----
-
-# 15. Como Administrador
-
-Login:
-
-admin@syn.local
-123456
-
-As operações administrativas gerais estarão liberadas.
-
----
-
-# 16. Usuário inativo perde acesso imediatamente
-
-Faça login como um usuário ativo e guarde seu token.
-
-Depois, como Administrador:
-
-PATCH /usuarios/{id}/desativar
-
-Agora tente usar o token antigo do usuário desativado:
-
-GET /auth/me
-
-Esperado:
-
-HTTP 401
-
-Mesmo que o JWT ainda não tenha expirado.
-
-Isso acontece porque o AuthMiddleware recarrega o usuário do banco
-em cada requisição e confere status = ATIVO.
-
----
-
-# 17. Por que não colocamos o papel como autoridade no JWT?
-
-O token guarda essencialmente o ID do usuário.
-
-A cada requisição:
-
-JWT
- ↓
-usuario_id
- ↓
-banco de dados
- ↓
-status atual
-papel atual
-
-Portanto, se o Administrador mudar:
-
-Organizador -> Membro
-
-o token antigo passa a obedecer imediatamente o novo papel.
-
----
-
-# 18. Códigos HTTP usados
-
-200
-Operação autenticada válida.
-
-401 Unauthorized
-Não está autenticado / token inválido / usuário inativo.
-
-403 Forbidden
-Está autenticado, mas não possui papel permitido.
-
-422 Unprocessable Entity
-A operação viola uma regra de negócio.
-
----
-
-# 19. Sobre o Organizador
-
-O documento diz que o Organizador administra programações e escalas
-"conforme as permissões definidas para seu acesso".
-
-O documento atual não detalha o modelo físico dessas permissões
-granulares por área/atividade.
-
-Por isso esta etapa implementa apenas a barreira base:
-
-ADMINISTRADOR
-ORGANIZADOR
-MEMBRO
-
-Não inventamos ainda um modelo adicional de permissões do Organizador.
-
-Essa granularidade deve ser uma etapa própria.
-
----
-
-# 20. JWT é uma decisão desta implementação
-
-O requisito exige autenticação e sessão segura.
-
-Para facilitar o desenvolvimento da API e os testes no Postman,
-esta etapa usa:
-
-Authorization: Bearer <JWT>
-
-O token tem expiração configurável e não contém senha.
-
-Quando formos integrar o frontend React, podemos decidir entre:
-
-- continuar com access token de curta duração + refresh;
-- ou migrar para cookie seguro HttpOnly;
-
-de acordo com a estratégia final de implantação.
-
----
-
-# Próximos testes recomendados
-
-1. Login Administrador.
-2. GET /auth/me.
-3. GET /usuarios com token Admin.
-4. Login Maria.
-5. GET /minha-semana com token Maria.
-6. Maria tenta POST /usuarios -> 403.
-7. Maria confirma a própria participação.
-8. Maria tenta confirmar participação de outro usuário -> 422.
-9. Login Organizador.
-10. Organizador cria programação.
-11. Organizador tenta criar usuário -> 403.
-12. Desativar usuário e testar o token antigo -> 401.
+php -S localhost:8282 -t public

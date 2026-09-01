@@ -1,0 +1,29 @@
+# Acrescente ao arquivo .env da API:
+
+CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+
+
+# Quando o frontend entrar em produção, substitua/adicione a origem real.
+#
+# Exemplo:
+#
+# CORS_ALLOWED_ORIGINS=https://app.seudominio.com.br
+#
+# Para aceitar desenvolvimento e produção simultaneamente:
+#
+# CORS_ALLOWED_ORIGINS=http://localhost:5173,https://app.seudominio.com.br
+
+
+# FRONTEND REACT / VITE
+#
+# No futuro frontend, crie:
+#
+# .env
+#
+# com:
+#
+# VITE_API_URL=http://localhost:8282
+#
+# E no código React:
+#
+# const API_URL = import.meta.env.VITE_API_URL;

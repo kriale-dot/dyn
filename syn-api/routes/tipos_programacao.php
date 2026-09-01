@@ -8,15 +8,9 @@ use App\Repositories\TipoProgramacaoRepository;
 use App\Services\TipoProgramacaoService;
 
 $pdo = Database::conectar();
-
-$repository =
-    new TipoProgramacaoRepository($pdo);
-
-$service =
-    new TipoProgramacaoService($repository);
-
-$controller =
-    new TipoProgramacaoController($service);
+$repository = new TipoProgramacaoRepository($pdo);
+$service = new TipoProgramacaoService($repository);
+$controller = new TipoProgramacaoController($service);
 
 $app->get(
     '/tipos-programacao',
@@ -32,9 +26,6 @@ $app->get(
     ->add($adminOrganizadorMiddleware)
     ->add($authMiddleware);
 
-/**
- * Administração estrutural: Administrador.
- */
 $app->post(
     '/tipos-programacao',
     [$controller, 'criar']
@@ -70,12 +61,10 @@ $app->delete(
     ->add($adminMiddleware)
     ->add($authMiddleware);
 
-/**
- * Organização de escalas: Administrador ou Organizador.
- */
 $app->get(
     '/tipos-programacao/{id:[0-9]+}/candidatos',
     [$controller, 'listarCandidatos']
 )
+    ->add($escopoTipoRotaMiddleware)
     ->add($adminOrganizadorMiddleware)
     ->add($authMiddleware);

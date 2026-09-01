@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Exceptions\ConflitoPessoaException;
 use App\Exceptions\DadosInvalidosException;
 use App\Exceptions\FuncaoNaoEncontradaException;
 use App\Exceptions\ParticipacaoNaoEncontradaException;
@@ -91,6 +92,8 @@ final class ParticipacaoController
     }
 
     /**
+     * POST /programacoes/{id}/participacoes
+     *
      * @param array<string, string> $args
      */
     public function criar(
@@ -122,22 +125,48 @@ final class ParticipacaoController
             $nova =
                 !$resultado['ja_existia'];
 
+            $resposta = [
+                'status' => 'ok',
+                'mensagem' =>
+                    $nova
+                        ? 'Pessoa escalada com sucesso.'
+                        : 'Esta pessoa já estava registrada nesta função e programação.',
+                'dados' => $resultado,
+            ];
+
+            if (
+                $resultado[
+                    'conflito_pessoa_confirmado'
+                ]
+            ) {
+                $resposta['alerta'] =
+                    'A pessoa foi escalada após confirmação explícita de conflito de horário.';
+            }
+
             return $this->json(
                 $response,
-                [
-                    'status' => 'ok',
-                    'mensagem' =>
-                        $nova
-                            ? 'Pessoa escalada com sucesso.'
-                            : 'Esta pessoa já estava registrada nesta função e programação.',
-                    'dados' => $resultado,
-                ],
+                $resposta,
                 $nova ? 201 : 200
             );
         } catch (ProgramacaoNaoEncontradaException|UsuarioNaoEncontradoException|FuncaoNaoEncontradaException $e) {
             return $this->erroNaoEncontrado(
                 $response,
                 $e
+            );
+        } catch (ConflitoPessoaException $e) {
+            return $this->json(
+                $response,
+                [
+                    'status' => 'conflito',
+                    'tipo' => 'PESSOA',
+                    'mensagem' =>
+                        $e->getMessage(),
+                    'conflitos' =>
+                        $e->getConflitos(),
+                    'como_confirmar' =>
+                        'Repita a requisição acrescentando "confirmar_conflito_pessoa": true.',
+                ],
+                409
             );
         } catch (DadosInvalidosException $e) {
             return $this->erroValidacao(

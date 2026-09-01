@@ -1,0 +1,338 @@
+/* ==========================================================
+   ETAPA 40 — GESTÃO DE PROGRAMAÇÕES E ESCALA
+   Acrescente este bloco ao final de src/styles.css
+   ========================================================== */
+
+.management-page,
+.scale-management-page {
+  display: grid;
+  gap: 20px;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.management-hero,
+.scale-management-hero {
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff,
+      #edf6f2
+    );
+  border: 1px solid #dfe7e4;
+  border-radius: 22px;
+  padding: 28px;
+}
+
+.management-hero h1,
+.scale-management-hero h1 {
+  margin: 6px 0 8px;
+  font-size: clamp(
+    1.9rem,
+    4vw,
+    2.5rem
+  );
+}
+
+.management-hero p,
+.scale-management-hero p {
+  margin: 0;
+  color: #62716d;
+}
+
+.management-toolbar {
+  background: #fff;
+  border: 1px solid #dfe7e4;
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.management-toolbar label {
+  display: grid;
+  gap: 7px;
+}
+
+.management-toolbar label > span {
+  color: #5c6d67;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.management-toolbar input {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #ccd7d3;
+  border-radius: 11px;
+  padding: 9px 12px;
+  outline: none;
+}
+
+.management-list {
+  display: grid;
+  gap: 12px;
+}
+
+.management-program-card {
+  width: 100%;
+  border: 1px solid #dfe7e4;
+  border-radius: 18px;
+  background: #fff;
+  padding: 18px;
+  display: grid;
+  grid-template-columns:
+    72px minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  color: inherit;
+  text-align: left;
+}
+
+.management-program-card:hover {
+  border-color: #8eaea4;
+  box-shadow:
+    0 10px 28px
+    rgba(37, 77, 67, 0.08);
+}
+
+.management-date {
+  min-height: 72px;
+  border-radius: 16px;
+  background: #eaf2ef;
+  display: grid;
+  place-items: center;
+  align-content: center;
+}
+
+.management-date strong {
+  font-size: 1.65rem;
+  line-height: 1;
+}
+
+.management-date span {
+  margin-top: 5px;
+  color: #537369;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.management-program-main {
+  display: grid;
+  gap: 5px;
+}
+
+.management-program-main h2 {
+  margin: 0;
+  font-size: 1.16rem;
+}
+
+.management-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  color: #687772;
+  font-size: 0.84rem;
+}
+
+.management-program-action {
+  display: grid;
+  justify-items: end;
+  gap: 10px;
+  color: #315e52;
+  font-size: 0.82rem;
+}
+
+.scale-management-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.scale-management-summary {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.scale-management-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.25fr)
+    minmax(320px, 0.75fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.scale-management-column {
+  display: grid;
+  gap: 14px;
+}
+
+.section-heading h2 {
+  margin: 4px 0 0;
+}
+
+.candidate-function-card {
+  background: #fff;
+  border: 1px solid #dfe7e4;
+  border-radius: 18px;
+  padding: 17px;
+  display: grid;
+  gap: 14px;
+}
+
+.candidate-function-card > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+
+.candidate-function-card h3 {
+  margin: 3px 0 0;
+}
+
+.candidate-count {
+  min-width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: #e6efeb;
+  color: #315e52;
+  font-weight: 800;
+  font-size: 0.8rem;
+}
+
+.candidate-list,
+.current-scale-list {
+  display: grid;
+  gap: 8px;
+}
+
+.candidate-row,
+.current-scale-card {
+  border: 1px solid #e3e9e7;
+  border-radius: 13px;
+  padding: 11px 12px;
+  display: grid;
+  align-items: center;
+  gap: 11px;
+}
+
+.candidate-row {
+  grid-template-columns:
+    auto minmax(0, 1fr) auto;
+}
+
+.candidate-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #e0ece7;
+  color: #294f45;
+  font-size: 0.76rem;
+  font-weight: 850;
+}
+
+.candidate-main,
+.current-scale-card > div:first-child {
+  display: grid;
+  gap: 2px;
+}
+
+.candidate-main span,
+.current-scale-card > div:first-child span {
+  color: #74827e;
+  font-size: 0.82rem;
+}
+
+.small-primary-button,
+.small-danger-button {
+  border: 0;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-weight: 750;
+  font-size: 0.78rem;
+}
+
+.small-primary-button {
+  background: #24584b;
+  color: #fff;
+}
+
+.small-danger-button {
+  background: #f8e8e8;
+  color: #873838;
+}
+
+.small-primary-button:disabled,
+.small-danger-button:disabled {
+  opacity: 0.58;
+}
+
+.current-scale-card {
+  grid-template-columns:
+    minmax(0, 1fr) auto;
+  background: #fff;
+}
+
+.current-scale-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .scale-management-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .scale-management-summary {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .management-program-card {
+    grid-template-columns:
+      58px minmax(0, 1fr);
+  }
+
+  .management-program-action {
+    grid-column: 1 / -1;
+    justify-items: start;
+    padding-left: 76px;
+  }
+
+  .scale-management-hero {
+    flex-direction: column;
+  }
+
+  .scale-management-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .candidate-row {
+    grid-template-columns:
+      auto minmax(0, 1fr);
+  }
+
+  .candidate-row
+  > :last-child {
+    grid-column: 1 / -1;
+    width: fit-content;
+  }
+
+  .current-scale-card {
+    grid-template-columns: 1fr;
+  }
+
+  .current-scale-actions {
+    justify-content: space-between;
+  }
+}

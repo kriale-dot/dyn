@@ -240,6 +240,80 @@ final class ParticipacaoRepository
     }
 
     /**
+     * Busca conflitos de agenda da pessoa.
+     *
+     * Há conflito quando a pessoa possui uma participação ATIVA
+     * em OUTRA programação cujo intervalo se sobrepõe ao da nova.
+     *
+     * Participações que não representam compromisso ativo:
+     * - INDISPONIVEL
+     * - RECUSADO
+     * - CANCELADO
+     *
+     * não entram na detecção.
+     *
+     * Programações CANCELADAS também não entram.
+     *
+     * A regra temporal usa intervalo semiaberto [início, fim):
+     *
+     * existente.inicio_em < nova.fim_em
+     * E
+     * existente.fim_em > nova.inicio_em
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function buscarConflitosDePessoa(
+        int $usuarioId,
+        int $programacaoId,
+        string $inicioEm,
+        string $fimEm
+    ): array {
+        $sql = <<<'SQL'
+            SELECT DISTINCT
+                pa.id AS participacao_id,
+                pa.status AS participacao_status,
+                pa.funcao_nome_historico,
+
+                p.id AS programacao_id,
+                p.titulo,
+                p.inicio_em,
+                p.fim_em,
+                p.status AS programacao_status,
+                p.local_nome_historico,
+                p.tipo_programacao_nome_historico,
+                p.organizador_nome_historico
+
+            FROM participacoes pa
+
+            INNER JOIN programacoes p
+                ON p.id = pa.programacao_id
+
+            WHERE pa.usuario_id = :usuario_id
+              AND pa.programacao_id <> :programacao_id
+              AND pa.status IN ('ESCALADO', 'CONFIRMADO')
+              AND p.status <> 'CANCELADA'
+              AND p.inicio_em < :fim_em
+              AND p.fim_em > :inicio_em
+
+            ORDER BY
+                p.inicio_em ASC,
+                p.id ASC,
+                pa.id ASC
+        SQL;
+
+        $stmt = $this->pdo->prepare($sql);
+
+        $stmt->execute([
+            ':usuario_id' => $usuarioId,
+            ':programacao_id' => $programacaoId,
+            ':inicio_em' => $inicioEm,
+            ':fim_em' => $fimEm,
+        ]);
+
+        return $stmt->fetchAll();
+    }
+
+    /**
      * Busca participação pela chave natural definida no schema.
      *
      * @return array<string, mixed>|null
@@ -466,9 +540,6 @@ final class ParticipacaoRepository
 
     /**
      * Registra a resposta do participante.
-     *
-     * status deve ser:
-     * CONFIRMADO, INDISPONIVEL ou RECUSADO.
      */
     public function responder(
         int $participacaoId,
