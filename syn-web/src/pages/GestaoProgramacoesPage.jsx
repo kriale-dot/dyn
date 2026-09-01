@@ -16,8 +16,11 @@ import {
   useAuth,
 } from '../contexts/AuthContext'
 
+import './GestaoProgramacoesEtapa48.css'
+
 export default function GestaoProgramacoesPage() {
-  const navigate = useNavigate()
+  const navigate =
+    useNavigate()
 
   const {
     usuario,
@@ -48,8 +51,7 @@ export default function GestaoProgramacoesPage() {
           await getProgramacoes()
 
         const lista =
-          response?.dados?.programacoes
-          ?? response?.dados
+          response?.dados
           ?? response?.programacoes
           ?? []
 
@@ -86,17 +88,18 @@ export default function GestaoProgramacoesPage() {
 
   const idsPermitidos =
     useMemo(
-      () => new Set(
-        (
-          bootstrap
-            ?.escopo_organizador
-            ?.tipos_programacao
-          ?? []
-        ).map(
-          (item) =>
-            Number(item.id),
+      () =>
+        new Set(
+          (
+            bootstrap
+              ?.escopo_organizador
+              ?.tipos_programacao
+            ?? []
+          ).map(
+            (item) =>
+              Number(item.id),
+          ),
         ),
-      ),
       [bootstrap],
     )
 
@@ -111,23 +114,27 @@ export default function GestaoProgramacoesPage() {
             )
 
         return programacoes
-          .map(normalizarProgramacao)
-          .filter((item) => {
-            if (
-              papel === 'ORGANIZADOR'
-              && !idsPermitidos.has(
-                item.tipo_programacao_id,
-              )
-            ) {
-              return false
-            }
+          .map(
+            normalizarProgramacao,
+          )
+          .filter(
+            (item) => {
+              if (
+                papel
+                  === 'ORGANIZADOR'
+                && !idsPermitidos.has(
+                  item
+                    .tipo_programacao_id,
+                )
+              ) {
+                return false
+              }
 
-            if (!termo) {
-              return true
-            }
+              if (!termo) {
+                return true
+              }
 
-            const texto =
-              [
+              return [
                 item.titulo,
                 item.tipo,
                 item.local,
@@ -137,11 +144,9 @@ export default function GestaoProgramacoesPage() {
                 .toLocaleLowerCase(
                   'pt-BR',
                 )
-
-            return texto.includes(
-              termo,
-            )
-          })
+                .includes(termo)
+            },
+          )
           .sort(
             (a, b) =>
               compararDataHora(
@@ -160,19 +165,33 @@ export default function GestaoProgramacoesPage() {
 
   return (
     <div className="management-page">
-      <section className="management-hero">
-        <span className="eyebrow">
-          Gestão
-        </span>
+      <section className="management-hero management-hero-actions">
+        <div>
+          <span className="eyebrow">
+            Gestão
+          </span>
 
-        <h1>
-          Gerenciar programações
-        </h1>
+          <h1>
+            Gerenciar programações
+          </h1>
 
-        <p>
-          Escolha uma atividade para montar,
-          revisar ou acompanhar sua escala.
-        </p>
+          <p>
+            Crie uma atividade, ajuste seus
+            dados ou abra a escala.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          className="button-primary"
+          onClick={() =>
+            navigate(
+              '/gestao/programacoes/nova',
+            )
+          }
+        >
+          + Nova programação
+        </button>
       </section>
 
       <section className="management-toolbar">
@@ -215,15 +234,9 @@ export default function GestaoProgramacoesPage() {
         <section className="management-list">
           {filtradas.map(
             (item) => (
-              <button
-                type="button"
+              <article
                 key={item.id}
-                className="management-program-card"
-                onClick={() =>
-                  navigate(
-                    `/gestao/programacoes/${item.id}/escala`,
-                  )
-                }
+                className="management-program-card management-program-article"
               >
                 <div className="management-date">
                   <strong>
@@ -239,16 +252,24 @@ export default function GestaoProgramacoesPage() {
                   </span>
                 </div>
 
-                <div className="management-program-main">
+                <button
+                  type="button"
+                  className="management-program-copy-button"
+                  onClick={() =>
+                    navigate(
+                      `/programacoes/${item.id}`,
+                    )
+                  }
+                >
                   <span className="program-type">
                     {item.tipo}
                   </span>
 
-                  <h2>
+                  <strong className="management-program-title">
                     {item.titulo}
-                  </h2>
+                  </strong>
 
-                  <div className="management-meta">
+                  <span className="management-meta">
                     <span>
                       {formatarHora(
                         item.inicio_em,
@@ -260,13 +281,11 @@ export default function GestaoProgramacoesPage() {
                     </span>
 
                     <span>
-                      {
-                        item.local
-                        || 'Local não informado'
-                      }
+                      {item.local
+                        || 'Local não informado'}
                     </span>
-                  </div>
-                </div>
+                  </span>
+                </button>
 
                 <div className="management-program-action">
                   <span
@@ -282,11 +301,36 @@ export default function GestaoProgramacoesPage() {
                     )}
                   </span>
 
-                  <span className="management-open-label">
-                    Gerenciar escala →
-                  </span>
+                  <div className="management-action-buttons">
+                    <button
+                      type="button"
+                      className="small-secondary-button"
+                      onClick={() =>
+                        navigate(
+                          `/gestao/programacoes/${item.id}/editar`,
+                        )
+                      }
+                    >
+                      {item.status
+                        === 'AGENDADA'
+                          ? 'Editar'
+                          : 'Consultar'}
+                    </button>
+
+                    <button
+                      type="button"
+                      className="small-primary-button"
+                      onClick={() =>
+                        navigate(
+                          `/gestao/programacoes/${item.id}/escala`,
+                        )
+                      }
+                    >
+                      Gerenciar escala
+                    </button>
+                  </div>
                 </div>
-              </button>
+              </article>
             ),
           )}
         </section>
@@ -309,12 +353,10 @@ function normalizarProgramacao(
 
     inicio_em:
       item?.inicio_em
-      || item?.quando?.inicio_em
       || '',
 
     fim_em:
       item?.fim_em
-      || item?.quando?.fim_em
       || '',
 
     status:
@@ -323,28 +365,29 @@ function normalizarProgramacao(
 
     tipo_programacao_id:
       Number(
-        item?.tipo_programacao_id
-        ?? item?.tipo?.id
+        item
+          ?.tipo_programacao
+          ?.id
+        ?? item
+          ?.tipo_programacao_id
         ?? 0,
       ),
 
     tipo:
       item
+        ?.tipo_programacao
+        ?.nome_historico
+      ?? item
         ?.tipo_programacao_nome_historico
-      || item?.tipo?.nome
-      || item?.tipo
-      || 'Programação',
+      ?? 'Programação',
 
     local:
       item
+        ?.local
+        ?.nome_historico
+      ?? item
         ?.local_nome_historico
-      || item?.local?.nome
-      || (
-        typeof item?.local
-          === 'string'
-          ? item.local
-          : ''
-      ),
+      ?? 'Local não informado',
   }
 }
 
@@ -429,12 +472,10 @@ function formatarMes(
 function formatarHora(
   valor,
 ) {
-  if (!valor) {
-    return '--:--'
-  }
-
-  return String(valor)
-    .slice(11, 16)
+  return valor
+    ? String(valor)
+        .slice(11, 16)
+    : '--:--'
 }
 
 function traduzirStatus(

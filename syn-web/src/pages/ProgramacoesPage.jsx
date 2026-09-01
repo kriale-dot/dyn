@@ -462,17 +462,43 @@ function normalizarProgramacao(
       item?.status
       || 'AGENDADA',
 
+    /**
+     * A listagem GET /programacoes devolve os nomes históricos
+     * dentro de objetos aninhados:
+     *
+     * tipo_programacao.nome_historico
+     * local.nome_historico
+     * organizador.nome_historico
+     *
+     * Mantemos também os formatos antigos como fallback para
+     * tornar o frontend tolerante a pequenas diferenças de payload.
+     */
     tipo:
       item
+        ?.tipo_programacao
+        ?.nome_historico
+      || item
+        ?.tipo_programacao
+        ?.nome
+      || item
         ?.tipo_programacao_nome_historico
+      || item?.tipo?.nome_historico
       || item?.tipo?.nome
-      || item?.tipo
+      || (
+        typeof item?.tipo
+          === 'string'
+          ? item.tipo
+          : ''
+      )
       || 'Programação',
 
     local:
       item
-        ?.local_nome_historico
+        ?.local
+        ?.nome_historico
       || item?.local?.nome
+      || item
+        ?.local_nome_historico
       || (
         typeof item?.local
           === 'string'
@@ -482,8 +508,11 @@ function normalizarProgramacao(
 
     organizador:
       item
-        ?.organizador_nome_historico
+        ?.organizador
+        ?.nome_historico
       || item?.organizador?.nome
+      || item
+        ?.organizador_nome_historico
       || (
         typeof item?.organizador
           === 'string'

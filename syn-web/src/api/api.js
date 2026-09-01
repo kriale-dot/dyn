@@ -585,3 +585,73 @@ export async function marcarTodasNotificacoesComoLidas() {
     },
   )
 }
+
+
+/* ==========================================================
+   ETAPA 48 — CRIAÇÃO / EDIÇÃO DE PROGRAMAÇÕES
+   ========================================================== */
+
+export async function getProgramacao(
+  programacaoId,
+) {
+  return apiRequest(
+    `/programacoes/${programacaoId}`,
+  )
+}
+
+export async function criarProgramacao(
+  dados,
+) {
+  return apiRequest(
+    '/programacoes',
+    {
+      method: 'POST',
+      body: JSON.stringify(
+        dados,
+      ),
+    },
+  )
+}
+
+export async function atualizarProgramacao(
+  programacaoId,
+  dados,
+) {
+  return apiRequest(
+    `/programacoes/${programacaoId}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify(
+        dados,
+      ),
+    },
+  )
+}
+
+export async function cancelarProgramacao(
+  programacaoId,
+  motivo = null,
+) {
+  return apiRequest(
+    `/programacoes/${programacaoId}/cancelar`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify({
+        motivo:
+          motivo?.trim()
+          || null,
+      }),
+    },
+  )
+}
+
+export async function realizarProgramacao(
+  programacaoId,
+) {
+  return apiRequest(
+    `/programacoes/${programacaoId}/realizar`,
+    {
+      method: 'PATCH',
+    },
+  )
+}

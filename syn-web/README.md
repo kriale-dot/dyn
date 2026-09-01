@@ -1,109 +1,81 @@
-# SYN Frontend — Etapa 47
-## Home focada no que importa nesta semana
+# SYN Frontend — Etapa 48B
+## Correção de Tipo e Local na tela Programações
 
-A Home foi reorganizada para deixar de parecer um painel administrativo.
+Na tela:
 
-O objetivo é responder rapidamente:
+/programacoes
 
-1. Qual é meu próximo compromisso?
-2. Tenho algo para confirmar?
-3. Como está distribuída esta semana?
-4. O que acontece na igreja?
-5. Quem faz aniversário?
+o frontend mostrava:
 
-## API
+Programação
+Local não informado
 
-Nenhuma alteração na API.
+mesmo quando o banco e a API possuíam o tipo e o local.
 
-A tela continua usando:
+## Causa
 
-GET /dashboard
+A API devolve os snapshots históricos em objetos aninhados:
 
-Para confirmação rápida, também usa o endpoint já existente:
+```json
+{
+  "tipo_programacao": {
+    "id": 1,
+    "nome_historico": "Culto Infantil"
+  },
+  "local": {
+    "id": 1,
+    "nome_historico": "Sala Infantil"
+  },
+  "organizador": {
+    "id": 2,
+    "nome_historico": "Organizador SYN"
+  }
+}
+```
 
-PATCH /participacoes/{id}/confirmar
+Mas a tela antiga procurava principalmente:
 
-## Nova organização
+```text
+tipo_programacao_nome_historico
+local_nome_historico
+organizador_nome_historico
+```
 
-### Próximo compromisso
+Por isso o fallback acabava exibindo:
 
-É o elemento visual principal.
+Programação
+Local não informado
 
-Mostra:
+## Correção
 
-- dia;
-- data;
-- hora;
-- programação;
-- função;
-- local;
-- estado da confirmação.
+A normalização agora procura primeiro:
 
-Se estiver ESCALADO, aparece:
+tipo_programacao.nome_historico
+local.nome_historico
+organizador.nome_historico
 
-Confirmar participação
+e mantém os formatos anteriores como fallback.
 
-### Precisa de você
-
-Mostra somente pendências de confirmação.
-
-Isso reduz a necessidade de procurar a programação para descobrir se
-existe alguma ação pendente.
-
-### Visão da semana
-
-A semana aparece como uma faixa de sete dias.
-
-Não é uma grade de agenda.
-
-Cada dia mostra:
-
-- ponto pessoal quando existe compromisso do usuário;
-- ponto geral quando existem programações da igreja;
-- indicação visual do dia atual.
-
-Essa visualização mantém o conceito do SYN como mapa temporal da semana.
-
-### Acontece nesta semana
-
-Mostra as próximas programações em uma lista compacta.
-
-Cada item abre o detalhe da programação.
-
-### Aniversários
-
-Mostra os aniversariantes da semana sem calcular ou exibir idade.
-
-Quando houver foto, ela é exibida.
-
-## Arquivos
+## Arquivo
 
 Substitua SOMENTE:
 
-src/pages/HomePage.jsx
+src/pages/ProgramacoesPage.jsx
 
-Adicione:
+Não substitua a pasta src inteira.
 
-src/pages/HomePageEtapa47.css
+Não há alteração na API, banco ou CSS.
 
-Não substitua a pasta `src` inteira.
+## Resultado esperado
 
-Não é necessário alterar:
+Por exemplo:
 
-App.jsx
-api.js
-styles.css
-banco de dados
-API
+Culto Infantil
+10:00 — 11:30
+Sala Infantil
 
-## Teste
+em vez de:
 
-Abra:
-
-http://localhost:5173/
-
-Teste especialmente com Maria, porque ela possui participação no
-Culto Infantil e permite visualizar a Home sob a perspectiva de um
-membro escalado.
-
-Depois teste como Administrador.
+Programação
+10:00 — 11:30
+Local não informado

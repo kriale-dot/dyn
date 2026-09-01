@@ -34,6 +34,9 @@ import PerfilPage
 import ProgramacaoDetalhePage
   from './pages/ProgramacaoDetalhePage'
 
+import ProgramacaoFormPage
+  from './pages/ProgramacaoFormPage'
+
 import ProgramacoesPage
   from './pages/ProgramacoesPage'
 
@@ -90,6 +93,20 @@ export default function App() {
           path="gestao/programacoes"
           element={
             <GestaoProgramacoesPage />
+          }
+        />
+
+        <Route
+          path="gestao/programacoes/nova"
+          element={
+            <ProgramacaoFormPage />
+          }
+        />
+
+        <Route
+          path="gestao/programacoes/:id/editar"
+          element={
+            <ProgramacaoFormPage />
           }
         />
 
