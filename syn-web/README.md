@@ -1,81 +1,114 @@
-# SYN Frontend — Etapa 48B
-## Correção de Tipo e Local na tela Programações
+# SYN Frontend — Etapa 50
+## Recuperação e redefinição de senha
 
-Na tela:
+O fluxo público de recuperação de senha agora existe no frontend.
 
-/programacoes
+## Login
 
-o frontend mostrava:
+A tela de login ganha:
 
-Programação
-Local não informado
+Esqueci minha senha
 
-mesmo quando o banco e a API possuíam o tipo e o local.
+## Novas rotas React
 
-## Causa
+/esqueci-senha
 
-A API devolve os snapshots históricos em objetos aninhados:
+/redefinir-senha?token=TOKEN
 
-```json
+As duas rotas são públicas.
+
+## API utilizada
+
+POST /auth/esqueci-senha
+
+Body:
+
 {
-  "tipo_programacao": {
-    "id": 1,
-    "nome_historico": "Culto Infantil"
-  },
-  "local": {
-    "id": 1,
-    "nome_historico": "Sala Infantil"
-  },
-  "organizador": {
-    "id": 2,
-    "nome_historico": "Organizador SYN"
-  }
+  "email": "usuario@exemplo.com"
 }
-```
 
-Mas a tela antiga procurava principalmente:
+POST /auth/redefinir-senha
 
-```text
-tipo_programacao_nome_historico
-local_nome_historico
-organizador_nome_historico
-```
+Body:
 
-Por isso o fallback acabava exibindo:
+{
+  "token": "...",
+  "nova_senha": "...",
+  "confirmar_senha": "..."
+}
 
-Programação
-Local não informado
+## Proteção contra enumeração
 
-## Correção
+A tela exibe exatamente a resposta pública genérica da API:
 
-A normalização agora procura primeiro:
+"Se o e-mail estiver cadastrado e ativo..."
 
-tipo_programacao.nome_historico
-local.nome_historico
-organizador.nome_historico
+Assim, o frontend também não revela se determinado e-mail existe.
 
-e mantém os formatos anteriores como fallback.
+## Ambiente development
 
-## Arquivo
+O backend ainda não possui envio real de e-mail.
+
+Quando APP_ENV=development, a API devolve:
+
+desenvolvimento.token_teste
+desenvolvimento.expira_em
+
+A tela detecta esse campo e oferece:
+
+Redefinir senha de teste
+
+Esse botão leva diretamente para:
+
+/redefinir-senha?token=...
+
+Em produção esse bloco não aparece.
+
+## Regras de redefinição
+
+O frontend valida antes do POST:
+
+- token hexadecimal com 64 caracteres;
+- nova senha com pelo menos 8 caracteres;
+- confirmação igual à nova senha.
+
+A API valida tudo novamente.
+
+## Segurança
+
+O token:
+
+- expira em 30 minutos;
+- é de uso único;
+- não é armazenado em texto puro no banco;
+- uma nova solicitação invalida as anteriores.
+
+Essas regras já pertencem ao backend da Etapa 24.
+
+## Arquivos
 
 Substitua SOMENTE:
 
-src/pages/ProgramacoesPage.jsx
+src/api/api.js
+src/App.jsx
+src/pages/LoginPage.jsx
 
-Não substitua a pasta src inteira.
+Adicione:
 
-Não há alteração na API, banco ou CSS.
+src/pages/EsqueciSenhaPage.jsx
+src/pages/RedefinirSenhaPage.jsx
+src/pages/AuthPagesEtapa50.css
 
-## Resultado esperado
+NÃO substitua a pasta src inteira.
 
-Por exemplo:
+## Teste
 
-Culto Infantil
-10:00 — 11:30
-Sala Infantil
-
-em vez de:
-
-Programação
-10:00 — 11:30
-Local não informado
+1. Saia do SYN.
+2. Abra /login.
+3. Clique "Esqueci minha senha".
+4. Informe admin@syn.local.
+5. Em development, clique "Redefinir senha de teste".
+6. Digite a nova senha duas vezes.
+7. Redefina.
+8. Faça login com a nova senha.
+9. Tente reutilizar o mesmo token — deve falhar.

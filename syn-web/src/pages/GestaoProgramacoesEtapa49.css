@@ -1,0 +1,16 @@
+.management-hero-button-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 9px;
+}
+
+@media (max-width: 760px) {
+  .management-hero-button-group {
+    justify-content: stretch;
+  }
+
+  .management-hero-button-group button {
+    flex: 1 1 210px;
+  }
+}

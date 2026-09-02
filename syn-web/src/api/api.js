@@ -655,3 +655,68 @@ export async function realizarProgramacao(
     },
   )
 }
+
+
+/* ==========================================================
+   ETAPA 49 — PROGRAMAÇÕES RECORRENTES
+   ========================================================== */
+
+export async function getSeriesProgramacao() {
+  return apiRequest('/series-programacao')
+}
+
+export async function getSerieProgramacao(serieId) {
+  return apiRequest(`/series-programacao/${serieId}`)
+}
+
+export async function criarSerieProgramacao(dados) {
+  return apiRequest('/series-programacao', {
+    method: 'POST',
+    body: JSON.stringify(dados),
+  })
+}
+
+export async function desativarSerieProgramacao(serieId) {
+  return apiRequest(`/series-programacao/${serieId}/desativar`, {
+    method: 'PATCH',
+  })
+}
+
+
+/* ==========================================================
+   ETAPA 50 — RECUPERAÇÃO DE SENHA
+   ========================================================== */
+
+export async function solicitarRecuperacaoSenha(
+  email,
+) {
+  return apiRequest(
+    '/auth/esqueci-senha',
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        email,
+      }),
+    },
+  )
+}
+
+export async function redefinirSenha(
+  token,
+  novaSenha,
+  confirmarSenha,
+) {
+  return apiRequest(
+    '/auth/redefinir-senha',
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        token,
+        nova_senha:
+          novaSenha,
+        confirmar_senha:
+          confirmarSenha,
+      }),
+    },
+  )
+}

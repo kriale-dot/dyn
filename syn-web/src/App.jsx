@@ -25,6 +25,12 @@ import HomePage
 import LoginPage
   from './pages/LoginPage'
 
+import EsqueciSenhaPage
+  from './pages/EsqueciSenhaPage'
+
+import RedefinirSenhaPage
+  from './pages/RedefinirSenhaPage'
+
 import NecessidadesPage
   from './pages/NecessidadesPage'
 
@@ -43,6 +49,15 @@ import ProgramacoesPage
 import SemanaPage
   from './pages/SemanaPage'
 
+import SeriesProgramacaoPage
+  from './pages/SeriesProgramacaoPage'
+
+import SerieProgramacaoFormPage
+  from './pages/SerieProgramacaoFormPage'
+
+import SerieProgramacaoDetalhePage
+  from './pages/SerieProgramacaoDetalhePage'
+
 import TipoFuncoesPage
   from './pages/TipoFuncoesPage'
 
@@ -58,6 +73,16 @@ export default function App() {
       <Route
         path="/login"
         element={<LoginPage />}
+      />
+
+      <Route
+        path="/esqueci-senha"
+        element={<EsqueciSenhaPage />}
+      />
+
+      <Route
+        path="/redefinir-senha"
+        element={<RedefinirSenhaPage />}
       />
 
       <Route
@@ -114,6 +139,27 @@ export default function App() {
           path="gestao/programacoes/:id/escala"
           element={
             <GestaoEscalaPage />
+          }
+        />
+
+        <Route
+          path="gestao/series"
+          element={
+            <SeriesProgramacaoPage />
+          }
+        />
+
+        <Route
+          path="gestao/series/nova"
+          element={
+            <SerieProgramacaoFormPage />
+          }
+        />
+
+        <Route
+          path="gestao/series/:id"
+          element={
+            <SerieProgramacaoDetalhePage />
           }
         />
 

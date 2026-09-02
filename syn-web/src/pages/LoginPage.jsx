@@ -3,6 +3,7 @@ import {
 } from 'react'
 
 import {
+  Link,
   Navigate,
   useNavigate,
 } from 'react-router-dom'
@@ -10,6 +11,8 @@ import {
 import {
   useAuth,
 } from '../contexts/AuthContext'
+
+import './AuthPagesEtapa50.css'
 
 export default function LoginPage() {
   const navigate =
@@ -37,7 +40,9 @@ export default function LoginPage() {
     return (
       <main className="screen-center">
         <div className="loading-card">
-          <strong>Carregando SYN...</strong>
+          <strong>
+            Carregando SYN...
+          </strong>
         </div>
       </main>
     )
@@ -52,7 +57,9 @@ export default function LoginPage() {
     )
   }
 
-  async function handleSubmit(event) {
+  async function handleSubmit(
+    event,
+  ) {
     event.preventDefault()
     setError('')
     setSubmitting(true)
@@ -89,6 +96,7 @@ export default function LoginPage() {
 
           <div>
             <h1>SYN</h1>
+
             <p>
               Organização, programação
               e escalas da igreja
@@ -117,7 +125,18 @@ export default function LoginPage() {
           </label>
 
           <label>
-            Senha
+            <span className="auth-password-label">
+              <span>
+                Senha
+              </span>
+
+              <Link
+                to="/esqueci-senha"
+                className="auth-inline-link"
+              >
+                Esqueci minha senha
+              </Link>
+            </span>
 
             <input
               type="password"

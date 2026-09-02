@@ -17,6 +17,7 @@ import {
 } from '../contexts/AuthContext'
 
 import './GestaoProgramacoesEtapa48.css'
+import './GestaoProgramacoesEtapa49.css'
 
 export default function GestaoProgramacoesPage() {
   const navigate =
@@ -181,17 +182,27 @@ export default function GestaoProgramacoesPage() {
           </p>
         </div>
 
-        <button
-          type="button"
-          className="button-primary"
-          onClick={() =>
-            navigate(
-              '/gestao/programacoes/nova',
-            )
-          }
-        >
-          + Nova programação
-        </button>
+        <div className="management-hero-button-group">
+          <button
+            type="button"
+            className="button-secondary"
+            onClick={() =>
+              navigate('/gestao/series')
+            }
+          >
+            Programações recorrentes
+          </button>
+
+          <button
+            type="button"
+            className="button-primary"
+            onClick={() =>
+              navigate('/gestao/programacoes/nova')
+            }
+          >
+            + Nova programação
+          </button>
+        </div>
       </section>
 
       <section className="management-toolbar">
