@@ -1,0 +1,179 @@
+.profile87-email-help {
+  color: #89938f;
+  font-size: .51rem;
+}
+
+.profile87-email-card {
+  border: 1px solid #dce5e1;
+  border-radius: 16px;
+  background: #fff;
+  padding: 16px 18px;
+  display: grid;
+  gap: 13px;
+}
+
+.profile87-email-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+}
+
+.profile87-email-icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  background: #edf4f1;
+  color: #3f6c5f;
+  display: grid;
+  place-items: center;
+  font-size: .82rem;
+  font-weight: 900;
+}
+
+.profile87-email-heading > div:last-child {
+  display: grid;
+  gap: 3px;
+}
+
+.profile87-email-heading h2 {
+  margin: 0;
+  color: #3d584f;
+  font-size: .88rem;
+}
+
+.profile87-email-heading p {
+  max-width: 720px;
+  margin: 0;
+  color: #76837f;
+  font-size: .63rem;
+  line-height: 1.5;
+}
+
+.profile87-current-email {
+  border-radius: 10px;
+  background: #f6f9f8;
+  padding: 9px 11px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.profile87-current-email span {
+  color: #7c8984;
+  font-size: .55rem;
+  font-weight: 800;
+}
+
+.profile87-current-email strong {
+  color: #4c665d;
+  font-size: .65rem;
+  overflow-wrap: anywhere;
+}
+
+.profile87-request-message {
+  border: 1px solid #cfe1d9;
+  border-radius: 9px;
+  background: #eef7f3;
+  color: #4b695f;
+  padding: 8px 10px;
+  font-size: .59rem;
+  line-height: 1.45;
+}
+
+.profile87-email-form {
+  border-top: 1px solid #e4ebe8;
+  padding-top: 12px;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, .72fr);
+  gap: 10px;
+}
+
+.profile87-email-form label {
+  display: grid;
+  gap: 5px;
+}
+
+.profile87-email-form label > span {
+  color: #566d65;
+  font-size: .59rem;
+  font-weight: 850;
+}
+
+.profile87-email-form input {
+  min-height: 39px;
+  border: 1px solid #d3dfda;
+  border-radius: 9px;
+  background: #fff;
+  color: #3f574f;
+  padding: 7px 9px;
+}
+
+.profile87-email-form input:focus {
+  border-color: #729789;
+  outline:
+    2px solid
+    rgba(76, 125, 107, .08);
+}
+
+.profile87-email-action {
+  grid-column: 1 / -1;
+  border-top: 1px solid #e9eeec;
+  margin-top: 2px;
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.profile87-email-action > div {
+  color: #7d8985;
+  font-size: .54rem;
+  line-height: 1.4;
+}
+
+.profile87-email-action button {
+  min-height: 38px;
+  border: 1px solid #3f7565;
+  border-radius: 9px;
+  background: #3f7565;
+  color: #fff;
+  padding: 8px 12px;
+  font-size: .59rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.profile87-email-action button:disabled {
+  opacity: .55;
+}
+
+@media (max-width: 720px) {
+  .profile87-email-form {
+    grid-template-columns: 1fr;
+  }
+
+  .profile87-email-action {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .profile87-email-action,
+  .profile87-current-email {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .profile87-email-action button {
+    width: 100%;
+  }
+
+  .profile87-email-icon {
+    display: none;
+  }
+}

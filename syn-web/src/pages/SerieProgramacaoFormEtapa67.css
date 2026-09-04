@@ -1,0 +1,145 @@
+.serie67-preview-card {
+  display: grid;
+  gap: 14px;
+}
+
+.serie67-preview-heading {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto
+    auto;
+  align-items: center;
+  gap: 16px;
+}
+
+.serie67-preview-heading h2 {
+  margin: 4px 0 5px;
+}
+
+.serie67-preview-heading p {
+  margin: 0;
+}
+
+.serie67-range {
+  min-width: 105px;
+  border-left: 1px solid #dfe7e4;
+  padding-left: 14px;
+  display: grid;
+  gap: 2px;
+}
+
+.serie67-range > span {
+  color: #7a8783;
+  font-size: .57rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.serie67-range > strong {
+  color: #315e52;
+  font-size: .82rem;
+}
+
+.serie67-range > small {
+  color: #82908b;
+  font-size: .61rem;
+}
+
+.serie67-week-sequence {
+  border-top: 1px solid #e5ebe8;
+  padding-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.serie67-week-chip {
+  min-width: 76px;
+  border: 1px solid #d5e1dc;
+  border-radius: 12px;
+  background: #f9fbfa;
+  padding: 8px 9px;
+  display: grid;
+  justify-items: center;
+  gap: 1px;
+}
+
+.serie67-week-chip:hover {
+  border-color: #6f998c;
+  background: #f0f6f3;
+}
+
+.serie67-week-chip > span {
+  color: #7a8883;
+  font-size: .52rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.serie67-week-chip > strong {
+  color: #2d5c4f;
+  font-size: 1rem;
+}
+
+.serie67-week-chip > small {
+  color: #7b8884;
+  font-size: .57rem;
+}
+
+.serie67-more-weeks {
+  border: 1px dashed #cad5d1;
+  border-radius: 12px;
+  padding: 8px 10px;
+  display: grid;
+  place-items: center;
+  color: #667670;
+  font-size: .65rem;
+  font-weight: 800;
+}
+
+.serie67-preview-note {
+  border-radius: 11px;
+  background: #f3f7f5;
+  padding: 9px 11px;
+  display: grid;
+  gap: 2px;
+}
+
+.serie67-preview-note strong {
+  color: #466259;
+  font-size: .67rem;
+}
+
+.serie67-preview-note span {
+  color: #75827e;
+  font-size: .63rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 720px) {
+  .serie67-preview-heading {
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .serie67-preview-heading > div:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .serie67-range {
+    border-left: 0;
+    border-top: 1px solid #dfe7e4;
+    padding: 8px 0 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .serie67-preview-heading {
+    grid-template-columns: 1fr;
+  }
+
+  .serie67-preview-heading > div:first-child {
+    grid-column: auto;
+  }
+}

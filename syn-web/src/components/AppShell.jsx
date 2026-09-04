@@ -1,6 +1,7 @@
 import {
   NavLink,
   Outlet,
+  useNavigate,
 } from 'react-router-dom'
 
 import {
@@ -17,6 +18,9 @@ const API_URL =
   || 'http://localhost:8282'
 
 export default function AppShell() {
+  const navigate =
+    useNavigate()
+
   const {
     usuario,
     igreja,
@@ -28,6 +32,31 @@ export default function AppShell() {
     resolverArquivoApi(
       usuario?.foto,
     )
+
+  /**
+   * Logout manual:
+   *
+   * 1. encerra a sessão;
+   * 2. leva explicitamente para a raiz pública.
+   *
+   * Sem este navigate(), o usuário permanece em uma rota
+   * protegida (por exemplo /inicio). Ao perder a sessão,
+   * ProtectedRoute detecta que não há autenticação e envia
+   * para /login.
+   *
+   * Depois da Etapa 74 a raiz "/" é o Mapa Público para
+   * visitantes, portanto esse é o destino correto do logout.
+   */
+  function sair() {
+    signOut()
+
+    navigate(
+      '/',
+      {
+        replace: true,
+      },
+    )
+  }
 
   return (
     <div className="app-shell">
@@ -89,7 +118,7 @@ export default function AppShell() {
           <button
             type="button"
             className="button-secondary"
-            onClick={signOut}
+            onClick={sair}
           >
             Sair
           </button>

@@ -1,0 +1,424 @@
+.public75-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f4f8f6 0, #fbfcfc 240px, #f6f8f7 100%);
+  color: #344f46;
+  padding: 20px clamp(14px, 4vw, 52px) 34px;
+}
+
+.public75-header,
+.public75-hero,
+.public75-toolbar,
+.public75-error,
+.public75-loading,
+.public75-empty,
+.public75-groups {
+  width: min(1080px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.public75-header {
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.public75-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.public75-brand img,
+.public75-brand > span {
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  border: 1px solid #dce5e1;
+  background: #fff;
+}
+
+.public75-brand img {
+  object-fit: contain;
+}
+
+.public75-brand > span {
+  display: grid;
+  place-items: center;
+  color: #315e52;
+  font-size: .61rem;
+  font-weight: 900;
+}
+
+.public75-brand > div,
+.public75-total {
+  display: grid;
+  gap: 1px;
+}
+
+.public75-brand small,
+.public75-hero > span {
+  color: #6f827b;
+  font-size: .56rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.public75-brand strong {
+  color: #405d54;
+  font-size: .78rem;
+}
+
+.public75-header-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.public75-header-actions button {
+  min-height: 36px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: #55746a;
+  padding: 7px 9px;
+  font-size: .63rem;
+  font-weight: 850;
+}
+
+.public75-header-actions button.member {
+  border: 1px solid #c4d5cf;
+  background: #fff;
+  color: #35685a;
+}
+
+.public75-hero {
+  padding: 52px 0 20px;
+}
+
+.public75-hero h1 {
+  margin: 4px 0 7px;
+  color: #2f5046;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1.04;
+}
+
+.public75-hero p {
+  max-width: 610px;
+  margin: 0;
+  color: #77847f;
+  font-size: .78rem;
+  line-height: 1.55;
+}
+
+.public75-toolbar {
+  border: 1px solid #dce5e1;
+  border-radius: 15px;
+  background: #fff;
+  padding: 11px 12px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.public75-toolbar label {
+  width: min(460px, 100%);
+  display: grid;
+  gap: 4px;
+}
+
+.public75-toolbar label > span {
+  color: #71817b;
+  font-size: .57rem;
+  font-weight: 850;
+}
+
+.public75-toolbar input {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid #d4dfdb;
+  border-radius: 9px;
+  padding: 8px 10px;
+  color: #3f564e;
+}
+
+.public75-total {
+  justify-items: end;
+}
+
+.public75-total strong {
+  color: #315e52;
+  font-size: 1.1rem;
+}
+
+.public75-total span {
+  color: #7d8985;
+  font-size: .56rem;
+}
+
+.public75-error,
+.public75-loading,
+.public75-empty {
+  margin-top: 13px;
+  border: 1px solid #dce5e1;
+  border-radius: 14px;
+  background: #fff;
+  padding: 18px;
+}
+
+.public75-error {
+  border-color: #e4cece;
+  background: #fff7f7;
+  color: #815353;
+  font-size: .67rem;
+}
+
+.public75-loading,
+.public75-empty {
+  color: #74817c;
+  font-size: .7rem;
+  text-align: center;
+}
+
+.public75-empty button,
+.public75-week-group > header > button,
+.public75-card-main > footer button {
+  border: 1px solid #c8d8d2;
+  border-radius: 9px;
+  background: #fff;
+  color: #35685a;
+  padding: 7px 9px;
+  font-size: .59rem;
+  font-weight: 850;
+}
+
+.public75-groups {
+  margin-top: 14px;
+  display: grid;
+  gap: 15px;
+}
+
+.public75-week-group {
+  border: 1px solid #dce5e1;
+  border-radius: 17px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.public75-week-group > header {
+  min-height: 68px;
+  border-bottom: 1px solid #e3eae7;
+  background: linear-gradient(90deg, #f2f8f5, #fbfcfc);
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+}
+
+.public75-week-number {
+  width: 49px;
+  height: 49px;
+  border-radius: 12px;
+  background: #e3efea;
+  display: grid;
+  place-items: center;
+  align-content: center;
+}
+
+.public75-week-number span {
+  color: #6d7f79;
+  font-size: .5rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.public75-week-number strong {
+  color: #2d5a4d;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.public75-week-group > header > div:nth-child(2) {
+  display: grid;
+  gap: 2px;
+}
+
+.public75-week-group > header > div:nth-child(2) strong {
+  color: #3d584f;
+  font-size: .76rem;
+}
+
+.public75-week-group > header > div:nth-child(2) span {
+  color: #7a8782;
+  font-size: .6rem;
+}
+
+.public75-list {
+  padding: 8px;
+  display: grid;
+  gap: 7px;
+}
+
+.public75-card {
+  border: 1px solid #e0e7e4;
+  border-radius: 13px;
+  background: #fff;
+  padding: 9px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+}
+
+.public75-card.cancelled {
+  border-color: #ead4d4;
+  background: #fff9f9;
+}
+
+.public75-card-date {
+  width: 51px;
+  min-height: 61px;
+  border-radius: 11px;
+  background: #edf4f1;
+  display: grid;
+  place-items: center;
+  align-content: center;
+}
+
+.public75-card-date strong {
+  color: #315e52;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.public75-card-date span,
+.public75-card-date small {
+  color: #71847d;
+  font-size: .52rem;
+  font-weight: 850;
+}
+
+.public75-card-date small {
+  margin-top: 3px;
+  color: #85908c;
+  font-size: .48rem;
+}
+
+.public75-card-main {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.public75-card-topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.public75-card-topline > div > span {
+  color: #73837d;
+  font-size: .52rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.public75-card-topline h2 {
+  margin: 2px 0 0;
+  color: #3b554d;
+  font-size: .8rem;
+}
+
+.public75-status {
+  height: fit-content;
+  border-radius: 999px;
+  padding: 5px 7px;
+  font-size: .51rem;
+  font-weight: 850;
+}
+
+.public75-status.active {
+  background: #e6f2ed;
+  color: #356a59;
+}
+
+.public75-status.done {
+  background: #ecefed;
+  color: #697570;
+}
+
+.public75-status.cancelled {
+  background: #f5e5e5;
+  color: #8a5555;
+}
+
+.public75-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 14px;
+  color: #72807b;
+  font-size: .59rem;
+}
+
+.public75-card-meta strong {
+  color: #50675f;
+}
+
+.public75-card-main > p {
+  margin: 0;
+  color: #6f7e79;
+  font-size: .63rem;
+  line-height: 1.45;
+}
+
+.public75-card-main > footer {
+  border-top: 1px solid #e7ecea;
+  padding-top: 7px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.public75-card-main > footer button:first-child {
+  background: #f3f9f6;
+}
+
+@media (max-width: 620px) {
+  .public75-page {
+    padding: 14px 12px 26px;
+  }
+
+  .public75-header {
+    align-items: flex-start;
+  }
+
+  .public75-header-actions {
+    flex-direction: column-reverse;
+    align-items: flex-end;
+  }
+
+  .public75-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .public75-total {
+    justify-items: start;
+  }
+
+  .public75-week-group > header {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .public75-week-group > header > button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .public75-card {
+    grid-template-columns: 1fr;
+  }
+}

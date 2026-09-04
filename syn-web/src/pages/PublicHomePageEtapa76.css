@@ -1,0 +1,40 @@
+.public76-period-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.public76-period-actions > button {
+  min-height: 34px;
+  border: 1px solid #d1ddd8;
+  border-radius: 9px;
+  background: #fff;
+  color: #456d61;
+  padding: 6px 8px;
+  font-size: .56rem;
+  font-weight: 850;
+}
+
+.public76-info-wrap {
+  width: min(1180px, 100%);
+  margin: 15px auto 0;
+}
+
+@media (max-width: 760px) {
+  .public74-period {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .public76-period-actions {
+    flex-wrap: wrap;
+  }
+
+  .public74-summary {
+    min-width: 100%;
+    border-left: 0;
+    border-bottom: 1px solid #e1e8e5;
+    padding: 0 0 8px;
+    justify-items: start;
+  }
+}

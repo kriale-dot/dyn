@@ -1,0 +1,16 @@
+.structure-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+@media (max-width: 680px) {
+  .structure-hero-actions {
+    justify-content: stretch;
+  }
+
+  .structure-hero-actions button {
+    flex: 1 1 190px;
+  }
+}

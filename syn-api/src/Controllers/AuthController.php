@@ -100,6 +100,68 @@ final class AuthController
     }
 
     /**
+     * POST /auth/encerrar-todas-sessoes
+     *
+     * AuthMiddleware já confirmou o JWT atual.
+     */
+    public function encerrarTodasSessoes(
+        Request $request,
+        Response $response
+    ): Response {
+        $auth =
+            $request
+                ->getAttribute(
+                    'auth'
+                );
+
+        if (!is_array($auth)) {
+            return $this->json(
+                $response,
+                [
+                    'status' =>
+                        'erro',
+                    'mensagem' =>
+                        'Usuário não autenticado.',
+                ],
+                401
+            );
+        }
+
+        try {
+            $resultado =
+                $this->authService
+                    ->encerrarTodasSessoes(
+                        (int)
+                        ($auth['id'] ?? 0)
+                    );
+
+            return $this->json(
+                $response,
+                [
+                    'status' =>
+                        'ok',
+                    'dados' =>
+                        $resultado,
+                ],
+                200
+            );
+        } catch (
+            AutenticacaoException $e
+        ) {
+            return $this->json(
+                $response,
+                [
+                    'status' =>
+                        'erro',
+                    'mensagem' =>
+                        $e->getMessage(),
+                ],
+                401
+            );
+        }
+    }
+
+    /**
      * @param array<string, mixed> $dados
      */
     private function json(

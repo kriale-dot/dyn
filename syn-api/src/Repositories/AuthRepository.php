@@ -37,6 +37,7 @@ final class AuthRepository
                 u.status,
                 u.senha_hash,
                 u.ultimo_login_em,
+                u.sessao_versao,
 
                 p.id AS papel_id,
                 p.codigo AS papel_codigo,
@@ -85,6 +86,7 @@ final class AuthRepository
                 u.foto,
                 u.status,
                 u.ultimo_login_em,
+                u.sessao_versao,
 
                 p.id AS papel_id,
                 p.codigo AS papel_codigo,
@@ -112,6 +114,66 @@ final class AuthRepository
             ? null
             : $usuario;
     }
+    /**
+     * Invalida todos os JWT já emitidos para o usuário.
+     *
+     * Nenhum token precisa ser armazenado no banco. Basta aumentar a
+     * versão atual da sessão.
+     */
+    public function incrementarVersaoSessao(
+        int $usuarioId
+    ): bool {
+        $this->pdo
+            ->beginTransaction();
+
+        try {
+            $stmt =
+                $this->pdo->prepare(
+                    'UPDATE usuarios
+                     SET sessao_versao =
+                         sessao_versao + 1
+                     WHERE id = :id'
+                );
+
+            $stmt->execute([
+                ':id' =>
+                    $usuarioId,
+            ]);
+
+            if (
+                $stmt->rowCount()
+                !== 1
+            ) {
+                $this->pdo
+                    ->rollBack();
+
+                return false;
+            }
+
+            $this->registrarEventoSeguranca(
+                $usuarioId,
+                'SESSOES_ENCERRADAS',
+                'Todas as sessões foram encerradas',
+                'Os tokens anteriores da conta foram invalidados.'
+            );
+
+            $this->pdo
+                ->commit();
+
+            return true;
+        } catch (\Throwable $e) {
+            if (
+                $this->pdo
+                    ->inTransaction()
+            ) {
+                $this->pdo
+                    ->rollBack();
+            }
+
+            throw $e;
+        }
+    }
+
 
     /**
      * Registra o momento do último login bem-sucedido.
@@ -119,14 +181,77 @@ final class AuthRepository
     public function registrarUltimoLogin(
         int $usuarioId
     ): void {
-        $stmt = $this->pdo->prepare(
-            'UPDATE usuarios
-             SET ultimo_login_em = NOW()
-             WHERE id = :id'
-        );
+        $this->pdo
+            ->beginTransaction();
+
+        try {
+            $stmt =
+                $this->pdo->prepare(
+                    'UPDATE usuarios
+                     SET ultimo_login_em = NOW()
+                     WHERE id = :id'
+                );
+
+            $stmt->execute([
+                ':id' =>
+                    $usuarioId,
+            ]);
+
+            $this->registrarEventoSeguranca(
+                $usuarioId,
+                'LOGIN_SUCESSO',
+                'Login realizado',
+                'A conta foi acessada com e-mail e senha válidos.'
+            );
+
+            $this->pdo
+                ->commit();
+        } catch (\Throwable $e) {
+            if (
+                $this->pdo
+                    ->inTransaction()
+            ) {
+                $this->pdo
+                    ->rollBack();
+            }
+
+            throw $e;
+        }
+    }
+
+    private function registrarEventoSeguranca(
+        int $usuarioId,
+        string $tipo,
+        string $titulo,
+        ?string $detalhe
+    ): void {
+        $stmt =
+            $this->pdo->prepare(
+                'INSERT INTO eventos_seguranca_conta (
+                    usuario_id,
+                    tipo,
+                    titulo,
+                    detalhe,
+                    criado_em
+                 )
+                 VALUES (
+                    :usuario_id,
+                    :tipo,
+                    :titulo,
+                    :detalhe,
+                    NOW()
+                 )'
+            );
 
         $stmt->execute([
-            ':id' => $usuarioId,
+            ':usuario_id' =>
+                $usuarioId,
+            ':tipo' =>
+                $tipo,
+            ':titulo' =>
+                $titulo,
+            ':detalhe' =>
+                $detalhe,
         ]);
     }
 }

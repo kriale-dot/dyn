@@ -1,0 +1,75 @@
+.public75-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.public75-upcoming-button {
+  min-height: 39px;
+  border: 0;
+  background: transparent;
+  color: #4f6f66;
+  padding: 8px 10px;
+  font-size: .67rem;
+  font-weight: 850;
+}
+
+.public75-discovery-strip {
+  width: min(1180px, 100%);
+  margin: 12px auto 0;
+  border: 1px solid #dce6e2;
+  border-radius: 14px;
+  background: linear-gradient(110deg, #f3f8f6, #ffffff);
+  padding: 11px 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.public75-discovery-strip > div {
+  display: grid;
+  gap: 2px;
+}
+
+.public75-discovery-strip strong {
+  color: #3f5b52;
+  font-size: .74rem;
+}
+
+.public75-discovery-strip small {
+  color: #7a8782;
+  font-size: .61rem;
+}
+
+.public75-discovery-strip > button {
+  border: 1px solid #c8d8d2;
+  border-radius: 9px;
+  background: #fff;
+  color: #35685a;
+  padding: 8px 10px;
+  font-size: .62rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .public75-top-actions {
+    align-items: flex-end;
+    flex-direction: column-reverse;
+  }
+
+  .public75-upcoming-button {
+    min-height: auto;
+    padding: 2px 0;
+  }
+
+  .public75-discovery-strip {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .public75-discovery-strip > button {
+    width: 100%;
+  }
+}

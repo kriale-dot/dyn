@@ -8,6 +8,7 @@ use App\Exceptions\DadosInvalidosException;
 use App\Repositories\RecuperacaoSenhaRepository;
 use DateInterval;
 use DateTimeImmutable;
+use Throwable;
 
 /**
  * Regras de recuperação de senha.
@@ -18,14 +19,17 @@ use DateTimeImmutable;
  * - banco recebe somente SHA-256(token);
  * - expiração de 30 minutos;
  * - token de uso único;
- * - nova solicitação invalida as anteriores.
+ * - nova solicitação invalida as anteriores;
+ * - envio real de instruções por e-mail;
+ * - falha de SMTP não revela se o usuário existe.
  */
 final class RecuperacaoSenhaService
 {
     private const EXPIRACAO_MINUTOS = 30;
 
     public function __construct(
-        private RecuperacaoSenhaRepository $repository
+        private RecuperacaoSenhaRepository $repository,
+        private EmailService $emailService
     ) {
     }
 
@@ -104,10 +108,40 @@ final class RecuperacaoSenhaService
             );
 
         /**
-         * Nesta etapa ainda não integramos provedor de e-mail.
+         * Envio de e-mail real.
          *
-         * Em DEVELOPMENT devolvemos o token para teste no Postman.
-         * Em produção esse campo NÃO aparece.
+         * A URL do frontend contém o token em texto puro apenas durante
+         * o trânsito para o usuário. O banco continua armazenando somente
+         * SHA-256(token).
+         *
+         * IMPORTANTE:
+         * uma falha de SMTP NÃO muda a resposta pública deste endpoint.
+         * Isso evita que um atacante descubra quais e-mails existem
+         * comparando respostas de sucesso e falha.
+         */
+        $urlRedefinicao =
+            $this->montarUrlRedefinicao(
+                $token
+            );
+
+        try {
+            $this->emailService
+                ->enviarRecuperacaoSenha(
+                    (string) $usuario['email'],
+                    (string) $usuario['nome'],
+                    $urlRedefinicao,
+                    self::EXPIRACAO_MINUTOS
+                );
+        } catch (\Throwable $e) {
+            error_log(
+                '[SYN] Falha ao enviar recuperação de senha: '
+                . $e->getMessage()
+            );
+        }
+
+        /**
+         * Em DEVELOPMENT o token continua disponível para testes locais.
+         * Em produção este bloco nunca é devolvido.
          */
         if ($this->ambienteDesenvolvimento()) {
             $resultado['desenvolvimento'] = [
@@ -117,6 +151,8 @@ final class RecuperacaoSenhaService
                     $expira->format(
                         'Y-m-d H:i:s'
                     ),
+                'url_redefinicao' =>
+                    $urlRedefinicao,
                 'observacao' =>
                     'Somente ambiente development. Em produção o token deve ser enviado por e-mail.',
             ];
@@ -162,9 +198,9 @@ final class RecuperacaoSenhaService
                 'Token de recuperação inválido.';
         }
 
-        if (strlen($senha) < 8) {
+        if (strlen($senha) < 5) {
             $erros['nova_senha'] =
-                'A nova senha deve possuir pelo menos 8 caracteres.';
+                'A nova senha deve possuir pelo menos 5 caracteres.';
         }
 
         if (
@@ -218,9 +254,64 @@ final class RecuperacaoSenhaService
                 $senhaHash
             );
 
+        /**
+         * Neste ponto a senha já foi redefinida e todas as sessões foram
+         * revogadas. Falha de SMTP não faz rollback da operação.
+         */
+        $emailEnviado =
+            true;
+
+        try {
+            $this->emailService
+                ->enviarAvisoSenhaRedefinida(
+                    (string)
+                    $registro['usuario_email'],
+                    (string)
+                    $registro['usuario_nome']
+                );
+        } catch (Throwable $e) {
+            $emailEnviado =
+                false;
+
+            error_log(
+                '[SYN] Falha ao enviar aviso de senha redefinida para '
+                . $registro['usuario_email']
+                . ': '
+                . $e->getMessage()
+            );
+        }
+
         return [
-            'senha_redefinida' => true,
+            'senha_redefinida' =>
+                true,
+            'sessoes_encerradas' =>
+                true,
+            'email_seguranca_enviado' =>
+                $emailEnviado,
         ];
+    }
+
+    /**
+     * Monta o endereço do frontend responsável pelo formulário de
+     * redefinição.
+     *
+     * APP_WEB_URL deve apontar para a origem do React, sem barra final.
+     */
+    private function montarUrlRedefinicao(
+        string $token
+    ): string {
+        $appWebUrl =
+            $_ENV['APP_WEB_URL']
+            ?? $_SERVER['APP_WEB_URL']
+            ?? getenv('APP_WEB_URL')
+            ?: 'http://localhost:5173';
+
+        return rtrim(
+            (string) $appWebUrl,
+            '/'
+        )
+        . '/redefinir-senha?token='
+        . rawurlencode($token);
     }
 
     private function ambienteDesenvolvimento(): bool

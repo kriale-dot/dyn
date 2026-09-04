@@ -95,34 +95,41 @@ final class PerfilService
                 'O nome deve possuir no máximo 150 caracteres.';
         }
 
+        /**
+         * O e-mail é credencial de login e destino da recuperação de senha.
+         *
+         * Portanto, esta rota de edição comum NÃO pode alterá-lo.
+         * A troca exige senha atual + confirmação do novo endereço.
+         */
         $email =
             mb_strtolower(
                 trim(
-                    (string) (
-                        $dados['email']
-                        ?? $usuarioAtual['email']
-                    )
+                    (string)
+                    $usuarioAtual['email']
                 )
             );
 
         if (
-            $email === ''
-            || !filter_var(
-                $email,
-                FILTER_VALIDATE_EMAIL
+            array_key_exists(
+                'email',
+                $dados
             )
         ) {
-            $erros['email'] =
-                'Informe um endereço de e-mail válido.';
-        } elseif (
-            $this->repository
-                ->emailExisteParaOutroUsuario(
-                    $email,
-                    $usuarioId
-                )
-        ) {
-            $erros['email'] =
-                'Já existe outro usuário cadastrado com este e-mail.';
+            $emailSolicitado =
+                mb_strtolower(
+                    trim(
+                        (string)
+                        $dados['email']
+                    )
+                );
+
+            if (
+                $emailSolicitado
+                !== $email
+            ) {
+                $erros['email'] =
+                    'Use a opção "Alterar e-mail" na área de segurança da conta.';
+            }
         }
 
         $dataNascimento =

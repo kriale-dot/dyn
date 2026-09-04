@@ -1,0 +1,144 @@
+.serie-detail-summary {
+  grid-template-columns:
+    repeat(6, minmax(0, 1fr));
+}
+
+.serie68-week-groups {
+  display: grid;
+  gap: 14px;
+}
+
+.serie68-week-group {
+  border: 1px solid #dfe7e4;
+  border-radius: 17px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.serie68-week-heading {
+  min-height: 68px;
+  border-bottom: 1px solid #e5ebe8;
+  background:
+    linear-gradient(
+      90deg,
+      #f3f8f6,
+      #fbfcfc
+    );
+  padding: 11px 13px;
+  display: grid;
+  grid-template-columns:
+    auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+}
+
+.serie68-week-number {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  background: #e4efeb;
+  display: grid;
+  place-items: center;
+  align-content: center;
+}
+
+.serie68-week-number span {
+  color: #6d7f79;
+  font-size: .52rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.serie68-week-number strong {
+  color: #2b584b;
+  font-size: 1.18rem;
+  line-height: 1;
+}
+
+.serie68-week-copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.serie68-week-copy strong {
+  color: #3c554d;
+  font-size: .84rem;
+}
+
+.serie68-week-copy span {
+  color: #7a8783;
+  font-size: .65rem;
+}
+
+.serie68-map-button {
+  border: 1px solid #c8d7d2;
+  border-radius: 9px;
+  background: #fff;
+  color: #35685a;
+  padding: 8px 9px;
+  font-size: .65rem;
+  font-weight: 800;
+}
+
+.serie68-occurrence-list {
+  padding: 8px;
+}
+
+.serie68-occurrence-row {
+  border-radius: 12px;
+}
+
+.serie68-occurrence-row
++ .serie68-occurrence-row {
+  margin-top: 6px;
+}
+
+.serie68-occurrence-date {
+  min-height: 58px;
+}
+
+.serie68-occurrence-date em {
+  color: #818d89;
+  font-size: .52rem;
+  font-style: normal;
+  font-weight: 850;
+}
+
+.serie68-actions {
+  gap: 5px;
+}
+
+@media (max-width: 1050px) {
+  .serie-detail-summary {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .serie68-week-heading {
+    grid-template-columns:
+      auto minmax(0, 1fr);
+  }
+
+  .serie68-map-button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .serie68-actions {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 560px) {
+  .serie-detail-summary {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .serie68-actions button {
+    flex: 1 1 100%;
+  }
+}

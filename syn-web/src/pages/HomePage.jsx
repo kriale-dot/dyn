@@ -12,6 +12,7 @@ import {
 import {
   confirmarParticipacao,
   getDashboard,
+  getEscalasSemana,
 } from '../api/api'
 
 import {
@@ -19,6 +20,8 @@ import {
 } from '../contexts/AuthContext'
 
 import './HomePageEtapa47.css'
+import './HomePageEtapa57.css'
+import './HomePageEtapa62.css'
 
 const API_URL =
   import.meta.env.VITE_API_URL
@@ -30,10 +33,29 @@ export default function HomePage() {
 
   const {
     usuario,
+    capacidades,
   } = useAuth()
+
+  const podeGerenciarEscalas =
+    Boolean(
+      capacidades
+        ?.gerenciar_escalas,
+    )
 
   const [dashboard, setDashboard] =
     useState(null)
+
+  const [
+    escalasSemana,
+    setEscalasSemana,
+  ] =
+    useState(null)
+
+  const [
+    escalasSemanaError,
+    setEscalasSemanaError,
+  ] =
+    useState('')
 
   const [loading, setLoading] =
     useState(true)
@@ -57,10 +79,48 @@ export default function HomePage() {
           const response =
             await getDashboard()
 
-          setDashboard(
+          const dadosDashboard =
             response?.dados
-            ?? null,
+            ?? null
+
+          setDashboard(
+            dadosDashboard,
           )
+
+          /**
+           * A Home é útil para todos os membros.
+           * Por isso uma falha na projeção administrativa
+           * NÃO derruba a página inicial inteira.
+           */
+          if (podeGerenciarEscalas) {
+            setEscalasSemanaError('')
+
+            try {
+              const responseEscalas =
+                await getEscalasSemana(
+                  dadosDashboard
+                    ?.semana
+                    ?.inicio
+                  ?? null,
+                )
+
+              setEscalasSemana(
+                responseEscalas
+                  ?.dados
+                ?? null,
+              )
+            } catch (errEscalas) {
+              setEscalasSemana(null)
+
+              setEscalasSemanaError(
+                errEscalas?.message
+                || 'Não foi possível carregar o resumo das escalas.',
+              )
+            }
+          } else {
+            setEscalasSemana(null)
+            setEscalasSemanaError('')
+          }
         } catch (err) {
           setError(
             err?.message
@@ -70,7 +130,7 @@ export default function HomePage() {
           setLoading(false)
         }
       },
-      [],
+      [podeGerenciarEscalas],
     )
 
   useEffect(() => {
@@ -252,16 +312,24 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="syn-home-week-label">
+        <div className="syn-home-week-label syn-home-week-label-57">
           <span>
-            Semana
+            Semana do ano
           </span>
 
-          <strong>
+          <strong className="syn-home-week-number-57">
+            {dashboard?.semana?.inicio
+              ? `Semana ${obterNumeroSemanaISO(
+                  dashboard.semana.inicio,
+                )}`
+              : 'Semana atual'}
+          </strong>
+
+          <small>
             {formatarPeriodo(
               dashboard?.semana,
             )}
-          </strong>
+          </small>
         </div>
       </section>
 
@@ -310,6 +378,23 @@ export default function HomePage() {
         />
       </section>
 
+      {podeGerenciarEscalas && (
+        <GestaoSemanaCard
+          dados={escalasSemana}
+          error={escalasSemanaError}
+          onOpen={() =>
+            navigate(
+              `/gestao/escalas-semana?data_referencia=${
+                dashboard
+                  ?.semana
+                  ?.inicio
+                || hojeISO()
+              }`,
+            )
+          }
+        />
+      )}
+
       <section className="syn-week-map-card">
         <header className="syn-section-heading">
           <div>
@@ -351,7 +436,9 @@ export default function HomePage() {
                   .filter(Boolean)
                   .join(' ')}
                 onClick={() =>
-                  navigate('/semana')
+                  navigate(
+                    `/semana?data_referencia=${dia.data}`,
+                  )
                 }
               >
                 <span className="syn-week-day-name">
@@ -543,6 +630,178 @@ export default function HomePage() {
           )}
         </section>
       </section>
+    </div>
+  )
+}
+
+function GestaoSemanaCard({
+  dados,
+  error,
+  onOpen,
+}) {
+  if (error) {
+    return (
+      <section className="syn-management-week-card error-state">
+        <div>
+          <span className="eyebrow">
+            Gestão da semana
+          </span>
+
+          <h2>
+            O resumo das escalas não pôde ser carregado.
+          </h2>
+
+          <p>
+            A Home continua disponível normalmente.
+            Você ainda pode abrir a tela completa de escalas.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          className="button-secondary"
+          onClick={onOpen}
+        >
+          Abrir Escalas da Semana
+        </button>
+      </section>
+    )
+  }
+
+  if (!dados) {
+    return null
+  }
+
+  const resumo =
+    dados?.resumo
+    ?? {}
+
+  const semEscala =
+    resumo
+      .programacoes_sem_escala
+    ?? 0
+
+  const aguardando =
+    resumo
+      .pendentes_confirmacao
+    ?? 0
+
+  const funcoesSemParticipante =
+    resumo
+      .funcoes_sem_participante
+    ?? 0
+
+  const totalAlertas =
+    semEscala
+    + aguardando
+    + funcoesSemParticipante
+
+  const tudoResolvido =
+    totalAlertas === 0
+
+  return (
+    <section
+      className={
+        tudoResolvido
+          ? 'syn-management-week-card complete'
+          : 'syn-management-week-card attention'
+      }
+    >
+      <div className="syn-management-week-copy">
+        <span className="eyebrow">
+          Gestão da Semana {
+            dados
+              ?.semana
+              ?.numero_iso
+            ?? ''
+          }
+        </span>
+
+        <h2>
+          {tudoResolvido
+            ? 'As escalas estão em ordem.'
+            : 'Há pontos que precisam de atenção.'}
+        </h2>
+
+        <p>
+          {tudoResolvido
+            ? 'Nenhuma pendência operacional foi encontrada nas programações desta semana.'
+            : 'Veja rapidamente onde ainda falta montar escala, receber confirmações ou revisar funções habilitadas.'}
+        </p>
+      </div>
+
+      <div className="syn-management-week-metrics">
+        <GestaoMetric
+          value={
+            resumo
+              .programacoes
+            ?? 0
+          }
+          label="programações"
+        />
+
+        <GestaoMetric
+          value={semEscala}
+          label="sem escala"
+          attention={
+            semEscala > 0
+          }
+        />
+
+        <GestaoMetric
+          value={aguardando}
+          label="aguardando"
+          attention={
+            aguardando > 0
+          }
+        />
+
+        <GestaoMetric
+          value={
+            funcoesSemParticipante
+          }
+          label="funções sem participante"
+          attention={
+            funcoesSemParticipante > 0
+          }
+        />
+      </div>
+
+      <button
+        type="button"
+        className={
+          tudoResolvido
+            ? 'button-secondary'
+            : 'button-primary'
+        }
+        onClick={onOpen}
+      >
+        Abrir Escalas da Semana
+      </button>
+    </section>
+  )
+}
+
+function GestaoMetric({
+  value,
+  label,
+  attention = false,
+}) {
+  return (
+    <div
+      className={
+        attention
+          ? 'syn-management-metric attention'
+          : 'syn-management-metric'
+      }
+    >
+      <strong>
+        {value}
+      </strong>
+
+      <span>
+        {label}
+      </span>
     </div>
   )
 }
@@ -1044,6 +1303,79 @@ function inicioDataHoraChave(
 
   return String(valor)
     .slice(0, 10)
+}
+
+function hojeISO() {
+  const data =
+    new Date()
+
+  const ano =
+    data.getFullYear()
+
+  const mes =
+    String(
+      data.getMonth() + 1,
+    ).padStart(2, '0')
+
+  const dia =
+    String(
+      data.getDate(),
+    ).padStart(2, '0')
+
+  return `${ano}-${mes}-${dia}`
+}
+
+function obterNumeroSemanaISO(
+  iso,
+) {
+  const data =
+    parseDataSomente(
+      iso,
+    )
+
+  if (!data) {
+    return null
+  }
+
+  const utc =
+    new Date(
+      Date.UTC(
+        data.getFullYear(),
+        data.getMonth(),
+        data.getDate(),
+      ),
+    )
+
+  const diaSemana =
+    utc.getUTCDay()
+    || 7
+
+  utc.setUTCDate(
+    utc.getUTCDate()
+    + 4
+    - diaSemana,
+  )
+
+  const primeiroDiaAno =
+    new Date(
+      Date.UTC(
+        utc.getUTCFullYear(),
+        0,
+        1,
+      ),
+    )
+
+  return Math.ceil(
+    (
+      (
+        utc
+        - primeiroDiaAno
+      )
+      / 86400000
+      + 1
+    )
+    / 7,
+  )
 }
 
 function formatarPeriodo(

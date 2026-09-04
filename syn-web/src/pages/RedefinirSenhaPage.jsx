@@ -58,7 +58,7 @@ export default function RedefinirSenhaPage() {
           ),
 
         tamanhoSenha:
-          novaSenha.length >= 8,
+          novaSenha.length >= 5,
 
         senhasIguais:
           novaSenha.length > 0
@@ -87,7 +87,7 @@ export default function RedefinirSenhaPage() {
 
     if (!validacao.tamanhoSenha) {
       setError(
-        'A nova senha deve possuir pelo menos 8 caracteres.',
+        'A nova senha deve possuir pelo menos 5 caracteres.',
       )
       return
     }
@@ -180,7 +180,7 @@ export default function RedefinirSenhaPage() {
 
           <p>
             Escolha uma senha com pelo menos
-            8 caracteres. O token é de uso único
+            5 caracteres. O token é de uso único
             e expira em 30 minutos.
           </p>
         </div>
@@ -228,7 +228,7 @@ export default function RedefinirSenhaPage() {
             <input
               type="password"
               required
-              minLength={8}
+              minLength={5}
               autoComplete="new-password"
               value={novaSenha}
               onChange={(event) =>
@@ -245,7 +245,7 @@ export default function RedefinirSenhaPage() {
                   : 'auth-validation'
               }
             >
-              Pelo menos 8 caracteres.
+              Pelo menos 5 caracteres.
             </small>
           </label>
 
@@ -257,7 +257,7 @@ export default function RedefinirSenhaPage() {
             <input
               type="password"
               required
-              minLength={8}
+              minLength={5}
               autoComplete="new-password"
               value={confirmarSenha}
               onChange={(event) =>

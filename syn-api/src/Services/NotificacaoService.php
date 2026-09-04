@@ -188,6 +188,22 @@ final class NotificacaoService
             ->encerrarProximosCompromissosObsoletos(
                 $usuarioId
             );
+
+        /**
+         * Fluxo de aprovação de cadastro.
+         *
+         * O próprio Repository verifica se o usuário autenticado é um
+         * aprovador autorizado antes de gerar qualquer notificação.
+         */
+        $this->repository
+            ->sincronizarCadastrosPendentes(
+                $usuarioId
+            );
+
+        $this->repository
+            ->encerrarCadastrosResolvidos(
+                $usuarioId
+            );
     }
 
     private function normalizarLimite(

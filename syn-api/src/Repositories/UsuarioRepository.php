@@ -283,7 +283,13 @@ final class UsuarioRepository
             UPDATE usuarios
             SET
                 status = 'INATIVO',
-                desativado_em = NOW()
+                desativado_em = NOW(),
+
+                /**
+                 * Também revoga qualquer JWT emitido anteriormente.
+                 */
+                sessao_versao =
+                    sessao_versao + 1
             WHERE id = :id
               AND status <> 'INATIVO'
         SQL;

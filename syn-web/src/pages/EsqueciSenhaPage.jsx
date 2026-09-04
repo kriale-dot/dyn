@@ -153,13 +153,14 @@ export default function EsqueciSenhaPage() {
                 </span>
 
                 <strong>
-                  O backend ainda não envia e-mail.
+                  Token de teste disponível.
                 </strong>
 
                 <p>
-                  Para testar o fluxo agora,
-                  use o token temporário retornado
-                  pela própria API.
+                  Esta opção aparece somente em
+                  development. Mesmo com SMTP configurado,
+                  ela permite testar o fluxo sem depender
+                  da caixa de entrada.
                 </p>
 
                 <div className="auth-token-preview">

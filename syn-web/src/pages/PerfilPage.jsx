@@ -17,7 +17,22 @@ import {
   useAuth,
 } from '../contexts/AuthContext'
 
+import {
+  alterarMinhaSenha,
+  encerrarTodasSessoes,
+  getMinhaAtividadeSeguranca,
+  solicitarAlteracaoEmail,
+} from '../api/authSecurity'
+
+import {
+  useNavigate,
+} from 'react-router-dom'
+
 import './PerfilPage.css'
+import './PerfilPageEtapa85.css'
+import './PerfilPageEtapa86.css'
+import './PerfilPageEtapa87.css'
+import './PerfilPageEtapa90.css'
 
 const API_URL =
   import.meta.env.VITE_API_URL
@@ -36,7 +51,11 @@ const MIME_PERMITIDOS =
 export default function PerfilPage() {
   const {
     refreshBootstrap,
+    signOut,
   } = useAuth()
+
+  const navigate =
+    useNavigate()
 
   const inputFotoRef =
     useRef(null)
@@ -66,6 +85,104 @@ export default function PerfilPage() {
 
   const [success, setSuccess] =
     useState('')
+
+  const [
+    sessionBusy,
+    setSessionBusy,
+  ] =
+    useState(false)
+
+
+  const [
+    passwordBusy,
+    setPasswordBusy,
+  ] =
+    useState(false)
+
+  const [
+    passwordForm,
+    setPasswordForm,
+  ] =
+    useState({
+      senha_atual: '',
+      nova_senha: '',
+      confirmar_nova_senha: '',
+    })
+
+
+  const [
+    emailBusy,
+    setEmailBusy,
+  ] =
+    useState(false)
+
+  const [
+    emailForm,
+    setEmailForm,
+  ] =
+    useState({
+      novo_email: '',
+      senha_atual: '',
+    })
+
+  const [
+    emailRequestMessage,
+    setEmailRequestMessage,
+  ] =
+    useState('')
+
+
+  const [
+    securityEvents,
+    setSecurityEvents,
+  ] =
+    useState([])
+
+  const [
+    securityEventsLoading,
+    setSecurityEventsLoading,
+  ] =
+    useState(false)
+
+  const [
+    securityEventsError,
+    setSecurityEventsError,
+  ] =
+    useState('')
+
+  const carregarAtividadeSeguranca =
+    useCallback(
+      async () => {
+        setSecurityEventsLoading(true)
+        setSecurityEventsError('')
+
+        try {
+          const response =
+            await getMinhaAtividadeSeguranca(
+              20,
+            )
+
+          const eventos =
+            response
+              ?.dados
+              ?.eventos
+
+          setSecurityEvents(
+            Array.isArray(eventos)
+              ? eventos
+              : [],
+          )
+        } catch (err) {
+          setSecurityEventsError(
+            err?.message
+            || 'Não foi possível carregar a atividade de segurança.',
+          )
+        } finally {
+          setSecurityEventsLoading(false)
+        }
+      },
+      [],
+    )
 
   const carregar =
     useCallback(
@@ -115,7 +232,11 @@ export default function PerfilPage() {
 
   useEffect(() => {
     carregar()
-  }, [carregar])
+    carregarAtividadeSeguranca()
+  }, [
+    carregar,
+    carregarAtividadeSeguranca,
+  ])
 
   const funcoes =
     useMemo(
@@ -154,11 +275,6 @@ export default function PerfilPage() {
         await atualizarMeuPerfil({
           nome:
             form.nome.trim(),
-
-          email:
-            form.email
-              .trim()
-              .toLowerCase(),
 
           telefone:
             form.telefone.trim()
@@ -290,6 +406,219 @@ export default function PerfilPage() {
       )
     } finally {
       setPhotoBusy(false)
+    }
+  }
+
+  function alterarCampoEmail(
+    campo,
+    valor,
+  ) {
+    setEmailForm(
+      (atual) => ({
+        ...atual,
+        [campo]: valor,
+      }),
+    )
+  }
+
+  async function solicitarNovoEmail(
+    event,
+  ) {
+    event.preventDefault()
+
+    setError('')
+    setSuccess('')
+    setEmailRequestMessage('')
+
+    const novoEmail =
+      emailForm
+        .novo_email
+        .trim()
+        .toLowerCase()
+
+    if (!novoEmail) {
+      setError(
+        'Informe o novo endereço de e-mail.',
+      )
+      return
+    }
+
+    if (
+      novoEmail
+      === String(
+        perfil?.email
+        || '',
+      ).toLowerCase()
+    ) {
+      setError(
+        'O novo e-mail deve ser diferente do e-mail atual.',
+      )
+      return
+    }
+
+    setEmailBusy(true)
+
+    try {
+      const response =
+        await solicitarAlteracaoEmail({
+          novo_email:
+            novoEmail,
+          senha_atual:
+            emailForm.senha_atual,
+        })
+
+      setEmailRequestMessage(
+        response
+          ?.dados
+          ?.mensagem
+        || 'Enviamos um link de confirmação para o novo endereço.',
+      )
+
+      setEmailForm({
+        novo_email: '',
+        senha_atual: '',
+      })
+    } catch (err) {
+      setError(
+        mensagemErro(
+          err,
+          'Não foi possível solicitar a alteração do e-mail.',
+        ),
+      )
+    } finally {
+      setEmailBusy(false)
+    }
+  }
+
+  function alterarCampoSenha(
+    campo,
+    valor,
+  ) {
+    setPasswordForm(
+      (atual) => ({
+        ...atual,
+        [campo]: valor,
+      }),
+    )
+  }
+
+  async function alterarSenha(
+    event,
+  ) {
+    event.preventDefault()
+
+    setError('')
+    setSuccess('')
+
+    if (
+      passwordForm
+        .nova_senha
+        .length < 5
+    ) {
+      setError(
+        'A nova senha deve possuir pelo menos 5 caracteres.',
+      )
+      return
+    }
+
+    if (
+      passwordForm.nova_senha
+      !== passwordForm
+        .confirmar_nova_senha
+    ) {
+      setError(
+        'A confirmação da nova senha não corresponde.',
+      )
+      return
+    }
+
+    setPasswordBusy(true)
+
+    try {
+      const response =
+        await alterarMinhaSenha({
+          senha_atual:
+            passwordForm.senha_atual,
+
+          nova_senha:
+            passwordForm.nova_senha,
+
+          confirmar_nova_senha:
+            passwordForm
+              .confirmar_nova_senha,
+        })
+
+      /**
+       * A alteração incrementa sessao_versao no servidor.
+       * O token atual já não pode ser utilizado.
+       */
+      signOut()
+
+      window.alert(
+        response
+          ?.dados
+          ?.mensagem
+        || 'Senha alterada. Entre novamente com a nova senha.',
+      )
+
+      navigate(
+        '/login',
+        {
+          replace: true,
+        },
+      )
+    } catch (err) {
+      setError(
+        mensagemErro(
+          err,
+          'Não foi possível alterar a senha.',
+        ),
+      )
+      setPasswordBusy(false)
+    }
+  }
+
+  async function sairDeTodosDispositivos() {
+    const confirmou =
+      window.confirm(
+        'Encerrar todas as suas sessões? Você precisará entrar novamente neste computador e em qualquer outro dispositivo.',
+      )
+
+    if (!confirmou) {
+      return
+    }
+
+    setSessionBusy(true)
+    setError('')
+    setSuccess('')
+
+    try {
+      await encerrarTodasSessoes()
+
+      /**
+       * O backend já invalidou o JWT.
+       * Agora removemos a cópia local e voltamos ao login.
+       */
+      signOut()
+
+      window.alert(
+        'Todas as sessões foram encerradas. Entre novamente para continuar.',
+      )
+
+      navigate(
+        '/login',
+        {
+          replace: true,
+        },
+      )
+    } catch (err) {
+      setError(
+        mensagemErro(
+          err,
+          'Não foi possível encerrar as sessões.',
+        ),
+      )
+      setSessionBusy(false)
     }
   }
 
@@ -485,15 +814,14 @@ export default function PerfilPage() {
 
                 <input
                   type="email"
-                  required
                   value={form.email}
-                  onChange={(event) =>
-                    alterar(
-                      'email',
-                      event.target.value,
-                    )
-                  }
+                  readOnly
+                  title="O e-mail é alterado na área de segurança da conta."
                 />
+
+                <small className="profile87-email-help">
+                  Para trocar o e-mail, use “Alterar e-mail” abaixo.
+                </small>
               </label>
 
               <label className="profile-field">
@@ -625,6 +953,362 @@ export default function PerfilPage() {
         )}
       </section>
 
+      <section className="profile87-email-card">
+        <header className="profile87-email-heading">
+          <div className="profile87-email-icon">
+            @
+          </div>
+
+          <div>
+            <span className="eyebrow">
+              Segurança da conta
+            </span>
+
+            <h2>
+              Alterar e-mail
+            </h2>
+
+            <p>
+              O e-mail é usado para entrar no SYN e recuperar sua senha.
+              Por isso, a alteração precisa ser confirmada no novo
+              endereço.
+            </p>
+          </div>
+        </header>
+
+        <div className="profile87-current-email">
+          <span>
+            E-mail atual
+          </span>
+
+          <strong>
+            {perfil.email}
+          </strong>
+        </div>
+
+        {emailRequestMessage && (
+          <div className="profile87-request-message">
+            {emailRequestMessage}
+          </div>
+        )}
+
+        <form
+          className="profile87-email-form"
+          onSubmit={solicitarNovoEmail}
+        >
+          <label>
+            <span>
+              Novo e-mail
+            </span>
+
+            <input
+              type="email"
+              required
+              autoComplete="email"
+              value={
+                emailForm
+                  .novo_email
+              }
+              onChange={(event) =>
+                alterarCampoEmail(
+                  'novo_email',
+                  event.target.value,
+                )
+              }
+            />
+          </label>
+
+          <label>
+            <span>
+              Senha atual
+            </span>
+
+            <input
+              type="password"
+              required
+              autoComplete="current-password"
+              value={
+                emailForm
+                  .senha_atual
+              }
+              onChange={(event) =>
+                alterarCampoEmail(
+                  'senha_atual',
+                  event.target.value,
+                )
+              }
+            />
+          </label>
+
+          <div className="profile87-email-action">
+            <div>
+              O e-mail atual continuará válido até você confirmar
+              o novo endereço.
+            </div>
+
+            <button
+              type="submit"
+              disabled={emailBusy}
+            >
+              {emailBusy
+                ? 'Enviando...'
+                : 'Enviar confirmação'}
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section className="profile86-password-card">
+        <header className="profile86-password-heading">
+          <div className="profile86-password-icon">
+            ●
+          </div>
+
+          <div>
+            <span className="eyebrow">
+              Segurança da conta
+            </span>
+
+            <h2>
+              Alterar senha
+            </h2>
+
+            <p>
+              Confirme sua senha atual e escolha uma nova senha.
+              Depois da alteração, todas as sessões serão encerradas.
+            </p>
+          </div>
+        </header>
+
+        <form
+          className="profile86-password-form"
+          onSubmit={alterarSenha}
+        >
+          <label>
+            <span>
+              Senha atual
+            </span>
+
+            <input
+              type="password"
+              required
+              autoComplete="current-password"
+              value={
+                passwordForm
+                  .senha_atual
+              }
+              onChange={(event) =>
+                alterarCampoSenha(
+                  'senha_atual',
+                  event.target.value,
+                )
+              }
+            />
+          </label>
+
+          <label>
+            <span>
+              Nova senha
+            </span>
+
+            <input
+              type="password"
+              required
+              minLength={5}
+              autoComplete="new-password"
+              value={
+                passwordForm
+                  .nova_senha
+              }
+              onChange={(event) =>
+                alterarCampoSenha(
+                  'nova_senha',
+                  event.target.value,
+                )
+              }
+            />
+
+            <small>
+              Mínimo de 5 caracteres.
+            </small>
+          </label>
+
+          <label>
+            <span>
+              Confirmar nova senha
+            </span>
+
+            <input
+              type="password"
+              required
+              minLength={5}
+              autoComplete="new-password"
+              value={
+                passwordForm
+                  .confirmar_nova_senha
+              }
+              onChange={(event) =>
+                alterarCampoSenha(
+                  'confirmar_nova_senha',
+                  event.target.value,
+                )
+              }
+            />
+          </label>
+
+          <div className="profile86-password-action">
+            <div>
+              Ao salvar, você precisará entrar novamente
+              em todos os dispositivos.
+            </div>
+
+            <button
+              type="submit"
+              disabled={passwordBusy}
+            >
+              {passwordBusy
+                ? 'Alterando...'
+                : 'Alterar senha'}
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section className="profile85-security-card">
+        <div className="profile85-security-icon">
+          ◈
+        </div>
+
+        <div className="profile85-security-copy">
+          <span className="eyebrow">
+            Segurança da conta
+          </span>
+
+          <h2>
+            Sessões e dispositivos
+          </h2>
+
+          <p>
+            Use esta opção se você entrou no SYN em um computador
+            compartilhado, perdeu um dispositivo ou suspeita que outra
+            pessoa possa ter acesso à sua sessão.
+          </p>
+
+          <div className="profile85-security-note">
+            Ao encerrar as sessões, todos os dispositivos precisarão
+            fazer login novamente.
+          </div>
+        </div>
+
+        <button
+          type="button"
+          className="profile85-end-sessions"
+          disabled={sessionBusy}
+          onClick={sairDeTodosDispositivos}
+        >
+          {sessionBusy
+            ? 'Encerrando...'
+            : 'Encerrar todas as sessões'}
+        </button>
+      </section>
+
+      <section className="profile90-activity-card">
+        <header className="profile90-activity-heading">
+          <div>
+            <span className="eyebrow">
+              Segurança da conta
+            </span>
+
+            <h2>
+              Atividade recente
+            </h2>
+
+            <p>
+              Veja alterações importantes relacionadas ao acesso
+              e às credenciais da sua conta.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            disabled={securityEventsLoading}
+            onClick={carregarAtividadeSeguranca}
+          >
+            {securityEventsLoading
+              ? 'Atualizando...'
+              : 'Atualizar'}
+          </button>
+        </header>
+
+        {securityEventsError && (
+          <div className="profile90-activity-error">
+            {securityEventsError}
+          </div>
+        )}
+
+        {securityEventsLoading
+          && securityEvents.length === 0 ? (
+          <div className="profile90-activity-empty">
+            Carregando atividade...
+          </div>
+        ) : securityEvents.length === 0 ? (
+          <div className="profile90-activity-empty">
+            Nenhum evento de segurança registrado ainda.
+          </div>
+        ) : (
+          <div className="profile90-activity-list">
+            {securityEvents
+              .slice(0, 8)
+              .map(
+                (evento) => (
+                  <article
+                    key={evento.id}
+                    className="profile90-event"
+                  >
+                    <div
+                      className={
+                        `profile90-event-icon ${classeEventoSeguranca(
+                          evento.tipo,
+                        )}`
+                      }
+                    >
+                      {iconeEventoSeguranca(
+                        evento.tipo,
+                      )}
+                    </div>
+
+                    <div className="profile90-event-copy">
+                      <strong>
+                        {evento.titulo}
+                      </strong>
+
+                      {evento.detalhe && (
+                        <span>
+                          {evento.detalhe}
+                        </span>
+                      )}
+                    </div>
+
+                    <time>
+                      {formatarDataHora(
+                        evento.criado_em,
+                      )}
+                    </time>
+                  </article>
+                ),
+              )}
+          </div>
+        )}
+
+        {securityEvents.length > 8 && (
+          <div className="profile90-activity-more">
+            Exibindo os 8 eventos mais recentes de {
+              securityEvents.length
+            } carregados.
+          </div>
+        )}
+      </section>
+
       <section className="profile-account-info">
         <span>
           Último acesso:
@@ -648,6 +1332,71 @@ export default function PerfilPage() {
       </section>
     </div>
   )
+}
+
+function classeEventoSeguranca(
+  tipo,
+) {
+  const valor =
+    String(
+      tipo
+      || '',
+    )
+      .toUpperCase()
+
+  if (
+    valor.includes(
+      'SENHA',
+    )
+  ) {
+    return 'password'
+  }
+
+  if (
+    valor.includes(
+      'EMAIL',
+    )
+  ) {
+    return 'email'
+  }
+
+  if (
+    valor.includes(
+      'SESSOES',
+    )
+  ) {
+    return 'sessions'
+  }
+
+  if (
+    valor.includes(
+      'CONTA',
+    )
+  ) {
+    return 'account'
+  }
+
+  return 'login'
+}
+
+function iconeEventoSeguranca(
+  tipo,
+) {
+  const classe =
+    classeEventoSeguranca(
+      tipo,
+    )
+
+  const mapa = {
+    password: '●',
+    email: '@',
+    sessions: '×',
+    account: '+',
+    login: '→',
+  }
+
+  return mapa[classe]
+    || '•'
 }
 
 function resolverArquivoApi(

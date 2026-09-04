@@ -21,6 +21,7 @@ import {
 } from '../contexts/AuthContext'
 
 import './SerieProgramacaoFormPage.css'
+import './SerieProgramacaoFormEtapa67.css'
 
 const FORM_INICIAL = {
   titulo: '',
@@ -126,6 +127,23 @@ export default function SerieProgramacaoFormPage() {
       form.intervalo_semanas,
     ],
   )
+
+  const previaSemanas =
+    useMemo(
+      () =>
+        montarPreviaSemanas(
+          form.inicio_base,
+          form.data_limite,
+          Number(
+            form.intervalo_semanas,
+          ),
+        ),
+      [
+        form.inicio_base,
+        form.data_limite,
+        form.intervalo_semanas,
+      ],
+    )
 
   useEffect(() => {
     if (!podeGerenciar) {
@@ -690,18 +708,134 @@ export default function SerieProgramacaoFormPage() {
           </div>
         </section>
 
-        <section className="serie-preview-card">
-          <span className="eyebrow">
-            Prévia
-          </span>
+        <section className="serie-preview-card serie67-preview-card">
+          <div className="serie67-preview-heading">
+            <div>
+              <span className="eyebrow">
+                Prévia por semanas
+              </span>
 
-          <h2>{textoPrevia(form)}</h2>
+              <h2>
+                {textoPrevia(form)}
+              </h2>
 
-          <p>
-            O SYN criará aproximadamente{' '}
-            <strong>{totalPrevisto}</strong>
-            {' '}ocorrência(s), limitado a 200.
-          </p>
+              <p>
+                O SYN criará aproximadamente{' '}
+                <strong>{totalPrevisto}</strong>
+                {' '}ocorrência(s), limitado a 200.
+              </p>
+            </div>
+
+            {previaSemanas?.primeira && (
+              <div className="serie67-range">
+                <span>
+                  Primeira
+                </span>
+
+                <strong>
+                  Semana {
+                    previaSemanas
+                      .primeira
+                      .semana
+                  }
+                </strong>
+
+                <small>
+                  {
+                    previaSemanas
+                      .primeira
+                      .dataFormatada
+                  }
+                </small>
+              </div>
+            )}
+
+            {previaSemanas?.ultima && (
+              <div className="serie67-range">
+                <span>
+                  Última
+                </span>
+
+                <strong>
+                  Semana {
+                    previaSemanas
+                      .ultima
+                      .semana
+                  }
+                </strong>
+
+                <small>
+                  {
+                    previaSemanas
+                      .ultima
+                      .dataFormatada
+                  }
+                </small>
+              </div>
+            )}
+          </div>
+
+          {previaSemanas?.itens?.length > 0 && (
+            <>
+              <div className="serie67-week-sequence">
+                {previaSemanas.itens.map(
+                  (item) => (
+                    <button
+                      type="button"
+                      key={item.chave}
+                      className="serie67-week-chip"
+                      onClick={() =>
+                        navigate(
+                          `/semana?data_referencia=${item.dataISO}`,
+                        )
+                      }
+                      title={
+                        `Abrir Semana ${item.semana} no mapa`
+                      }
+                    >
+                      <span>
+                        Semana
+                      </span>
+
+                      <strong>
+                        {item.semana}
+                      </strong>
+
+                      <small>
+                        {item.dataCurta}
+                      </small>
+                    </button>
+                  ),
+                )}
+
+                {previaSemanas.restantes > 0 && (
+                  <div className="serie67-more-weeks">
+                    +{
+                      previaSemanas
+                        .restantes
+                    }
+                    {' '}
+                    {previaSemanas.restantes === 1
+                      ? 'ocorrência'
+                      : 'ocorrências'}
+                  </div>
+                )}
+              </div>
+
+              <div className="serie67-preview-note">
+                <strong>
+                  Referência do mapa
+                </strong>
+
+                <span>
+                  Cada ocorrência será posicionada
+                  na sua própria Semana N. Clique
+                  em uma das semanas acima para
+                  abrir aquele ponto do mapa.
+                </span>
+              </div>
+            </>
+          )}
         </section>
 
         {conflitos.length > 0 && (
@@ -992,6 +1126,262 @@ function calcularOcorrencias(
       ) / passo,
     ) + 1
   )
+}
+
+function montarPreviaSemanas(
+  inicioBase,
+  dataLimite,
+  intervaloSemanas,
+) {
+  if (
+    !inicioBase
+    || !dataLimite
+    || !Number.isInteger(
+      intervaloSemanas,
+    )
+    || intervaloSemanas < 1
+  ) {
+    return null
+  }
+
+  const inicio =
+    new Date(
+      inicioBase,
+    )
+
+  const limite =
+    parseDataLimite(
+      dataLimite,
+    )
+
+  if (
+    Number.isNaN(
+      inicio.getTime(),
+    )
+    || !limite
+    || limite < inicio
+  ) {
+    return null
+  }
+
+  const passoDias =
+    intervaloSemanas * 7
+
+  const ocorrencias = []
+
+  let atual =
+    new Date(
+      inicio,
+    )
+
+  let seguranca = 0
+
+  while (
+    atual <= limite
+    && seguranca < 200
+  ) {
+    ocorrencias.push(
+      criarReferenciaSemana(
+        atual,
+      ),
+    )
+
+    atual =
+      new Date(
+        atual,
+      )
+
+    atual.setDate(
+      atual.getDate()
+      + passoDias,
+    )
+
+    seguranca++
+  }
+
+  if (ocorrencias.length === 0) {
+    return null
+  }
+
+  const limiteVisual = 8
+
+  return {
+    primeira:
+      ocorrencias[0],
+
+    ultima:
+      ocorrencias[
+        ocorrencias.length - 1
+      ],
+
+    itens:
+      ocorrencias.slice(
+        0,
+        limiteVisual,
+      ),
+
+    restantes:
+      Math.max(
+        0,
+        ocorrencias.length
+        - limiteVisual,
+      ),
+
+    total:
+      ocorrencias.length,
+  }
+}
+
+function criarReferenciaSemana(
+  dataOriginal,
+) {
+  const data =
+    new Date(
+      dataOriginal.getFullYear(),
+      dataOriginal.getMonth(),
+      dataOriginal.getDate(),
+      12,
+      0,
+      0,
+    )
+
+  const semana =
+    obterNumeroSemanaISO(
+      data,
+    )
+
+  const ano =
+    obterAnoSemanaISO(
+      data,
+    )
+
+  const dataISO =
+    formatarISO(
+      data,
+    )
+
+  return {
+    chave:
+      `${ano}-W${String(
+        semana,
+      ).padStart(2, '0')}-${dataISO}`,
+
+    semana,
+    ano,
+    dataISO,
+
+    dataCurta:
+      formatarDataCurta(
+        data,
+      ),
+
+    dataFormatada:
+      data.toLocaleDateString(
+        'pt-BR',
+      ),
+  }
+}
+
+function obterNumeroSemanaISO(
+  dataOriginal,
+) {
+  const data =
+    new Date(
+      Date.UTC(
+        dataOriginal.getFullYear(),
+        dataOriginal.getMonth(),
+        dataOriginal.getDate(),
+      ),
+    )
+
+  const diaSemana =
+    data.getUTCDay()
+    || 7
+
+  data.setUTCDate(
+    data.getUTCDate()
+    + 4
+    - diaSemana,
+  )
+
+  const primeiroDiaAno =
+    new Date(
+      Date.UTC(
+        data.getUTCFullYear(),
+        0,
+        1,
+      ),
+    )
+
+  return Math.ceil(
+    (
+      (
+        data
+        - primeiroDiaAno
+      )
+      / 86400000
+      + 1
+    )
+    / 7,
+  )
+}
+
+function obterAnoSemanaISO(
+  dataOriginal,
+) {
+  const data =
+    new Date(
+      Date.UTC(
+        dataOriginal.getFullYear(),
+        dataOriginal.getMonth(),
+        dataOriginal.getDate(),
+      ),
+    )
+
+  const diaSemana =
+    data.getUTCDay()
+    || 7
+
+  data.setUTCDate(
+    data.getUTCDate()
+    + 4
+    - diaSemana,
+  )
+
+  return data.getUTCFullYear()
+}
+
+function formatarISO(
+  data,
+) {
+  const ano =
+    data.getFullYear()
+
+  const mes =
+    String(
+      data.getMonth() + 1,
+    ).padStart(2, '0')
+
+  const dia =
+    String(
+      data.getDate(),
+    ).padStart(2, '0')
+
+  return `${ano}-${mes}-${dia}`
+}
+
+function formatarDataCurta(
+  data,
+) {
+  return data
+    .toLocaleDateString(
+      'pt-BR',
+      {
+        day: '2-digit',
+        month: 'short',
+      },
+    )
+    .replace('.', '')
 }
 
 function textoPrevia(form) {

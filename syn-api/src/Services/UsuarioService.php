@@ -293,9 +293,9 @@ final class UsuarioService
         if ($senha === '') {
             $erros['senha'] =
                 'A senha é obrigatória.';
-        } elseif (mb_strlen($senha) < 8) {
+        } elseif (mb_strlen($senha) < 5) {
             $erros['senha'] =
-                'A senha deve possuir pelo menos 8 caracteres.';
+                'A senha deve possuir pelo menos 5 caracteres.';
         }
 
         if ($erros !== []) {

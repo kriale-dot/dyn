@@ -12,6 +12,8 @@ import {
   getProgramacoes,
 } from '../api/api'
 
+import './ProgramacoesPageEtapa58.css'
+
 export default function ProgramacoesPage() {
   const navigate = useNavigate()
 
@@ -153,6 +155,58 @@ export default function ProgramacoesPage() {
       ],
     )
 
+  const gruposPorSemana =
+    useMemo(
+      () =>
+        agruparPorSemana(
+          filtradas,
+        ),
+      [filtradas],
+    )
+
+  const semanaAtual =
+    useMemo(
+      () => {
+        const hoje =
+          new Date()
+
+        const inicio =
+          inicioSemanaISO(
+            hoje,
+          )
+
+        const fim =
+          new Date(inicio)
+
+        fim.setDate(
+          fim.getDate() + 6,
+        )
+
+        return {
+          numero:
+            obterNumeroSemanaISO(
+              inicio,
+            ),
+
+          ano:
+            obterAnoSemanaISO(
+              inicio,
+            ),
+
+          inicio:
+            formatarISO(
+              inicio,
+            ),
+
+          fim:
+            formatarISO(
+              fim,
+            ),
+        }
+      },
+      [],
+    )
+
   const contadores =
     useMemo(
       () => ({
@@ -199,6 +253,48 @@ export default function ProgramacoesPage() {
           locais e responsáveis sem misturar
           essa visão com seus compromissos pessoais.
         </p>
+      </section>
+
+      <section className="programs-week-focus">
+        <div className="programs-week-focus-main">
+          <span className="eyebrow">
+            Referência temporal
+          </span>
+
+          <div className="programs-week-focus-title">
+            <strong>
+              Semana {semanaAtual.numero}
+            </strong>
+
+            <span>
+              {formatarDataCurtaISO(
+                semanaAtual.inicio,
+              )}
+              {' — '}
+              {formatarDataCurtaISO(
+                semanaAtual.fim,
+              )}
+            </span>
+          </div>
+
+          <p>
+            Esta é a semana atual no mapa do SYN.
+            A listagem abaixo também passa a ser
+            organizada por número da semana.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          className="button-secondary"
+          onClick={() =>
+            navigate(
+              `/semana?data_referencia=${semanaAtual.inicio}`,
+            )
+          }
+        >
+          Abrir Semana {semanaAtual.numero} no mapa
+        </button>
       </section>
 
       <section className="programs-summary-grid">
@@ -313,90 +409,169 @@ export default function ProgramacoesPage() {
           </p>
         </section>
       ) : (
-        <section className="programs-list">
-          {filtradas.map(
-            (programacao) => (
-              <button
-                type="button"
-                key={programacao.id}
-                className="program-list-card"
-                onClick={() =>
-                  navigate(
-                    `/programacoes/${programacao.id}`,
-                  )
-                }
-              >
-                <div className="program-list-date">
-                  <strong>
-                    {formatarDia(
-                      programacao.inicio_em,
-                    )}
-                  </strong>
+        <section className="program-week-groups">
+          {gruposPorSemana.map(
+            (grupo) => {
+              const atual =
+                grupo.numero
+                  === semanaAtual.numero
+                && grupo.ano
+                  === semanaAtual.ano
 
-                  <span>
-                    {formatarMes(
-                      programacao.inicio_em,
-                    )}
-                  </span>
-                </div>
-
-                <div className="program-list-main">
-                  <div className="program-list-title-row">
-                    <div>
-                      <span className="program-type">
-                        {programacao.tipo}
+              return (
+                <section
+                  key={grupo.chave}
+                  className={
+                    atual
+                      ? 'program-week-group current'
+                      : 'program-week-group'
+                  }
+                >
+                  <header className="program-week-heading">
+                    <div className="program-week-number">
+                      <span>
+                        Semana
                       </span>
 
-                      <h2>
-                        {programacao.titulo}
-                      </h2>
+                      <strong>
+                        {grupo.numero}
+                      </strong>
                     </div>
 
-                    <StatusBadge
-                      status={
-                        programacao.status
-                      }
-                    />
-                  </div>
+                    <div className="program-week-copy">
+                      <div>
+                        <strong>
+                          Semana {grupo.numero}
+                        </strong>
 
-                  <div className="program-list-meta">
-                    <span>
-                      🕒{' '}
-                      {formatarHora(
-                        programacao.inicio_em,
-                      )}
-                      {' – '}
-                      {formatarHora(
-                        programacao.fim_em,
-                      )}
-                    </span>
+                        {atual && (
+                          <span className="program-current-week-badge">
+                            Semana atual
+                          </span>
+                        )}
+                      </div>
 
-                    <span>
-                      📍{' '}
-                      {
-                        programacao.local
-                        || 'Local não informado'
-                      }
-                    </span>
-
-                    {programacao
-                      .organizador && (
                       <span>
-                        👤{' '}
-                        {
-                          programacao
-                            .organizador
-                        }
+                        {formatarDataCurtaISO(
+                          grupo.inicio,
+                        )}
+                        {' — '}
+                        {formatarDataCurtaISO(
+                          grupo.fim,
+                        )}
+                        {' · '}
+                        {grupo.itens.length}
+                        {' '}
+                        {grupo.itens.length === 1
+                          ? 'programação'
+                          : 'programações'}
                       </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="program-week-map-button"
+                      onClick={() =>
+                        navigate(
+                          `/semana?data_referencia=${grupo.inicio}`,
+                        )
+                      }
+                    >
+                      Ver no mapa
+                    </button>
+                  </header>
+
+                  <div className="programs-list">
+                    {grupo.itens.map(
+                      (programacao) => (
+                        <button
+                          type="button"
+                          key={programacao.id}
+                          className="program-list-card"
+                          onClick={() =>
+                            navigate(
+                              `/programacoes/${programacao.id}`,
+                            )
+                          }
+                        >
+                          <div className="program-list-date">
+                            <strong>
+                              {formatarDia(
+                                programacao.inicio_em,
+                              )}
+                            </strong>
+
+                            <span>
+                              {formatarMes(
+                                programacao.inicio_em,
+                              )}
+                            </span>
+
+                            <small>
+                              {formatarDiaSemanaCurto(
+                                programacao.inicio_em,
+                              )}
+                            </small>
+                          </div>
+
+                          <div className="program-list-main">
+                            <div className="program-list-title-row">
+                              <div>
+                                <span className="program-type">
+                                  {programacao.tipo}
+                                </span>
+
+                                <h2>
+                                  {programacao.titulo}
+                                </h2>
+                              </div>
+
+                              <StatusBadge
+                                status={
+                                  programacao.status
+                                }
+                              />
+                            </div>
+
+                            <div className="program-list-meta">
+                              <span>
+                                <b>Horário</b>
+                                {formatarHora(
+                                  programacao.inicio_em,
+                                )}
+                                {' – '}
+                                {formatarHora(
+                                  programacao.fim_em,
+                                )}
+                              </span>
+
+                              <span>
+                                <b>Local</b>
+                                {
+                                  programacao.local
+                                  || 'Local não informado'
+                                }
+                              </span>
+
+                              {programacao.organizador && (
+                                <span>
+                                  <b>Organizador</b>
+                                  {programacao.organizador}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          <span className="program-list-arrow">
+                            →
+                          </span>
+                        </button>
+                      ),
                     )}
                   </div>
-                </div>
-
-                <span className="program-list-arrow">
-                  →
-                </span>
-              </button>
-            ),
+                </section>
+              )
+            },
           )}
         </section>
       )}
@@ -706,6 +881,262 @@ function formatarHora(
   }
 
   return '--:--'
+}
+
+function agruparPorSemana(
+  itens,
+) {
+  const grupos =
+    new Map()
+
+  for (const item of itens) {
+    const data =
+      parseDataHoraLocal(
+        item.inicio_em,
+      )
+
+    if (!data) {
+      continue
+    }
+
+    const inicio =
+      inicioSemanaISO(
+        data,
+      )
+
+    const fim =
+      new Date(inicio)
+
+    fim.setDate(
+      fim.getDate() + 6,
+    )
+
+    const numero =
+      obterNumeroSemanaISO(
+        inicio,
+      )
+
+    const ano =
+      obterAnoSemanaISO(
+        inicio,
+      )
+
+    const chave =
+      `${ano}-W${String(
+        numero,
+      ).padStart(2, '0')}`
+
+    if (!grupos.has(chave)) {
+      grupos.set(
+        chave,
+        {
+          chave,
+          numero,
+          ano,
+          inicio:
+            formatarISO(
+              inicio,
+            ),
+          fim:
+            formatarISO(
+              fim,
+            ),
+          timestamp:
+            inicio.getTime(),
+          itens: [],
+        },
+      )
+    }
+
+    grupos
+      .get(chave)
+      .itens
+      .push(item)
+  }
+
+  return Array.from(
+    grupos.values(),
+  )
+    .sort(
+      (a, b) =>
+        a.timestamp
+        - b.timestamp,
+    )
+}
+
+function inicioSemanaISO(
+  dataOriginal,
+) {
+  const data =
+    new Date(
+      dataOriginal.getFullYear(),
+      dataOriginal.getMonth(),
+      dataOriginal.getDate(),
+      12,
+      0,
+      0,
+    )
+
+  const dia =
+    data.getDay()
+
+  const deslocamento =
+    dia === 0
+      ? -6
+      : 1 - dia
+
+  data.setDate(
+    data.getDate()
+    + deslocamento,
+  )
+
+  return data
+}
+
+function obterNumeroSemanaISO(
+  dataOriginal,
+) {
+  const data =
+    new Date(
+      Date.UTC(
+        dataOriginal.getFullYear(),
+        dataOriginal.getMonth(),
+        dataOriginal.getDate(),
+      ),
+    )
+
+  const diaSemana =
+    data.getUTCDay()
+    || 7
+
+  data.setUTCDate(
+    data.getUTCDate()
+    + 4
+    - diaSemana,
+  )
+
+  const primeiroDiaAno =
+    new Date(
+      Date.UTC(
+        data.getUTCFullYear(),
+        0,
+        1,
+      ),
+    )
+
+  return Math.ceil(
+    (
+      (
+        data
+        - primeiroDiaAno
+      )
+      / 86400000
+      + 1
+    )
+    / 7,
+  )
+}
+
+function obterAnoSemanaISO(
+  dataOriginal,
+) {
+  const data =
+    new Date(
+      Date.UTC(
+        dataOriginal.getFullYear(),
+        dataOriginal.getMonth(),
+        dataOriginal.getDate(),
+      ),
+    )
+
+  const diaSemana =
+    data.getUTCDay()
+    || 7
+
+  data.setUTCDate(
+    data.getUTCDate()
+    + 4
+    - diaSemana,
+  )
+
+  return data.getUTCFullYear()
+}
+
+function formatarISO(
+  data,
+) {
+  const ano =
+    data.getFullYear()
+
+  const mes =
+    String(
+      data.getMonth() + 1,
+    ).padStart(2, '0')
+
+  const dia =
+    String(
+      data.getDate(),
+    ).padStart(2, '0')
+
+  return `${ano}-${mes}-${dia}`
+}
+
+function formatarDataCurtaISO(
+  iso,
+) {
+  if (!iso) {
+    return '—'
+  }
+
+  const [
+    ano,
+    mes,
+    dia,
+  ] =
+    String(iso)
+      .slice(0, 10)
+      .split('-')
+      .map(Number)
+
+  return new Date(
+    ano,
+    mes - 1,
+    dia,
+    12,
+    0,
+    0,
+  )
+    .toLocaleDateString(
+      'pt-BR',
+      {
+        day: '2-digit',
+        month: 'short',
+      },
+    )
+    .replace('.', '')
+}
+
+function formatarDiaSemanaCurto(
+  dataHora,
+) {
+  const data =
+    parseDataHoraLocal(
+      dataHora,
+    )
+
+  if (!data) {
+    return ''
+  }
+
+  return data
+    .toLocaleDateString(
+      'pt-BR',
+      {
+        weekday: 'short',
+      },
+    )
+    .replace('.', '')
+    .toUpperCase()
 }
 
 function traduzirStatus(

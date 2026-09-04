@@ -1,0 +1,213 @@
+.management-week-reference {
+  border: 1px solid #d7e3de;
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      120deg,
+      #f1f7f4,
+      #ffffff
+    );
+  padding: 15px 17px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.management-week-reference > div {
+  display: grid;
+  gap: 2px;
+}
+
+.management-week-reference > div > strong {
+  color: #244f43;
+  font-size: 1.17rem;
+}
+
+.management-week-reference > div > small {
+  color: #74827e;
+  font-size: 0.72rem;
+}
+
+.management-toolbar-59 {
+  grid-template-columns:
+    minmax(260px, 1fr)
+    minmax(170px, 220px);
+}
+
+.management-toolbar-59 select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #ccd7d3;
+  border-radius: 11px;
+  padding: 9px 12px;
+  background: #fff;
+  color: #17302a;
+  font: inherit;
+  outline: none;
+}
+
+.management-week-groups {
+  display: grid;
+  gap: 18px;
+}
+
+.management-week-group {
+  background: #fff;
+  border: 1px solid #dfe7e4;
+  border-radius: 19px;
+  overflow: hidden;
+}
+
+.management-week-group.current {
+  border-color: #9fbab1;
+  box-shadow:
+    0 0 0 2px
+    rgba(65, 111, 98, 0.06);
+}
+
+.management-week-heading {
+  min-height: 72px;
+  border-bottom: 1px solid #e5ebe8;
+  background: #fafcfb;
+  padding: 12px 15px;
+  display: grid;
+  grid-template-columns:
+    auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.management-week-group.current
+.management-week-heading {
+  background:
+    linear-gradient(
+      90deg,
+      #eef6f2,
+      #fafcfb
+    );
+}
+
+.management-week-number {
+  width: 52px;
+  height: 52px;
+  border-radius: 13px;
+  background: #e8f1ed;
+  display: grid;
+  place-items: center;
+  align-content: center;
+}
+
+.management-week-number span {
+  color: #698078;
+  font-size: 0.55rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.management-week-number strong {
+  color: #244f43;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.management-week-copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.management-week-copy > div {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.management-week-copy > div > strong {
+  color: #334d45;
+  font-size: 0.92rem;
+}
+
+.management-week-copy > span {
+  color: #77847f;
+  font-size: 0.72rem;
+}
+
+.management-current-week-badge {
+  border-radius: 999px;
+  padding: 4px 7px;
+  background: #dfeee8;
+  color: #315e52;
+  font-size: 0.6rem;
+  font-weight: 850;
+}
+
+.management-week-map-button {
+  border: 1px solid #c7d6d1;
+  border-radius: 10px;
+  background: #fff;
+  color: #35685a;
+  padding: 8px 10px;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.management-list-59 {
+  padding: 10px;
+}
+
+.management-list-59
+.management-program-card + .management-program-card {
+  margin-top: 7px;
+}
+
+.management-date-59 {
+  min-height: 62px;
+}
+
+.management-date-59 small {
+  color: #7f8b87;
+  font-size: 0.55rem;
+  font-weight: 850;
+}
+
+.management-list-59
+.management-meta {
+  gap: 8px 22px;
+}
+
+.management-list-59
+.management-meta > span {
+  display: grid;
+  gap: 2px;
+}
+
+.management-list-59
+.management-meta b {
+  color: #88938f;
+  font-size: 0.57rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 760px) {
+  .management-week-reference {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .management-toolbar-59 {
+    grid-template-columns: 1fr;
+  }
+
+  .management-week-heading {
+    grid-template-columns:
+      auto minmax(0, 1fr);
+  }
+
+  .management-week-map-button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}

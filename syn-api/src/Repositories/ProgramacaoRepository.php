@@ -8,6 +8,13 @@ use PDO;
 
 /**
  * Repository do módulo de programações.
+ *
+ * ETAPA 73:
+ * também persiste a decisão explícita de publicação.
+ *
+ * A coluna `visibilidade` NÃO é inferida por tipo de programação:
+ * cada ocorrência precisa estar conscientemente marcada como
+ * INTERNA ou PUBLICA.
  */
 final class ProgramacaoRepository
 {
@@ -30,6 +37,8 @@ final class ProgramacaoRepository
                 p.organizador_id,
                 p.titulo,
                 p.descricao,
+                p.descricao_publica,
+                p.visibilidade,
                 p.inicio_em,
                 p.fim_em,
                 p.status,
@@ -77,6 +86,8 @@ final class ProgramacaoRepository
                 p.organizador_id,
                 p.titulo,
                 p.descricao,
+                p.descricao_publica,
+                p.visibilidade,
                 p.inicio_em,
                 p.fim_em,
                 p.status,
@@ -264,6 +275,8 @@ final class ProgramacaoRepository
                 organizador_id,
                 titulo,
                 descricao,
+                descricao_publica,
+                visibilidade,
                 inicio_em,
                 fim_em,
                 status,
@@ -280,6 +293,8 @@ final class ProgramacaoRepository
                 :organizador_id,
                 :titulo,
                 :descricao,
+                :descricao_publica,
+                :visibilidade,
                 :inicio_em,
                 :fim_em,
                 'AGENDADA',
@@ -307,6 +322,10 @@ final class ProgramacaoRepository
                 $dados['titulo'],
             ':descricao' =>
                 $dados['descricao'],
+            ':descricao_publica' =>
+                $dados['descricao_publica'],
+            ':visibilidade' =>
+                $dados['visibilidade'],
             ':inicio_em' =>
                 $dados['inicio_em'],
             ':fim_em' =>
@@ -353,6 +372,10 @@ final class ProgramacaoRepository
                     :titulo,
                 descricao =
                     :descricao,
+                descricao_publica =
+                    :descricao_publica,
+                visibilidade =
+                    :visibilidade,
                 inicio_em =
                     :inicio_em,
                 fim_em =
@@ -386,6 +409,10 @@ final class ProgramacaoRepository
                 $dados['titulo'],
             ':descricao' =>
                 $dados['descricao'],
+            ':descricao_publica' =>
+                $dados['descricao_publica'],
+            ':visibilidade' =>
+                $dados['visibilidade'],
             ':inicio_em' =>
                 $dados['inicio_em'],
             ':fim_em' =>

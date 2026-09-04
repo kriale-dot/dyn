@@ -283,3 +283,13 @@
     text-align: right;
   }
 }
+
+
+/* ==========================================================
+   ETAPA 88 — novo cadastro aguardando aprovação
+   ========================================================== */
+
+.notification-type-icon.registration {
+  background: #e8f0f7;
+  color: #45677f;
+}

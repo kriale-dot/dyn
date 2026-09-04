@@ -1,0 +1,127 @@
+.syn-management-week-card {
+  border: 1px solid #d6e2de;
+  border-radius: 20px;
+  padding: 18px 20px;
+  background:
+    linear-gradient(
+      115deg,
+      #f5f9f7,
+      #ffffff
+    );
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 1fr)
+    auto
+    auto;
+  align-items: center;
+  gap: 20px;
+}
+
+.syn-management-week-card.attention {
+  border-color: #e5cfad;
+  background:
+    linear-gradient(
+      115deg,
+      #fff9f0,
+      #ffffff
+    );
+}
+
+.syn-management-week-card.error-state {
+  border-color: #ead0d0;
+  background:
+    linear-gradient(
+      115deg,
+      #fff8f8,
+      #ffffff
+    );
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
+}
+
+.syn-management-week-copy h2,
+.syn-management-week-card.error-state h2 {
+  margin: 4px 0 5px;
+  color: #2f4840;
+  font-size: 1.02rem;
+}
+
+.syn-management-week-copy p,
+.syn-management-week-card.error-state p {
+  margin: 0;
+  max-width: 570px;
+  color: #73807c;
+  font-size: .76rem;
+  line-height: 1.45;
+}
+
+.syn-management-week-metrics {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.syn-management-metric {
+  min-width: 82px;
+  border-left: 1px solid #dfe7e4;
+  padding: 4px 10px;
+  display: grid;
+  gap: 2px;
+}
+
+.syn-management-metric strong {
+  color: #315e52;
+  font-size: 1.08rem;
+}
+
+.syn-management-metric span {
+  max-width: 95px;
+  color: #7b8884;
+  font-size: .61rem;
+  line-height: 1.25;
+}
+
+.syn-management-metric.attention strong {
+  color: #985a20;
+}
+
+.syn-management-week-card.attention
+.syn-management-metric {
+  border-left-color: #eadfcf;
+}
+
+@media (max-width: 920px) {
+  .syn-management-week-card {
+    grid-template-columns:
+      minmax(0, 1fr)
+      auto;
+  }
+
+  .syn-management-week-metrics {
+    grid-column: 1 / -1;
+    order: 3;
+  }
+}
+
+@media (max-width: 680px) {
+  .syn-management-week-card,
+  .syn-management-week-card.error-state {
+    grid-template-columns: 1fr;
+  }
+
+  .syn-management-week-metrics {
+    grid-column: auto;
+    flex-wrap: wrap;
+  }
+
+  .syn-management-metric:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .syn-management-week-card > button,
+  .syn-management-week-card.error-state > button {
+    width: 100%;
+  }
+}

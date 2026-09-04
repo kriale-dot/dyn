@@ -1,0 +1,243 @@
+.week71-actions-center {
+  border: 1px solid #e3cfac;
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      115deg,
+      #fffaf2,
+      #ffffff
+    );
+  padding: 15px 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.week71-actions-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.week71-actions-heading h2 {
+  margin: 3px 0 3px;
+  color: #4c4e43;
+  font-size: 1rem;
+}
+
+.week71-actions-heading p {
+  margin: 0;
+  color: #7c7d72;
+  font-size: .68rem;
+}
+
+.week71-actions-counter {
+  min-width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #8a662b;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: .9rem;
+  font-weight: 900;
+}
+
+.week71-actions-list {
+  display: grid;
+  gap: 7px;
+}
+
+.week71-action-row {
+  border: 1px solid #eee2cf;
+  border-radius: 13px;
+  background: #fff;
+  padding: 9px 10px;
+  display: grid;
+  grid-template-columns:
+    auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+}
+
+.week71-action-date {
+  width: 47px;
+  min-height: 50px;
+  border-radius: 11px;
+  background: #f3eadc;
+  display: grid;
+  place-items: center;
+  align-content: center;
+}
+
+.week71-action-date strong {
+  color: #785522;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.week71-action-date span {
+  color: #93774d;
+  font-size: .55rem;
+  font-weight: 850;
+}
+
+.week71-action-main {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.week71-action-type {
+  color: #897a65;
+  font-size: .54rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.week71-action-main > strong {
+  color: #3d5049;
+  font-size: .78rem;
+}
+
+.week71-action-main > span {
+  color: #78837f;
+  font-size: .63rem;
+}
+
+.week71-action-main > small {
+  color: #596c65;
+  font-size: .6rem;
+  font-weight: 750;
+}
+
+.week71-action-buttons {
+  max-width: 310px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.week71-action-buttons button {
+  min-height: 30px;
+  border-radius: 8px;
+  padding: 5px 8px;
+  font-size: .6rem;
+  font-weight: 850;
+}
+
+.week71-action-confirm {
+  border: 1px solid #3f7867;
+  background: #3f7867;
+  color: #fff;
+}
+
+.week71-action-unavailable {
+  border: 1px solid #dbc395;
+  background: #fff8e9;
+  color: #7a5a21;
+}
+
+.week71-action-reject {
+  border: 1px solid #dfc1c1;
+  background: #fff8f8;
+  color: #825050;
+}
+
+.week71-action-map {
+  border: 1px solid #d3ded9;
+  background: #fff;
+  color: #496c61;
+}
+
+.week71-action-buttons button:disabled {
+  opacity: .55;
+  cursor: wait;
+}
+
+.week71-action-disabled {
+  color: #7f8b87;
+  font-size: .59rem;
+}
+
+.week71-actions-complete {
+  border: 1px solid #cfe0da;
+  border-radius: 16px;
+  background:
+    linear-gradient(
+      115deg,
+      #f3faf7,
+      #ffffff
+    );
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.week71-actions-complete-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #deeee8;
+  color: #32705d;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+}
+
+.week71-actions-complete > div:last-child {
+  display: grid;
+  gap: 2px;
+}
+
+.week71-actions-complete strong {
+  color: #38544b;
+  font-size: .78rem;
+}
+
+.week71-actions-complete p {
+  margin: 0;
+  color: #798680;
+  font-size: .64rem;
+}
+
+@media (max-width: 780px) {
+  .week71-action-row {
+    grid-template-columns:
+      auto minmax(0, 1fr);
+  }
+
+  .week71-action-buttons {
+    grid-column: 1 / -1;
+    max-width: none;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 520px) {
+  .week71-action-row {
+    grid-template-columns: 1fr;
+  }
+
+  .week71-action-date {
+    width: 44px;
+  }
+
+  .week71-action-buttons {
+    grid-column: auto;
+    display: grid;
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .week71-action-confirm,
+  .week71-action-map {
+    grid-column: 1 / -1;
+  }
+
+  .week71-action-buttons button {
+    width: 100%;
+  }
+}

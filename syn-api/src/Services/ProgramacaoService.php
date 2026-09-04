@@ -405,6 +405,52 @@ final class ProgramacaoService
                 'O horário final deve ser posterior ao horário inicial.';
         }
 
+        /**
+         * Segurança por padrão:
+         * se o cliente antigo não enviar visibilidade, a programação
+         * continua INTERNA.
+         */
+        $visibilidade =
+            mb_strtoupper(
+                trim(
+                    (string) (
+                        $dados['visibilidade']
+                        ?? 'INTERNA'
+                    )
+                )
+            );
+
+        if (
+            !in_array(
+                $visibilidade,
+                [
+                    'INTERNA',
+                    'PUBLICA',
+                ],
+                true
+            )
+        ) {
+            $erros['visibilidade'] =
+                'Use INTERNA ou PUBLICA.';
+        }
+
+        $descricaoPublica =
+            $this->textoOpcional(
+                $dados[
+                    'descricao_publica'
+                ] ?? null
+            );
+
+        if (
+            $descricaoPublica !== null
+            && mb_strlen(
+                $descricaoPublica
+            ) > 2000
+        ) {
+            $erros['descricao_publica'] =
+                'A descrição pública deve possuir no máximo 2000 caracteres.';
+        }
+
         $permiteResposta = true;
 
         try {
@@ -437,6 +483,10 @@ final class ProgramacaoService
                         'descricao'
                     ] ?? null
                 ),
+            'descricao_publica' =>
+                $descricaoPublica,
+            'visibilidade' =>
+                $visibilidade,
             'tipo_programacao_id' =>
                 $tipoId,
             'local_id' =>
@@ -689,6 +739,14 @@ final class ProgramacaoService
                 $programacao['titulo'],
             'descricao' =>
                 $programacao['descricao'],
+            'descricao_publica' =>
+                $programacao[
+                    'descricao_publica'
+                ],
+            'visibilidade' =>
+                $programacao[
+                    'visibilidade'
+                ],
             'inicio_em' =>
                 $programacao['inicio_em'],
             'fim_em' =>

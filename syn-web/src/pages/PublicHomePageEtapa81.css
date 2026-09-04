@@ -1,0 +1,16 @@
+.public81-register-button {
+  min-height: 39px;
+  border: 1px solid #bcd2c9;
+  border-radius: 10px;
+  background: #eef7f3;
+  color: #35685a;
+  padding: 8px 11px;
+  font-size: .67rem;
+  font-weight: 850;
+}
+
+@media (max-width: 700px) {
+  .public81-register-button {
+    min-height: 34px;
+  }
+}

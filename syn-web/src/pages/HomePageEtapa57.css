@@ -1,0 +1,28 @@
+.syn-home-week-label-57 {
+  min-width: 180px;
+}
+
+.syn-home-week-label-57 > span {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.66rem;
+}
+
+.syn-home-week-number-57 {
+  color: #244f43;
+  font-size: 1.16rem !important;
+  line-height: 1.2;
+}
+
+.syn-home-week-label-57 > small {
+  margin-top: 3px;
+  color: #75837e;
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+@media (max-width: 700px) {
+  .syn-home-week-label-57 {
+    min-width: 0;
+  }
+}

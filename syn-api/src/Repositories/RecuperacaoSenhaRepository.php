@@ -146,7 +146,8 @@ final class RecuperacaoSenhaRepository
     }
 
     /**
-     * Troca a senha e consome o token na mesma transação.
+     * Troca a senha, revoga todas as sessões JWT existentes e
+     * consome o token na mesma transação.
      */
     public function redefinirSenha(
         int $recuperacaoId,
@@ -158,7 +159,10 @@ final class RecuperacaoSenhaRepository
         try {
             $stmtUsuario = $this->pdo->prepare(
                 'UPDATE usuarios
-                 SET senha_hash = :senha_hash
+                 SET
+                    senha_hash = :senha_hash,
+                    sessao_versao =
+                        sessao_versao + 1
                  WHERE id = :usuario_id
                    AND status = \'ATIVO\''
             );
@@ -187,6 +191,29 @@ final class RecuperacaoSenhaRepository
 
             $stmtTokens->execute([
                 ':usuario_id' => $usuarioId,
+            ]);
+
+            $stmtEvento =
+                $this->pdo->prepare(
+                    'INSERT INTO eventos_seguranca_conta (
+                        usuario_id,
+                        tipo,
+                        titulo,
+                        detalhe,
+                        criado_em
+                     )
+                     VALUES (
+                        :usuario_id,
+                        "SENHA_REDEFINIDA",
+                        "Senha redefinida",
+                        "A senha foi redefinida por meio do fluxo de recuperação.",
+                        NOW()
+                     )'
+                );
+
+            $stmtEvento->execute([
+                ':usuario_id' =>
+                    $usuarioId,
             ]);
 
             $this->pdo->commit();

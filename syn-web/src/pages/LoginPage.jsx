@@ -13,6 +13,7 @@ import {
 } from '../contexts/AuthContext'
 
 import './AuthPagesEtapa50.css'
+import './LoginPageEtapa81.css'
 
 export default function LoginPage() {
   const navigate =
@@ -169,6 +170,18 @@ export default function LoginPage() {
               ? 'Entrando...'
               : 'Entrar'}
           </button>
+
+          <div className="auth81-register-link">
+            <span>
+              Ainda não possui cadastro?
+            </span>
+
+            <Link
+              to="/cadastro"
+            >
+              Solicitar cadastro
+            </Link>
+          </div>
         </form>
       </section>
     </main>

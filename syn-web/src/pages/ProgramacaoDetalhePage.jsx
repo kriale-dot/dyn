@@ -13,14 +13,34 @@ import {
 import {
   confirmarParticipacao,
   getDetalheProgramacao,
+  getHistoricoAlteracoesProgramacao,
   informarIndisponibilidade,
   recusarParticipacao,
 } from '../api/api'
+
+import {
+  useAuth,
+} from '../contexts/AuthContext'
+
+import './ProgramacaoDetalheEtapa53.css'
 
 export default function ProgramacaoDetalhePage() {
   const {
     id,
   } = useParams()
+
+  const {
+    usuario,
+  } = useAuth()
+
+  const papel =
+    usuario?.papel?.codigo
+
+  const podeVerHistorico =
+    [
+      'ADMINISTRADOR',
+      'ORGANIZADOR',
+    ].includes(papel)
 
   const [detalhe, setDetalhe] =
     useState(null)
@@ -35,6 +55,21 @@ export default function ProgramacaoDetalhePage() {
     useState('')
 
   const [success, setSuccess] =
+    useState('')
+
+  const [historicoAberto, setHistoricoAberto] =
+    useState(false)
+
+  const [historicoLoading, setHistoricoLoading] =
+    useState(false)
+
+  const [historicoCarregado, setHistoricoCarregado] =
+    useState(false)
+
+  const [historico, setHistorico] =
+    useState(null)
+
+  const [historicoError, setHistoricoError] =
     useState('')
 
   const carregar =
@@ -139,6 +174,47 @@ export default function ProgramacaoDetalhePage() {
       )
     } finally {
       setActionLoading(null)
+    }
+  }
+
+  async function alternarHistorico() {
+    const novoEstado =
+      !historicoAberto
+
+    setHistoricoAberto(
+      novoEstado,
+    )
+
+    if (
+      !novoEstado
+      || historicoCarregado
+      || historicoLoading
+    ) {
+      return
+    }
+
+    setHistoricoLoading(true)
+    setHistoricoError('')
+
+    try {
+      const response =
+        await getHistoricoAlteracoesProgramacao(
+          id,
+        )
+
+      setHistorico(
+        response?.dados
+        ?? null,
+      )
+
+      setHistoricoCarregado(true)
+    } catch (err) {
+      setHistoricoError(
+        err?.message
+        || 'Não foi possível carregar o histórico.',
+      )
+    } finally {
+      setHistoricoLoading(false)
     }
   }
 
@@ -356,6 +432,188 @@ export default function ProgramacaoDetalhePage() {
           </div>
         )}
       </section>
+
+      {podeVerHistorico && (
+        <section className="program-history-shell">
+          <header className="program-history-heading">
+            <div>
+              <span className="eyebrow">
+                Administração
+              </span>
+
+              <h2>
+                Histórico de alterações
+              </h2>
+
+              <p>
+                Consulte mudanças importantes sem alterar
+                o estado atual da programação.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              className="button-secondary"
+              onClick={alternarHistorico}
+            >
+              {historicoAberto
+                ? 'Ocultar histórico'
+                : 'Ver histórico'}
+            </button>
+          </header>
+
+          {historicoAberto && (
+            <div className="program-history-content">
+              {historicoLoading ? (
+                <div className="program-history-loading">
+                  Carregando histórico...
+                </div>
+              ) : historicoError ? (
+                <div className="error-message">
+                  {historicoError}
+                </div>
+              ) : (
+                <HistoricoProgramacao
+                  historico={historico}
+                />
+              )}
+            </div>
+          )}
+        </section>
+      )}
+    </div>
+  )
+}
+
+function HistoricoProgramacao({
+  historico,
+}) {
+  const eventos =
+    historico?.eventos
+    ?? []
+
+  if (eventos.length === 0) {
+    return (
+      <div className="program-history-empty">
+        <strong>
+          Nenhuma alteração registrada.
+        </strong>
+
+        <span>
+          O histórico começará a aparecer quando
+          título, descrição, horário, local ou status
+          forem alterados.
+        </span>
+      </div>
+    )
+  }
+
+  return (
+    <div className="program-history-timeline">
+      {eventos.map(
+        (evento) => (
+          <article
+            key={evento.id}
+            className="program-history-event"
+          >
+            <div className="program-history-marker">
+              <span
+                className={
+                  evento.tipo
+                    === 'PROGRAMACAO_CANCELADA'
+                    ? 'program-history-dot cancelled'
+                    : 'program-history-dot'
+                }
+              />
+
+              <span className="program-history-line" />
+            </div>
+
+            <div className="program-history-event-body">
+              <header>
+                <div>
+                  <strong>
+                    {traduzirTipoEvento(
+                      evento.tipo,
+                    )}
+                  </strong>
+
+                  <span>
+                    {formatarDataHoraHistorico(
+                      evento.criada_em,
+                    )}
+                  </span>
+                </div>
+
+                <span className="program-history-change-count">
+                  {
+                    evento
+                      ?.alteracoes
+                      ?.length
+                    ?? 0
+                  }
+                  {' '}
+                  alteração(ões)
+                </span>
+              </header>
+
+              <div className="program-history-changes">
+                {(evento.alteracoes ?? []).map(
+                  (
+                    alteracao,
+                    indice,
+                  ) => (
+                    <AlteracaoHistorico
+                      key={
+                        `${evento.id}-${alteracao.campo}-${indice}`
+                      }
+                      alteracao={alteracao}
+                    />
+                  ),
+                )}
+              </div>
+            </div>
+          </article>
+        ),
+      )}
+    </div>
+  )
+}
+
+function AlteracaoHistorico({
+  alteracao,
+}) {
+  const campo =
+    alteracao?.campo
+    ?? ''
+
+  return (
+    <div className="program-history-change">
+      <span className="program-history-field">
+        {traduzirCampoHistorico(
+          campo,
+        )}
+      </span>
+
+      <div className="program-history-values">
+        <span className="program-history-old">
+          {formatarValorHistorico(
+            campo,
+            alteracao?.anterior,
+          )}
+        </span>
+
+        <span className="program-history-arrow">
+          →
+        </span>
+
+        <strong>
+          {formatarValorHistorico(
+            campo,
+            alteracao?.novo,
+          )}
+        </strong>
+      </div>
     </div>
   )
 }
@@ -703,3 +961,95 @@ function obterIniciais(
     primeira + ultima
   ).toUpperCase()
 }
+
+function traduzirTipoEvento(
+  tipo,
+) {
+  const mapa = {
+    PROGRAMACAO_ALTERADA:
+      'Programação alterada',
+
+    PROGRAMACAO_CANCELADA:
+      'Programação cancelada',
+  }
+
+  return mapa[tipo]
+    || 'Alteração registrada'
+}
+
+function traduzirCampoHistorico(
+  campo,
+) {
+  const mapa = {
+    titulo: 'Título',
+    descricao: 'Descrição',
+    inicio_em: 'Início',
+    fim_em: 'Término',
+    local: 'Local',
+    status: 'Status',
+  }
+
+  return mapa[campo]
+    || campo
+}
+
+function formatarValorHistorico(
+  campo,
+  valor,
+) {
+  if (
+    valor === null
+    || valor === undefined
+    || valor === ''
+  ) {
+    return 'Não informado'
+  }
+
+  if (
+    campo === 'inicio_em'
+    || campo === 'fim_em'
+  ) {
+    return formatarDataHoraHistorico(
+      valor,
+    )
+  }
+
+  if (campo === 'status') {
+    return traduzirStatus(
+      String(valor),
+    )
+  }
+
+  return String(valor)
+}
+
+function formatarDataHoraHistorico(
+  valor,
+) {
+  if (!valor) {
+    return 'Data não informada'
+  }
+
+  const data =
+    new Date(
+      String(valor)
+        .replace(' ', 'T'),
+    )
+
+  if (
+    Number.isNaN(
+      data.getTime(),
+    )
+  ) {
+    return String(valor)
+  }
+
+  return data.toLocaleString(
+    'pt-BR',
+    {
+      dateStyle: 'short',
+      timeStyle: 'short',
+    },
+  )
+}
+

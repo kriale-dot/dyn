@@ -1,0 +1,99 @@
+.week70-response-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.week70-response-button {
+  min-height: 31px;
+  border-radius: 9px;
+  padding: 6px 9px;
+  font-size: .64rem;
+  font-weight: 850;
+  transition:
+    opacity .15s ease,
+    transform .15s ease;
+}
+
+.week70-response-button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.week70-response-button:disabled {
+  opacity: .55;
+  cursor: wait;
+}
+
+.week70-response-button.confirm {
+  border: 1px solid #3f7867;
+  background: #3f7867;
+  color: #fff;
+}
+
+.week70-response-button.unavailable {
+  border: 1px solid #dbc395;
+  background: #fff8e9;
+  color: #7a5a21;
+}
+
+.week70-response-button.reject {
+  border: 1px solid #dfc1c1;
+  background: #fff8f8;
+  color: #825050;
+}
+
+.week70-response-disabled {
+  max-width: 170px;
+  color: #7f8b87;
+  font-size: .61rem;
+  line-height: 1.35;
+  text-align: right;
+}
+
+.week70-response-help {
+  border-top: 1px solid #e6ece9;
+  padding-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 14px;
+  color: #7a8783;
+  font-size: .59rem;
+  line-height: 1.4;
+}
+
+.week70-response-help strong {
+  color: #546a62;
+}
+
+@media (max-width: 720px) {
+  .week70-response-actions {
+    justify-content: flex-start;
+  }
+
+  .week70-response-disabled {
+    max-width: none;
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .week70-response-actions {
+    display: grid;
+    grid-template-columns:
+      1fr 1fr;
+    width: 100%;
+  }
+
+  .week70-response-button.confirm {
+    grid-column: 1 / -1;
+  }
+
+  .week70-response-button {
+    width: 100%;
+  }
+
+  .week70-response-help {
+    display: grid;
+  }
+}

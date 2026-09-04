@@ -1,0 +1,15 @@
+.auth81-register-link {
+  margin-top: 4px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  color: #7b8783;
+  font-size: .66rem;
+}
+
+.auth81-register-link a {
+  color: #35685a;
+  font-weight: 850;
+  text-decoration: none;
+}

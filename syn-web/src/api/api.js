@@ -88,6 +88,35 @@ export async function apiRequest(
     error.payload =
       payload
 
+    /**
+     * Se uma requisição autenticada recebe 401, a API está
+     * informando que o JWT não é mais aceito.
+     *
+     * O api.js não conhece React e não deve manipular estado
+     * de interface. Por isso ele publica apenas um evento
+     * global. O AuthContext escuta esse evento e encerra a
+     * sessão de forma centralizada.
+     *
+     * Importante: só emitimos quando já existia JWT local.
+     * Assim um 401 de login/recuperação não é confundido com
+     * expiração de sessão.
+     */
+    if (
+      response.status === 401
+      && token
+    ) {
+      window.dispatchEvent(
+        new CustomEvent(
+          'syn:unauthorized',
+          {
+            detail: {
+              message,
+            },
+          },
+        ),
+      )
+    }
+
     throw error
   }
 
@@ -720,3 +749,462 @@ export async function redefinirSenha(
     },
   )
 }
+
+
+/* ==========================================================
+   ETAPA 51 — PERMISSÕES DO ORGANIZADOR
+   ========================================================== */
+
+export async function getPermissoesOrganizador(
+  usuarioId,
+) {
+  return apiRequest(
+    `/organizadores/${usuarioId}/tipos-programacao`,
+  )
+}
+
+export async function concederPermissaoOrganizador(
+  usuarioId,
+  tipoProgramacaoId,
+) {
+  return apiRequest(
+    `/organizadores/${usuarioId}/tipos-programacao/${tipoProgramacaoId}`,
+    {
+      method: 'POST',
+    },
+  )
+}
+
+export async function revogarPermissaoOrganizador(
+  usuarioId,
+  tipoProgramacaoId,
+) {
+  return apiRequest(
+    `/organizadores/${usuarioId}/tipos-programacao/${tipoProgramacaoId}`,
+    {
+      method: 'DELETE',
+    },
+  )
+}
+
+export async function getCatalogoPermissoesEspeciais() {
+  return apiRequest(
+    '/permissoes-especiais',
+  )
+}
+
+export async function getPermissoesEspeciaisUsuario(
+  usuarioId,
+) {
+  return apiRequest(
+    `/usuarios/${usuarioId}/permissoes-especiais`,
+  )
+}
+
+export async function concederPermissaoEspecial(
+  usuarioId,
+  permissaoId,
+) {
+  return apiRequest(
+    `/usuarios/${usuarioId}/permissoes-especiais/${permissaoId}`,
+    {
+      method: 'POST',
+    },
+  )
+}
+
+export async function revogarPermissaoEspecial(
+  usuarioId,
+  permissaoId,
+) {
+  return apiRequest(
+    `/usuarios/${usuarioId}/permissoes-especiais/${permissaoId}`,
+    {
+      method: 'DELETE',
+    },
+  )
+}
+
+
+/* ==========================================================
+   ETAPA 52 — DADOS INSTITUCIONAIS DA IGREJA
+   ========================================================== */
+
+export async function getIgreja() {
+  return apiRequest(
+    '/igreja',
+  )
+}
+
+export async function atualizarIgreja(
+  dados,
+) {
+  return apiRequest(
+    '/igreja',
+    {
+      method: 'PUT',
+      body: JSON.stringify(
+        dados,
+      ),
+    },
+  )
+}
+
+export async function enviarLogotipoIgreja(
+  arquivo,
+) {
+  const formData =
+    new FormData()
+
+  formData.append(
+    'logotipo',
+    arquivo,
+  )
+
+  return apiRequest(
+    '/igreja/logotipo',
+    {
+      method: 'POST',
+      body: formData,
+    },
+  )
+}
+
+export async function removerLogotipoIgreja() {
+  return apiRequest(
+    '/igreja/logotipo',
+    {
+      method: 'DELETE',
+    },
+  )
+}
+
+
+/* ==========================================================
+   ETAPA 53 — HISTÓRICO DE ALTERAÇÕES DA PROGRAMAÇÃO
+   ========================================================== */
+
+export async function getHistoricoAlteracoesProgramacao(
+  programacaoId,
+) {
+  return apiRequest(
+    `/programacoes/${programacaoId}/historico-alteracoes`,
+  )
+}
+
+
+/* ==========================================================
+   ETAPA 54 — AUDITORIA ADMINISTRATIVA
+   ========================================================== */
+
+export async function getAuditoria(
+  filtros = {},
+) {
+  const params =
+    new URLSearchParams()
+
+  if (filtros.pagina) {
+    params.set(
+      'pagina',
+      String(filtros.pagina),
+    )
+  }
+
+  if (filtros.limite) {
+    params.set(
+      'limite',
+      String(filtros.limite),
+    )
+  }
+
+  if (filtros.usuario_id) {
+    params.set(
+      'usuario_id',
+      String(filtros.usuario_id),
+    )
+  }
+
+  if (filtros.metodo) {
+    params.set(
+      'metodo',
+      filtros.metodo,
+    )
+  }
+
+  if (filtros.recurso) {
+    params.set(
+      'recurso',
+      filtros.recurso,
+    )
+  }
+
+  if (
+    filtros.somente_erros
+    === true
+  ) {
+    params.set(
+      'somente_erros',
+      'true',
+    )
+  }
+
+  const query =
+    params.toString()
+
+  return apiRequest(
+    `/auditoria${
+      query
+        ? `?${query}`
+        : ''
+    }`,
+  )
+}
+
+export async function getAuditoriaRegistro(
+  auditoriaId,
+) {
+  return apiRequest(
+    `/auditoria/${auditoriaId}`,
+  )
+}
+
+
+/* ==========================================================
+   ETAPA 60 — ESCALAS DA SEMANA
+   ========================================================== */
+
+export async function getEscalasSemana(
+  dataReferencia = null,
+) {
+  const query =
+    dataReferencia
+      ? `?data_referencia=${encodeURIComponent(
+          dataReferencia,
+        )}`
+      : ''
+
+  return apiRequest(
+    `/gestao/escalas-semana${query}`,
+  )
+}
+
+
+/* ==========================================================
+   ETAPA 74 — ÁREA PÚBLICA
+   ========================================================== */
+
+/**
+ * As rotas abaixo não exigem JWT.
+ *
+ * Usamos o mesmo apiRequest porque ele já centraliza tratamento
+ * HTTP/JSON. Quando não existe sessão, nenhum Authorization é
+ * enviado. Se existir sessão, as rotas públicas continuam
+ * respondendo normalmente porque não possuem middleware de auth.
+ */
+
+export async function getIgrejaPublica() {
+  return apiRequest(
+    '/publico/igreja',
+  )
+}
+
+export async function getMapaSemanaPublico(
+  dataReferencia = null,
+) {
+  const query =
+    dataReferencia
+      ? `?data_referencia=${encodeURIComponent(
+          dataReferencia,
+        )}`
+      : ''
+
+  return apiRequest(
+    `/publico/mapa-semana${query}`,
+  )
+}
+
+export async function getProgramacoesPublicas(
+  dataInicial = null,
+  dataFinal = null,
+) {
+  const params =
+    new URLSearchParams()
+
+  if (dataInicial) {
+    params.set(
+      'data_inicial',
+      dataInicial,
+    )
+  }
+
+  if (dataFinal) {
+    params.set(
+      'data_final',
+      dataFinal,
+    )
+  }
+
+  const query =
+    params.toString()
+
+  return apiRequest(
+    `/publico/programacoes${
+      query
+        ? `?${query}`
+        : ''
+    }`,
+  )
+}
+
+export async function getProgramacaoPublica(
+  programacaoId,
+) {
+  return apiRequest(
+    `/publico/programacoes/${programacaoId}`,
+  )
+}
+
+/**
+ * Resolve caminhos de imagens servidas pela própria API.
+ *
+ * Se a API já devolver URL absoluta, ela é preservada.
+ * Se devolver um caminho como /uploads/igreja/logo.webp,
+ * acrescentamos a origem configurada em VITE_API_URL.
+ */
+export function resolveApiAssetUrl(
+  caminho,
+) {
+  if (!caminho) {
+    return null
+  }
+
+  const valor =
+    String(caminho)
+
+  if (
+    /^https?:\/\//i.test(
+      valor,
+    )
+  ) {
+    return valor
+  }
+
+  return `${
+    API_URL.replace(
+      /\/+$/,
+      '',
+    )
+  }/${
+    valor.replace(
+      /^\/+/,
+      '',
+    )
+  }`
+}
+
+
+/* ==========================================================
+   ETAPA 81 — CADASTRO PÚBLICO COM APROVAÇÃO
+   ========================================================== */
+
+/**
+ * Cria somente uma solicitação.
+ *
+ * Não exige JWT e não cria usuário diretamente.
+ */
+export async function solicitarCadastroPublico(
+  dados,
+) {
+  return apiRequest(
+    '/publico/cadastros',
+    {
+      method: 'POST',
+      body: JSON.stringify(
+        dados,
+      ),
+    },
+  )
+}
+
+/**
+ * Fila de cadastro para Administrador ou Organizador autorizado.
+ */
+export async function getCadastros(
+  status = 'PENDENTE',
+) {
+  return apiRequest(
+    `/gestao/cadastros?status=${encodeURIComponent(
+      status,
+    )}`,
+  )
+}
+
+export async function getCadastro(
+  cadastroId,
+) {
+  return apiRequest(
+    `/gestao/cadastros/${cadastroId}`,
+  )
+}
+
+export async function aprovarCadastro(
+  cadastroId,
+) {
+  return apiRequest(
+    `/gestao/cadastros/${cadastroId}/aprovar`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify({}),
+    },
+  )
+}
+
+export async function rejeitarCadastro(
+  cadastroId,
+  motivo = null,
+) {
+  return apiRequest(
+    `/gestao/cadastros/${cadastroId}/rejeitar`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify({
+        motivo:
+          motivo
+          || null,
+      }),
+    },
+  )
+}
+
+/* ==========================================================
+   ETAPA 84 — CONFIRMAÇÃO DE E-MAIL DO CADASTRO
+   ========================================================== */
+
+export async function confirmarEmailCadastro(
+  token,
+) {
+  return apiRequest(
+    '/publico/cadastros/confirmar-email',
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        token,
+      }),
+    },
+  )
+}
+
+export async function reenviarConfirmacaoCadastro(
+  email,
+) {
+  return apiRequest(
+    '/publico/cadastros/reenviar-confirmacao',
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        email,
+      }),
+    },
+  )
+}
+

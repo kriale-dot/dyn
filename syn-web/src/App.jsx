@@ -13,6 +13,9 @@ import ProtectedRoute
 import EstruturaPage
   from './pages/EstruturaPage'
 
+import EscalasSemanaPage
+  from './pages/EscalasSemanaPage'
+
 import GestaoEscalaPage
   from './pages/GestaoEscalaPage'
 
@@ -22,8 +25,26 @@ import GestaoProgramacoesPage
 import HomePage
   from './pages/HomePage'
 
+import IgrejaConfigPage
+  from './pages/IgrejaConfigPage'
+
+import AuditoriaPage
+  from './pages/AuditoriaPage'
+
 import LoginPage
   from './pages/LoginPage'
+
+import CadastroPage
+  from './pages/CadastroPage'
+
+import ConfirmarEmailCadastroPage
+  from './pages/ConfirmarEmailCadastroPage'
+
+import ConfirmarAlteracaoEmailPage
+  from './pages/ConfirmarAlteracaoEmailPage'
+
+import CadastrosPendentesPage
+  from './pages/CadastrosPendentesPage'
 
 import EsqueciSenhaPage
   from './pages/EsqueciSenhaPage'
@@ -67,12 +88,79 @@ import UsuariosPage
 import PlaceholderPage
   from './pages/PlaceholderPage'
 
+import PublicHomePage
+  from './pages/PublicHomePage'
+
+import PublicProgramacaoDetalhePage
+  from './pages/PublicProgramacaoDetalhePage'
+
+import PublicProgramacoesPage
+  from './pages/PublicProgramacoesPage'
+
+import PublicDivulgacaoPage
+  from './pages/PublicDivulgacaoPage'
+
+import RootEntryPage
+  from './pages/RootEntryPage'
+
 export default function App() {
   return (
     <Routes>
+      {/*
+       * A raiz do SYN agora é uma porta de entrada inteligente:
+       *
+       * - sem sessão -> Mapa Público;
+       * - com sessão -> Home interna.
+       */}
+      <Route
+        path="/"
+        element={<RootEntryPage />}
+      />
+
+      <Route
+        path="/publico"
+        element={<PublicHomePage />}
+      />
+
+      <Route
+        path="/publico/programacoes"
+        element={
+          <PublicProgramacoesPage />
+        }
+      />
+
+      <Route
+        path="/publico/divulgar"
+        element={
+          <PublicDivulgacaoPage />
+        }
+      />
+
+      <Route
+        path="/publico/programacoes/:id"
+        element={
+          <PublicProgramacaoDetalhePage />
+        }
+      />
+
       <Route
         path="/login"
         element={<LoginPage />}
+      />
+
+      <Route
+        path="/cadastro"
+        element={<CadastroPage />}
+      />
+
+      <Route
+        path="/cadastro/confirmar-email"
+        element={<ConfirmarEmailCadastroPage />}
+      />
+
+      <Route
+        path="/conta/confirmar-email"
+        element={<ConfirmarAlteracaoEmailPage />}
       />
 
       <Route
@@ -93,7 +181,7 @@ export default function App() {
         }
       >
         <Route
-          index
+          path="inicio"
           element={<HomePage />}
         />
 
@@ -118,6 +206,20 @@ export default function App() {
           path="gestao/programacoes"
           element={
             <GestaoProgramacoesPage />
+          }
+        />
+
+        <Route
+          path="gestao/escalas-semana"
+          element={
+            <EscalasSemanaPage />
+          }
+        />
+
+        <Route
+          path="gestao/cadastros"
+          element={
+            <CadastrosPendentesPage />
           }
         />
 
@@ -171,6 +273,16 @@ export default function App() {
         <Route
           path="admin/estrutura"
           element={<EstruturaPage />}
+        />
+
+        <Route
+          path="admin/igreja"
+          element={<IgrejaConfigPage />}
+        />
+
+        <Route
+          path="admin/auditoria"
+          element={<AuditoriaPage />}
         />
 
         <Route

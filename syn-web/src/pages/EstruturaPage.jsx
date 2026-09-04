@@ -30,6 +30,8 @@ import {
 
 import { useAuth } from '../contexts/AuthContext'
 
+import './EstruturaPageEtapa52.css'
+
 const ABAS = [
   {
     codigo: 'DEPARTAMENTOS',
@@ -271,13 +273,39 @@ export default function EstruturaPage() {
           </p>
         </div>
 
-        <button
-          type="button"
-          className="button-primary"
-          onClick={abrirNovo}
-        >
-          + Novo
-        </button>
+        <div className="structure-hero-actions">
+          <button
+            type="button"
+            className="button-secondary"
+            onClick={() =>
+              navigate(
+                '/admin/auditoria',
+              )
+            }
+          >
+            Auditoria
+          </button>
+
+          <button
+            type="button"
+            className="button-secondary"
+            onClick={() =>
+              navigate(
+                '/admin/igreja',
+              )
+            }
+          >
+            Dados da igreja
+          </button>
+
+          <button
+            type="button"
+            className="button-primary"
+            onClick={abrirNovo}
+          >
+            + Novo
+          </button>
+        </div>
       </section>
 
       <nav

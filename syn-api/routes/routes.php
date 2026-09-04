@@ -4,11 +4,20 @@ declare(strict_types=1);
 
 /**
  * Infraestrutura HTTP.
+ *
+ * IMPORTANTE:
+ * CORS precisa continuar sendo carregado antes das demais rotas.
  */
 require __DIR__ . '/cors.php';
 
+/**
+ * Rotas públicas: não dependem de autenticação.
+ */
+require __DIR__ . '/publico.php';
+
 require __DIR__ . '/auth.php';
 require __DIR__ . '/recuperacao_senha.php';
+require __DIR__ . '/cadastros.php';
 
 require __DIR__ . '/app_bootstrap.php';
 
@@ -35,6 +44,7 @@ require __DIR__ . '/locais.php';
 
 require __DIR__ . '/detalhe_programacao.php';
 require __DIR__ . '/gestao_escala.php';
+require __DIR__ . '/escalas_semana.php';
 require __DIR__ . '/historico_programacao.php';
 
 require __DIR__ . '/programacoes.php';

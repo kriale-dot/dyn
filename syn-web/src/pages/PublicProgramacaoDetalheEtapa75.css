@@ -1,0 +1,13 @@
+.public75-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.public75-detail-actions button {
+  min-height: 34px;
+}
+
+.public75-detail-actions button:not(:first-child) {
+  background: #fff;
+}

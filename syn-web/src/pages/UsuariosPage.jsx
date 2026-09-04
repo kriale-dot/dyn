@@ -7,6 +7,9 @@ import {
 
 import './UsuariosPageFoto.css'
 
+import UsuarioPermissoesModal
+  from '../components/UsuarioPermissoesModal'
+
 import {
   atribuirFuncaoUsuario,
   atualizarUsuario,
@@ -285,6 +288,18 @@ export default function UsuariosPage() {
     }
   }
 
+  function abrirPermissoes(
+    usuario,
+  ) {
+    setError('')
+    setSuccess('')
+
+    setModal({
+      tipo: 'PERMISSOES',
+      usuario,
+    })
+  }
+
   async function confirmarDesativacao(
     usuario,
   ) {
@@ -464,6 +479,11 @@ export default function UsuariosPage() {
                     usuario,
                   )
                 }
+                onPermissions={() =>
+                  abrirPermissoes(
+                    usuario,
+                  )
+                }
                 onDeactivate={() =>
                   confirmarDesativacao(
                     usuario,
@@ -488,6 +508,15 @@ export default function UsuariosPage() {
             setSuccess(mensagem)
             await carregar()
           }}
+        />
+      )}
+
+      {modal?.tipo === 'PERMISSOES' && (
+        <UsuarioPermissoesModal
+          usuario={modal.usuario}
+          onClose={() =>
+            setModal(null)
+          }
         />
       )}
 
@@ -534,6 +563,7 @@ function UsuarioCard({
   usuario,
   onEdit,
   onFunctions,
+  onPermissions,
   onDeactivate,
 }) {
   return (
@@ -642,6 +672,17 @@ function UsuarioCard({
         >
           Funções
         </button>
+
+        {usuario.papel_codigo === 'ORGANIZADOR'
+          && usuario.status === 'ATIVO' && (
+          <button
+            type="button"
+            className="small-secondary-button"
+            onClick={onPermissions}
+          >
+            Permissões
+          </button>
+        )}
 
         {usuario.status === 'ATIVO' && (
           <button
@@ -923,7 +964,7 @@ function UsuarioFormModal({
                 <input
                   type="password"
                   required
-                  minLength={8}
+                  minLength={5}
                   value={form.senha}
                   onChange={(event) =>
                     alterar(

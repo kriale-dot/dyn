@@ -97,6 +97,16 @@ final class AuthService
             'nbf' => $agora,
             'exp' => $expiraEm,
             'sub' => (string) $usuario['id'],
+
+            /**
+             * Versão da sessão.
+             *
+             * Se a senha for redefinida ou o usuário encerrar todas as
+             * sessões, o valor no banco muda e este token deixa de valer.
+             */
+            'sv' =>
+                (int)
+                $usuario['sessao_versao'],
         ];
 
         $token = JWT::encode(
@@ -173,9 +183,74 @@ final class AuthService
             );
         }
 
+        $versaoToken =
+            $payload->sv
+            ?? null;
+
+        if (
+            !is_int($versaoToken)
+            && !(
+                is_float($versaoToken)
+                && floor($versaoToken)
+                    === $versaoToken
+            )
+        ) {
+            throw new AutenticacaoException(
+                'Sua sessão não é mais válida. Entre novamente.'
+            );
+        }
+
+        if (
+            (int) $versaoToken
+            !== (int)
+                $usuario['sessao_versao']
+        ) {
+            throw new AutenticacaoException(
+                'Sua sessão foi encerrada. Entre novamente.'
+            );
+        }
+
         return $this->formatarUsuario(
             $usuario
         );
+    }
+
+    /**
+     * Encerra todas as sessões do usuário, inclusive a sessão que fez
+     * esta chamada.
+     *
+     * A resposta desta requisição ainda é devolvida normalmente. A partir
+     * da próxima requisição qualquer token anterior recebe 401.
+     *
+     * @return array<string, mixed>
+     */
+    public function encerrarTodasSessoes(
+        int $usuarioId
+    ): array {
+        if ($usuarioId < 1) {
+            throw new AutenticacaoException(
+                'Usuário autenticado inválido.'
+            );
+        }
+
+        $alterou =
+            $this->repository
+                ->incrementarVersaoSessao(
+                    $usuarioId
+                );
+
+        if (!$alterou) {
+            throw new AutenticacaoException(
+                'Não foi possível encerrar as sessões.'
+            );
+        }
+
+        return [
+            'sessoes_encerradas' =>
+                true,
+            'mensagem' =>
+                'Todas as sessões foram encerradas. Entre novamente para continuar.',
+        ];
     }
 
     /**

@@ -1,142 +1,129 @@
-# SYN API — Etapa 35
-## CORS + contrato HTTP para o React
+# SYN API — Etapa 91
+## Alertas de segurança por e-mail
 
-Esta etapa prepara a comunicação entre:
+Esta etapa conclui o bloco de proteção das credenciais enviando avisos
+quando uma senha é realmente alterada.
 
-Frontend React/Vite:
-http://localhost:5173
+Não há alteração no banco e não há alteração no frontend.
 
-API Slim:
-http://localhost:8282
+## 1. Alteração de senha em Meu Perfil
 
-## Não há alteração no banco
+Depois de:
 
-Nenhum SQL precisa ser executado.
+POST /auth/alterar-senha
 
-## Novos arquivos
+e somente após a senha ter sido gravada com sucesso, o usuário recebe:
 
-src/Middlewares/CorsMiddleware.php
-src/Http/ApiResponse.php
-routes/cors.php
+Assunto:
 
-documentos/10_configuracao_cors_env.txt
-documentos/11_contrato_http_frontend.md
+Sua senha foi alterada — SYN
 
-## Configuração do .env
+A mensagem informa que:
 
-Acrescente:
+- a senha foi alterada;
+- todas as sessões anteriores foram encerradas;
+- se o usuário não reconhece a alteração, deve comunicar a administração.
 
-CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+## 2. Recuperação de senha
 
-## O que o CORS permite
+Depois de concluir:
 
-Métodos:
+POST /auth/redefinir-senha
 
-GET
-POST
-PUT
-PATCH
-DELETE
-OPTIONS
+o usuário recebe:
 
-Cabeçalhos:
+Assunto:
 
-Authorization
-Content-Type
-Accept
+Sua senha foi redefinida — SYN
 
-## Preflight
+A mensagem informa que:
 
-O navegador pode enviar automaticamente:
+- a recuperação foi concluída;
+- todas as sessões anteriores foram revogadas;
+- se a ação não foi reconhecida, deve comunicar a administração.
 
-OPTIONS /alguma-rota
+## Regra importante
 
-A API responde:
+O Gmail NÃO participa da transação que troca a senha.
 
-204 No Content
+Fluxo:
 
-e informa os cabeçalhos CORS.
+senha alterada no banco
+    ↓
+sessões revogadas
+    ↓
+evento de segurança gravado
+    ↓
+tenta enviar e-mail
 
-## Segurança
+Se o Gmail falhar:
 
-Não usamos:
+- a nova senha continua válida;
+- as sessões continuam revogadas;
+- o evento de segurança continua gravado;
+- a falha é registrada no log.
 
-Access-Control-Allow-Origin: *
+Nunca fazemos rollback de uma mudança de segurança porque o SMTP ficou
+indisponível.
 
-O SYN trabalha com uma lista explícita de origens permitidas.
+## Instalação
 
-Também não habilitamos credenciais por cookie nesta versão,
-pois a autenticação atual utiliza Bearer Token.
+Substitua SOMENTE:
 
-## Postman
+src/Services/EmailService.php
+src/Services/SegurancaContaService.php
+src/Services/RecuperacaoSenhaService.php
+routes/auth.php
 
-Postman não depende de CORS.
+Não existe SQL nesta etapa.
 
-Portanto os testes atuais continuam funcionando normalmente.
+NÃO substitua:
 
-## ApiResponse
+routes/routes.php
+routes/recuperacao_senha.php
+routes/cadastros.php
+routes/perfil.php
 
-Foi adicionada a classe:
+## Compatibilidade
 
-App\Http\ApiResponse
+O EmailService parte da versão usada pela Etapa 87 e preserva:
 
-Ela centraliza o formato recomendado de resposta JSON para novos
-Controllers.
+- recuperação de senha;
+- aprovação/rejeição de cadastro;
+- confirmação de e-mail do cadastro;
+- alteração segura do e-mail.
 
-Não refatoramos todos os Controllers antigos nesta etapa para evitar
-introduzir regressões desnecessárias antes dos testes completos.
+O routes/auth.php preserva:
 
-O contrato adotado continua:
+- rate limit;
+- alteração de senha;
+- revogação de sessões;
+- autenticação JWT.
 
-Sucesso:
+## Teste A — alteração de senha
 
-{
-  "status": "ok",
-  "dados": {}
-}
-
-Erro:
-
-{
-  "status": "erro",
-  "mensagem": "...",
-  "erros": {}
-}
-
-## Configuração futura do frontend
-
-No projeto React/Vite:
-
-.env
-
-VITE_API_URL=http://localhost:8282
-
-Uso:
-
-const API_URL = import.meta.env.VITE_API_URL;
-
-## Teste do preflight no PowerShell
-
-Invoke-WebRequest `
-  -Method OPTIONS `
-  -Uri "http://localhost:8282/dashboard" `
-  -Headers @{
-      Origin = "http://localhost:5173"
-      "Access-Control-Request-Method" = "GET"
-      "Access-Control-Request-Headers" = "Authorization"
-  }
+1. Faça login.
+2. Meu Perfil → Alterar senha.
+3. Troque a senha.
+4. O SYN deve encerrar a sessão.
+5. Confira o Gmail.
 
 Esperado:
 
-StatusCode: 204
+Sua senha foi alterada — SYN
 
-e cabeçalhos como:
+6. Faça login com a nova senha.
 
-Access-Control-Allow-Origin: http://localhost:5173
-Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS
+## Teste B — recuperação
 
-## Depois de copiar
+1. Use "Esqueci minha senha".
+2. Abra o link recebido.
+3. Redefina a senha.
+4. Confira a caixa de entrada novamente.
 
-composer dump-autoload
+Esperado:
 
-php -S localhost:8282 -t public
+Sua senha foi redefinida — SYN
+
+O primeiro e-mail é o link de recuperação.
+O segundo é o aviso de que a redefinição foi concluída.

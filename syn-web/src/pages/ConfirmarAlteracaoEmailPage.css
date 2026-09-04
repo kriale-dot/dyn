@@ -1,0 +1,138 @@
+.confirm87-page {
+  min-height: 100vh;
+  background:
+    linear-gradient(
+      135deg,
+      #f2f7f5,
+      #fbfcfc 55%,
+      #f5f8f7
+    );
+  color: #344f46;
+  padding: 40px 16px;
+  display: grid;
+  place-items: start center;
+}
+
+.confirm87-card {
+  width: min(650px, 100%);
+  margin-top: 55px;
+  border: 1px solid #dce5e1;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow:
+    0 18px 55px
+    rgba(43, 77, 66, .06);
+  padding:
+    clamp(24px, 6vw, 42px);
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+.confirm87-icon {
+  width: 58px;
+  height: 58px;
+  margin-bottom: 12px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+.confirm87-icon.loading {
+  background: #eef3f1;
+  color: #6d7c77;
+}
+
+.confirm87-icon.success {
+  background: #e1f0e9;
+  color: #356c59;
+}
+
+.confirm87-icon.error {
+  background: #fff1f1;
+  color: #8a5555;
+}
+
+.confirm87-eyebrow {
+  color: #73847e;
+  font-size: .56rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.confirm87-card h1 {
+  margin: 5px 0 7px;
+  color: #38554b;
+  font-size:
+    clamp(1.35rem, 4vw, 2rem);
+}
+
+.confirm87-card > p {
+  max-width: 510px;
+  margin: 0;
+  color: #76847f;
+  font-size: .68rem;
+  line-height: 1.6;
+}
+
+.confirm87-email,
+.confirm87-session-note {
+  width: min(470px, 100%);
+  margin-top: 15px;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.confirm87-email {
+  background: #f5f8f7;
+  display: grid;
+  gap: 2px;
+}
+
+.confirm87-email span {
+  color: #85918c;
+  font-size: .52rem;
+  text-transform: uppercase;
+}
+
+.confirm87-email strong {
+  color: #476158;
+  font-size: .68rem;
+  overflow-wrap: anywhere;
+}
+
+.confirm87-session-note {
+  border: 1px solid #d3e2dc;
+  background: #edf6f2;
+  color: #526c63;
+  font-size: .59rem;
+  line-height: 1.45;
+}
+
+.confirm87-actions {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 7px;
+}
+
+.confirm87-actions a {
+  min-height: 39px;
+  border: 1px solid #cbd9d4;
+  border-radius: 9px;
+  background: #fff;
+  color: #456b60;
+  padding: 9px 12px;
+  font-size: .62rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.confirm87-actions a.primary {
+  border-color: #3f7565;
+  background: #3f7565;
+  color: #fff;
+}

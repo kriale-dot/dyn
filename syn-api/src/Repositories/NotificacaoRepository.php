@@ -15,6 +15,9 @@ use PDO;
  *
  * As notificações PROGRAMACAO_ALTERADA e PROGRAMACAO_CANCELADA
  * são inseridas pelo trigger da migration 08.
+ *
+ * A Etapa 88 acrescenta CADASTRO_PENDENTE para Administradores e
+ * Organizadores que possuem CADASTROS_APROVAR.
  */
 final class NotificacaoRepository
 {
@@ -223,6 +226,150 @@ final class NotificacaoRepository
                             INTERVAL 48 HOUR
                         )
               )
+        SQL;
+
+        $stmt =
+            $this->pdo->prepare(
+                $sql
+            );
+
+        $stmt->execute([
+            ':usuario_id' =>
+                $usuarioId,
+        ]);
+    }
+
+    /**
+     * Cria uma notificação para cada cadastro que:
+     *
+     * - já confirmou o e-mail;
+     * - está com status PENDENTE;
+     * - ainda precisa de decisão administrativa.
+     *
+     * O destinatário recebe a notificação somente se for:
+     *
+     * - ADMINISTRADOR; ou
+     * - ORGANIZADOR com CADASTROS_APROVAR.
+     *
+     * INSERT IGNORE aproveita a chave única da tabela `notificacoes`,
+     * evitando duplicar o mesmo aviso em cada sincronização do sino.
+     */
+    public function sincronizarCadastrosPendentes(
+        int $usuarioId
+    ): void {
+        $sql = <<<'SQL'
+            INSERT IGNORE INTO notificacoes (
+                usuario_id,
+                tipo,
+                titulo,
+                mensagem,
+                url_acao,
+                origem_tipo,
+                origem_id,
+                expira_em
+            )
+
+            SELECT
+                u.id,
+
+                'CADASTRO_PENDENTE',
+
+                'Novo cadastro aguardando aprovação',
+
+                CONCAT(
+                    sc.nome,
+                    ' confirmou o e-mail e aguarda análise.'
+                ),
+
+                '/gestao/cadastros',
+
+                'SOLICITACAO_CADASTRO',
+
+                sc.id,
+
+                NULL
+
+            FROM usuarios u
+
+            INNER JOIN papeis p
+                ON p.id = u.papel_id
+
+            CROSS JOIN solicitacoes_cadastro sc
+
+            WHERE u.id = :usuario_id
+
+              AND u.status = 'ATIVO'
+
+              AND sc.status = 'PENDENTE'
+
+              AND sc.email_confirmado_em IS NOT NULL
+
+              AND (
+                    p.codigo = 'ADMINISTRADOR'
+
+                    OR (
+                        p.codigo = 'ORGANIZADOR'
+
+                        AND EXISTS (
+                            SELECT 1
+
+                            FROM usuarios_permissoes_especiais upe
+
+                            INNER JOIN permissoes_especiais pe
+                                ON pe.id = upe.permissao_id
+
+                            WHERE upe.usuario_id = u.id
+                              AND pe.codigo =
+                                  'CADASTROS_APROVAR'
+                              AND pe.ativo = 1
+                        )
+                    )
+              )
+        SQL;
+
+        $stmt =
+            $this->pdo->prepare(
+                $sql
+            );
+
+        $stmt->execute([
+            ':usuario_id' =>
+                $usuarioId,
+        ]);
+    }
+
+    /**
+     * Se o cadastro já foi aprovado ou rejeitado, o aviso antigo deixa
+     * de ser uma pendência.
+     *
+     * Isso também cobre uma decisão tomada por OUTRO aprovador.
+     */
+    public function encerrarCadastrosResolvidos(
+        int $usuarioId
+    ): void {
+        $sql = <<<'SQL'
+            UPDATE notificacoes n
+
+            INNER JOIN solicitacoes_cadastro sc
+                ON n.origem_tipo =
+                    'SOLICITACAO_CADASTRO'
+               AND n.origem_id = sc.id
+
+            SET n.lida_em =
+                COALESCE(
+                    n.lida_em,
+                    NOW()
+                )
+
+            WHERE n.usuario_id = :usuario_id
+
+              AND n.tipo =
+                  'CADASTRO_PENDENTE'
+
+              AND n.lida_em IS NULL
+
+              AND sc.status <>
+                  'PENDENTE'
         SQL;
 
         $stmt =

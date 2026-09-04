@@ -27,6 +27,8 @@ import {
 } from '../contexts/AuthContext'
 
 import './ProgramacaoFormPage.css'
+import './ProgramacaoFormEtapa66.css'
+import './ProgramacaoFormEtapa73.css'
 
 const FORM_VAZIO = {
   titulo: '',
@@ -37,6 +39,8 @@ const FORM_VAZIO = {
   inicio_em: '',
   fim_em: '',
   permite_resposta: true,
+  visibilidade: 'INTERNA',
+  descricao_publica: '',
 }
 
 export default function ProgramacaoFormPage() {
@@ -198,6 +202,19 @@ export default function ProgramacaoFormPage() {
       [usuarios],
     )
 
+  const contextoSemana =
+    useMemo(
+      () =>
+        obterContextoSemana(
+          form.inicio_em,
+          form.fim_em,
+        ),
+      [
+        form.inicio_em,
+        form.fim_em,
+      ],
+    )
+
   const carregar =
     useCallback(
       async () => {
@@ -288,6 +305,12 @@ export default function ProgramacaoFormPage() {
               permite_resposta:
                 normalizada
                   .permite_resposta,
+              visibilidade:
+                normalizada
+                  .visibilidade,
+              descricao_publica:
+                normalizada
+                  .descricao_publica,
             })
           } else if (
             papel === 'ORGANIZADOR'
@@ -838,6 +861,83 @@ export default function ProgramacaoFormPage() {
             </div>
           </header>
 
+          <div className="program66-week-context">
+            <div className="program66-week-badge">
+              <span>
+                Semana do ano
+              </span>
+
+              <strong>
+                {contextoSemana
+                  ? `Semana ${contextoSemana.numero}`
+                  : 'Defina a data'}
+              </strong>
+            </div>
+
+            <div className="program66-week-copy">
+              {contextoSemana ? (
+                <>
+                  <strong>
+                    {formatarDataCurtaISO(
+                      contextoSemana.inicioSemana,
+                    )}
+                    {' — '}
+                    {formatarDataCurtaISO(
+                      contextoSemana.fimSemana,
+                    )}
+                  </strong>
+
+                  <span>
+                    {contextoSemana
+                      .cruzaSemana
+                      ? `A programação termina na Semana ${contextoSemana.numeroFim}.`
+                      : 'Esta programação pertence a uma única semana do mapa.'}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <strong>
+                    A semana será identificada automaticamente.
+                  </strong>
+
+                  <span>
+                    Informe a data de início para o SYN localizar
+                    a programação no mapa semanal.
+                  </span>
+                </>
+              )}
+            </div>
+
+            {contextoSemana && (
+              <button
+                type="button"
+                className="program66-map-button"
+                onClick={() =>
+                  navigate(
+                    `/semana?data_referencia=${contextoSemana.dataReferencia}`,
+                  )
+                }
+              >
+                Abrir Semana {contextoSemana.numero} no mapa
+              </button>
+            )}
+          </div>
+
+          {contextoSemana?.cruzaSemana && (
+            <div className="program66-cross-week-warning">
+              <strong>
+                Atenção: esta programação atravessa duas semanas.
+              </strong>
+
+              <span>
+                Ela começa na Semana {contextoSemana.numero}
+                {' '}e termina na Semana {contextoSemana.numeroFim}.
+                O SYN continuará usando a data de início para
+                posicioná-la no mapa.
+              </span>
+            </div>
+          )}
+
           <div className="program-editor-fields">
             <Field
               label="Início"
@@ -1018,6 +1118,169 @@ export default function ProgramacaoFormPage() {
           </div>
         </section>
 
+        <section className="program-editor-section program73-publication-section">
+          <header>
+            <span className="program-editor-step">
+              4
+            </span>
+
+            <div>
+              <h2>
+                Quem pode ver?
+              </h2>
+
+              <p>
+                Escolha se esta programação fica restrita
+                à área interna ou aparece para visitantes.
+              </p>
+            </div>
+          </header>
+
+          <div className="program73-visibility-options">
+            <button
+              type="button"
+              disabled={bloqueada}
+              className={
+                form.visibilidade === 'INTERNA'
+                  ? 'program73-visibility-card active internal'
+                  : 'program73-visibility-card internal'
+              }
+              onClick={() =>
+                alterar(
+                  'visibilidade',
+                  'INTERNA',
+                )
+              }
+            >
+              <span className="program73-visibility-icon">
+                🔒
+              </span>
+
+              <span className="program73-visibility-copy">
+                <strong>
+                  Interna
+                </strong>
+
+                <small>
+                  Visível somente dentro da área autenticada
+                  do SYN. É a opção mais segura e o padrão
+                  para novas programações.
+                </small>
+              </span>
+
+              <span className="program73-selection-mark">
+                {form.visibilidade === 'INTERNA'
+                  ? 'Selecionada'
+                  : 'Selecionar'}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              disabled={bloqueada}
+              className={
+                form.visibilidade === 'PUBLICA'
+                  ? 'program73-visibility-card active public'
+                  : 'program73-visibility-card public'
+              }
+              onClick={() =>
+                alterar(
+                  'visibilidade',
+                  'PUBLICA',
+                )
+              }
+            >
+              <span className="program73-visibility-icon">
+                ◉
+              </span>
+
+              <span className="program73-visibility-copy">
+                <strong>
+                  Pública
+                </strong>
+
+                <small>
+                  Pode aparecer no mapa público da igreja
+                  sem que o visitante faça login.
+                </small>
+              </span>
+
+              <span className="program73-selection-mark">
+                {form.visibilidade === 'PUBLICA'
+                  ? 'Selecionada'
+                  : 'Selecionar'}
+              </span>
+            </button>
+          </div>
+
+          {form.visibilidade === 'PUBLICA' && (
+            <div className="program73-public-editor">
+              <div className="program73-public-warning">
+                <strong>
+                  Informação pública
+                </strong>
+
+                <span>
+                  Título, tipo, horário, local e a descrição
+                  abaixo poderão ser consultados por qualquer
+                  pessoa, sem login.
+                </span>
+              </div>
+
+              <Field
+                label="Descrição para o público"
+                error={
+                  fieldErrors
+                    .descricao_publica
+                }
+                full
+              >
+                <textarea
+                  rows={4}
+                  maxLength={2000}
+                  disabled={bloqueada}
+                  value={
+                    form
+                      .descricao_publica
+                  }
+                  onChange={(event) =>
+                    alterar(
+                      'descricao_publica',
+                      event.target.value,
+                    )
+                  }
+                  placeholder="Ex.: Celebração aberta à comunidade. Todos são bem-vindos."
+                />
+              </Field>
+
+              <div className="program73-privacy-note">
+                <strong>
+                  A descrição interna continua privada.
+                </strong>
+
+                <span>
+                  Escalas, nomes de participantes, funções,
+                  respostas, observações internas e dados de
+                  usuários não são enviados pela API pública.
+                </span>
+              </div>
+            </div>
+          )}
+
+          {form.visibilidade === 'INTERNA' && (
+            <div className="program73-internal-note">
+              <strong>
+                Esta programação não aparecerá para visitantes.
+              </strong>
+
+              <span>
+                Ela continua disponível normalmente para os
+                usuários autenticados que possuem acesso.
+              </span>
+            </div>
+          )}
+        </section>
+
         <footer className="program-editor-actions">
           <button
             type="button"
@@ -1182,6 +1445,15 @@ function montarPayload(
         form.permite_resposta,
       ),
 
+    visibilidade:
+      form.visibilidade,
+
+    descricao_publica:
+      form
+        .descricao_publica
+        .trim()
+      || null,
+
     confirmar_conflito:
       Boolean(
         confirmarConflito,
@@ -1244,6 +1516,28 @@ function validarFormulario(
       'O término deve ser posterior ao início.'
   }
 
+  if (
+    ![
+      'INTERNA',
+      'PUBLICA',
+    ].includes(
+      form.visibilidade,
+    )
+  ) {
+    erros.visibilidade =
+      'Selecione a visibilidade.'
+  }
+
+  if (
+    form
+      .descricao_publica
+      .trim()
+      .length > 2000
+  ) {
+    erros.descricao_publica =
+      'Use no máximo 2000 caracteres.'
+  }
+
   return erros
 }
 
@@ -1283,6 +1577,16 @@ function normalizarProgramacao(
     descricao:
       item?.descricao
       || '',
+
+    descricao_publica:
+      item?.descricao_publica
+      || '',
+
+    visibilidade:
+      item?.visibilidade
+      === 'PUBLICA'
+        ? 'PUBLICA'
+        : 'INTERNA',
 
     inicio_em:
       item?.inicio_em
@@ -1502,6 +1806,267 @@ function formatarHora(
     ? String(valor)
         .slice(11, 16)
     : '--:--'
+}
+
+function obterContextoSemana(
+  inicioValor,
+  fimValor,
+) {
+  const inicio =
+    parseDatetimeLocal(
+      inicioValor,
+    )
+
+  if (!inicio) {
+    return null
+  }
+
+  const inicioSemana =
+    obterSegundaFeira(
+      inicio,
+    )
+
+  const fimSemana =
+    new Date(
+      inicioSemana,
+    )
+
+  fimSemana.setDate(
+    fimSemana.getDate() + 6,
+  )
+
+  const numero =
+    obterNumeroSemanaISO(
+      inicio,
+    )
+
+  const ano =
+    obterAnoSemanaISO(
+      inicio,
+    )
+
+  const fim =
+    parseDatetimeLocal(
+      fimValor,
+    )
+
+  const numeroFim =
+    fim
+      ? obterNumeroSemanaISO(
+          fim,
+        )
+      : numero
+
+  const anoFim =
+    fim
+      ? obterAnoSemanaISO(
+          fim,
+        )
+      : ano
+
+  return {
+    numero,
+    ano,
+
+    inicioSemana:
+      formatarISO(
+        inicioSemana,
+      ),
+
+    fimSemana:
+      formatarISO(
+        fimSemana,
+      ),
+
+    dataReferencia:
+      formatarISO(
+        inicio,
+      ),
+
+    numeroFim,
+    anoFim,
+
+    cruzaSemana:
+      Boolean(
+        fim
+        && (
+          numeroFim !== numero
+          || anoFim !== ano
+        )
+      ),
+  }
+}
+
+function parseDatetimeLocal(
+  valor,
+) {
+  if (!valor) {
+    return null
+  }
+
+  const data =
+    new Date(
+      String(valor)
+        .replace(' ', 'T'),
+    )
+
+  return Number.isNaN(
+    data.getTime(),
+  )
+    ? null
+    : data
+}
+
+function obterSegundaFeira(
+  dataOriginal,
+) {
+  const data =
+    new Date(
+      dataOriginal.getFullYear(),
+      dataOriginal.getMonth(),
+      dataOriginal.getDate(),
+      12,
+      0,
+      0,
+    )
+
+  const dia =
+    data.getDay()
+
+  const deslocamento =
+    dia === 0
+      ? -6
+      : 1 - dia
+
+  data.setDate(
+    data.getDate()
+    + deslocamento,
+  )
+
+  return data
+}
+
+function obterNumeroSemanaISO(
+  dataOriginal,
+) {
+  const data =
+    new Date(
+      Date.UTC(
+        dataOriginal.getFullYear(),
+        dataOriginal.getMonth(),
+        dataOriginal.getDate(),
+      ),
+    )
+
+  const diaSemana =
+    data.getUTCDay()
+    || 7
+
+  data.setUTCDate(
+    data.getUTCDate()
+    + 4
+    - diaSemana,
+  )
+
+  const primeiroDiaAno =
+    new Date(
+      Date.UTC(
+        data.getUTCFullYear(),
+        0,
+        1,
+      ),
+    )
+
+  return Math.ceil(
+    (
+      (
+        data
+        - primeiroDiaAno
+      )
+      / 86400000
+      + 1
+    )
+    / 7,
+  )
+}
+
+function obterAnoSemanaISO(
+  dataOriginal,
+) {
+  const data =
+    new Date(
+      Date.UTC(
+        dataOriginal.getFullYear(),
+        dataOriginal.getMonth(),
+        dataOriginal.getDate(),
+      ),
+    )
+
+  const diaSemana =
+    data.getUTCDay()
+    || 7
+
+  data.setUTCDate(
+    data.getUTCDate()
+    + 4
+    - diaSemana,
+  )
+
+  return data.getUTCFullYear()
+}
+
+function formatarISO(
+  data,
+) {
+  const ano =
+    data.getFullYear()
+
+  const mes =
+    String(
+      data.getMonth() + 1,
+    ).padStart(2, '0')
+
+  const dia =
+    String(
+      data.getDate(),
+    ).padStart(2, '0')
+
+  return `${ano}-${mes}-${dia}`
+}
+
+function formatarDataCurtaISO(
+  iso,
+) {
+  if (!iso) {
+    return '—'
+  }
+
+  const [
+    ano,
+    mes,
+    dia,
+  ] =
+    String(iso)
+      .slice(0, 10)
+      .split('-')
+      .map(Number)
+
+  return new Date(
+    ano,
+    mes - 1,
+    dia,
+    12,
+    0,
+    0,
+  )
+    .toLocaleDateString(
+      'pt-BR',
+      {
+        day: '2-digit',
+        month: 'short',
+      },
+    )
+    .replace('.', '')
 }
 
 function traduzirStatus(

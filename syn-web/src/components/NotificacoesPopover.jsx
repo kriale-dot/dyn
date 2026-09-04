@@ -612,6 +612,14 @@ function classeTipo(
 
   if (
     valor.includes(
+      'CADASTRO',
+    )
+  ) {
+    return 'registration'
+  }
+
+  if (
+    valor.includes(
       'ALTER',
     )
   ) {
@@ -641,6 +649,7 @@ function iconeTipo(
   const mapa = {
     danger: '×',
     warning: '↻',
+    registration: '+',
     personal: '✓',
     general: '•',
   }

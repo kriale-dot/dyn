@@ -22,6 +22,9 @@ final class AppBootstrapService
     private const PERMISSAO_NECESSIDADES =
         'NECESSIDADES_ESPECIFICAS_GERENCIAR';
 
+    private const PERMISSAO_CADASTROS_APROVAR =
+        'CADASTROS_APROVAR';
+
     public function __construct(
         private AppBootstrapRepository $repository
     ) {
@@ -115,6 +118,17 @@ final class AppBootstrapService
                 true
             );
 
+        $podeAprovarCadastros =
+            $ehAdmin
+            || (
+                $ehOrganizador
+                && in_array(
+                    self::PERMISSAO_CADASTROS_APROVAR,
+                    $codigosPermissoes,
+                    true
+                )
+            );
+
         $capacidades = [
             /**
              * Recursos comuns a todo usuário autenticado.
@@ -159,6 +173,12 @@ final class AppBootstrapService
                 $ehAdmin,
             'gerenciar_permissoes_especiais' =>
                 $ehAdmin,
+
+            /**
+             * Cadastro público.
+             */
+            'aprovar_cadastros' =>
+                $podeAprovarCadastros,
 
             /**
              * Dado sensível.
@@ -322,6 +342,24 @@ final class AppBootstrapService
                 'visivel' =>
                     $capacidades[
                         'gerenciar_programacoes'
+                    ],
+            ],
+            [
+                'codigo' => 'ESCALAS_SEMANA',
+                'rotulo' => 'Escalas da Semana',
+                'rota' => '/gestao/escalas-semana',
+                'visivel' =>
+                    $capacidades[
+                        'gerenciar_escalas'
+                    ],
+            ],
+            [
+                'codigo' => 'CADASTROS',
+                'rotulo' => 'Cadastros Pendentes',
+                'rota' => '/gestao/cadastros',
+                'visivel' =>
+                    $capacidades[
+                        'aprovar_cadastros'
                     ],
             ],
             [

@@ -1,0 +1,139 @@
+.public78-next {
+  width: min(1180px, 100%);
+  margin: 0 auto 14px;
+  border: 1px solid #bfd3cb;
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      110deg,
+      #edf7f3,
+      #ffffff 72%
+    );
+  padding: 13px 14px;
+  display: grid;
+  grid-template-columns:
+    auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 13px;
+  box-shadow:
+    0 8px 28px
+    rgba(48, 87, 74, .05);
+}
+
+.public78-next-marker {
+  width: 58px;
+  min-height: 67px;
+  border-radius: 14px;
+  background: #3f7565;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  align-content: center;
+}
+
+.public78-next-marker span {
+  font-size: .47rem;
+  font-weight: 850;
+  text-transform: uppercase;
+  opacity: .84;
+}
+
+.public78-next-marker strong {
+  font-size: 1.28rem;
+  line-height: 1;
+}
+
+.public78-next-marker small {
+  margin-top: 2px;
+  font-size: .51rem;
+  font-weight: 900;
+}
+
+.public78-next-main {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.public78-next-eyebrow {
+  color: #5e776f;
+  font-size: .54rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .045em;
+}
+
+.public78-next-main h2 {
+  margin: 0;
+  color: #315248;
+  font-size: .92rem;
+}
+
+.public78-next-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  color: #71817b;
+  font-size: .62rem;
+}
+
+.public78-next-meta strong {
+  color: #4d665e;
+}
+
+.public78-next-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.public78-next-actions button {
+  min-height: 34px;
+  border: 1px solid #c8d8d2;
+  border-radius: 9px;
+  background: #fff;
+  color: #456c60;
+  padding: 7px 9px;
+  font-size: .59rem;
+  font-weight: 850;
+}
+
+.public78-next-actions button.primary {
+  border-color: #3f7565;
+  background: #3f7565;
+  color: #fff;
+}
+
+@media (max-width: 720px) {
+  .public78-next {
+    grid-template-columns:
+      auto minmax(0, 1fr);
+  }
+
+  .public78-next-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 460px) {
+  .public78-next {
+    grid-template-columns: 1fr;
+  }
+
+  .public78-next-marker {
+    width: 54px;
+  }
+
+  .public78-next-actions {
+    grid-column: auto;
+    display: grid;
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .public78-next-actions button {
+    width: 100%;
+  }
+}
