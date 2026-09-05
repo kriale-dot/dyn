@@ -1,0 +1,29 @@
+/* ==========================================================
+   SYN — ETAPA 103
+   PROTEÇÃO GLOBAL DO VIEWPORT MOBILE
+   ========================================================== */
+
+@media (max-width: 980px) {
+  html,
+  body,
+  #root {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  #root {
+    overflow-x: clip;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+}

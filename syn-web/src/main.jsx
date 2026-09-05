@@ -11,6 +11,11 @@ import {
 } from './contexts/AuthContext'
 
 import './styles.css'
+import './styles_compacto.css'
+import './styles_mobile_identidade.css'
+import './styles_mobile_etapa100.css'
+import './styles_mobile_etapa102.css'
+import './styles_mobile_etapa103.css'
 
 ReactDOM
   .createRoot(

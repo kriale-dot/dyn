@@ -1,6 +1,31 @@
+/**
+ * URL base da API.
+ *
+ * Regra da Etapa 100:
+ * - se VITE_API_URL estiver configurado, ele continua tendo prioridade;
+ * - sem configuração, usamos automaticamente o mesmo host pelo qual
+ *   o frontend foi aberto, na porta 8282.
+ *
+ * Exemplos:
+ *   frontend: http://localhost:5173
+ *   API:      http://localhost:8282
+ *
+ *   frontend: http://192.168.15.8:5173
+ *   API:      http://192.168.15.8:8282
+ *
+ * Isso evita que o celular tente acessar "localhost:8282",
+ * que apontaria para o próprio celular.
+ */
 const API_URL =
-  import.meta.env.VITE_API_URL
-  || 'http://localhost:8282'
+  String(
+    import.meta.env.VITE_API_URL
+    || '',
+  ).trim()
+  || (
+    typeof window !== 'undefined'
+      ? `${window.location.protocol}//${window.location.hostname}:8282`
+      : 'http://localhost:8282'
+  )
 
 const TOKEN_KEY = 'syn_token'
 

@@ -1,0 +1,99 @@
+/* ==========================================================
+   SYN — ETAPA 94
+   QR CODE NA TELA DE LOGIN
+
+   Desktop:
+   - login + QR Code lado a lado;
+   - mantém o cartão compacto.
+
+   Mobile:
+   - QR Code é ocultado porque ele serve principalmente para
+     a pessoa que está olhando o SYN em outra tela e quer abrir
+     o sistema no celular.
+   ========================================================== */
+
+.login94-card {
+  width: min(100%, 760px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 230px;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.login94-main {
+  min-width: 0;
+}
+
+.login94-qr-panel {
+  border-left: 1px solid #e0e8e5;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.login94-qr-kicker {
+  margin-bottom: 6px;
+  color: #4d7468;
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.login94-qr-panel h2 {
+  margin: 0;
+  color: #17302a;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.login94-qr-panel p {
+  margin: 7px 0 12px;
+  color: #697873;
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.login94-qr-box {
+  width: 150px;
+  min-height: 150px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #dce6e2;
+  border-radius: 10px;
+  padding: 7px;
+  background: #fff;
+}
+
+.login94-qr-box img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.login94-qr-box span {
+  color: #7a8884;
+  font-size: 0.7rem;
+}
+
+.login94-local-warning {
+  display: block;
+  margin-top: 9px;
+  color: #8b6f3d;
+  font-size: 0.64rem;
+  line-height: 1.35;
+}
+
+@media (max-width: 760px) {
+  .login94-card {
+    width: min(100%, 430px);
+    display: block;
+  }
+
+  .login94-qr-panel {
+    display: none;
+  }
+}

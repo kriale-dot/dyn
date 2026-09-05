@@ -1,0 +1,157 @@
+/* ==========================================================
+   SYN — ETAPA 103
+   HOME MOBILE — CORREÇÃO DE OVERFLOW HORIZONTAL
+
+   Este arquivo é importado diretamente por HomePage.jsx,
+   depois de HomePageEtapa47/57/62.css.
+   ========================================================== */
+
+@media (max-width: 700px) {
+  .syn-home-page,
+  .syn-home-page > *,
+  .syn-home-intro,
+  .syn-home-intro > *,
+  .syn-home-priority-grid,
+  .syn-home-secondary-grid,
+  .syn-next-card,
+  .syn-pending-card,
+  .syn-week-map-card,
+  .syn-home-panel,
+  .syn-management-week-card {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .syn-home-page {
+    width: 100% !important;
+    overflow-x: hidden;
+  }
+
+  .syn-home-intro {
+    width: 100%;
+    display: flex;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 13px;
+  }
+
+  .syn-home-intro > div:first-child {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .syn-home-intro h1 {
+    width: 100%;
+    max-width: 100% !important;
+    margin-right: 0;
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+    font-size: clamp(1.8rem, 8vw, 2.15rem);
+    line-height: 1.08;
+  }
+
+  .syn-home-intro p {
+    width: 100%;
+    max-width: 100% !important;
+    overflow-wrap: break-word;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .syn-home-week-label,
+  .syn-home-week-label-57 {
+    width: 100%;
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  /* Grids viram uma única coluna sem largura mínima escondida. */
+  .syn-home-priority-grid,
+  .syn-home-secondary-grid {
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .syn-next-card,
+  .syn-pending-card,
+  .syn-week-map-card,
+  .syn-home-panel,
+  .syn-management-week-card {
+    width: 100% !important;
+  }
+
+  /* Conteúdo interno dos cards também pode encolher. */
+  .syn-next-topline,
+  .syn-next-date,
+  .syn-next-details,
+  .syn-next-details > span,
+  .syn-next-actions,
+  .syn-section-heading,
+  .syn-pending-item,
+  .syn-pending-copy,
+  .syn-home-program-row,
+  .syn-home-program-copy,
+  .syn-management-week-copy,
+  .syn-management-week-metrics {
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  .syn-next-card h2,
+  .syn-pending-card h2,
+  .syn-section-heading h2,
+  .syn-home-program-copy strong,
+  .syn-home-program-copy span,
+  .syn-management-week-copy h2,
+  .syn-management-week-copy p {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  /* O mapa semanal pode rolar internamente, sem estourar o body. */
+  .syn-week-map-card {
+    overflow: hidden;
+  }
+
+  .syn-week-strip {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    grid-template-columns: repeat(7, 92px) !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-inline: contain;
+    padding-bottom: 5px;
+  }
+
+  /* Métricas administrativas quebram dentro do card. */
+  .syn-management-week-card,
+  .syn-management-week-card.error-state {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .syn-management-week-metrics {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .syn-management-metric {
+    min-width: 0 !important;
+    flex: 1 1 95px;
+  }
+
+  img,
+  svg,
+  canvas {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+  .syn-home-intro h1 {
+    font-size: 1.72rem;
+  }
+}

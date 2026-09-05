@@ -1,0 +1,591 @@
+/* ==========================================================
+   SYN — ETAPA 93
+   DENSIDADE VISUAL MAIS COMPACTA
+
+   Objetivo:
+   - reduzir espaços excessivos sem deixar a interface apertada;
+   - aproveitar melhor telas pequenas;
+   - reduzir o arredondamento visual de cartões e controles;
+   - preservar áreas de toque confortáveis no celular.
+
+   Este arquivo é carregado DEPOIS de styles.css e dos estilos das
+   páginas, funcionando como uma camada final de refinamento visual.
+   ========================================================== */
+
+/* ----------------------------------------------------------
+   1. Estrutura principal
+   ---------------------------------------------------------- */
+
+.topbar {
+  min-height: 66px;
+  padding: 9px 18px;
+}
+
+.app-layout {
+  min-height: calc(100vh - 66px);
+}
+
+.sidebar {
+  padding: 12px 9px;
+}
+
+.sidebar nav {
+  gap: 4px;
+  top: 80px;
+}
+
+.nav-link {
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.content {
+  padding: 22px 26px 34px;
+}
+
+/* ----------------------------------------------------------
+   2. Ritmo vertical das páginas
+   ---------------------------------------------------------- */
+
+.home-page,
+.week-page,
+.program-detail-page,
+.programs-page,
+.management-page,
+.scale-management-page,
+.users-page {
+  gap: 16px;
+}
+
+.summary-grid,
+.programs-summary-grid,
+.scale-management-summary,
+.users-summary-grid {
+  gap: 10px;
+}
+
+.commitment-list,
+.programs-list,
+.management-list,
+.scale-management-column,
+.scale-groups,
+.my-participations-grid {
+  gap: 9px;
+}
+
+/* ----------------------------------------------------------
+   3. Superfícies / cartões
+   ---------------------------------------------------------- */
+
+.login-card {
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.hero-card,
+.panel,
+.summary-card,
+.week-period-card,
+.program-detail-hero,
+.detail-info-card,
+.my-participation-card,
+.programs-header,
+.program-metric-card,
+.program-filters,
+.program-list-card,
+.management-hero,
+.scale-management-hero,
+.management-toolbar,
+.management-program-card,
+.candidate-function-card,
+.candidate-row,
+.current-scale-card,
+.users-hero,
+.users-toolbar,
+.user-card,
+.loading-card {
+  border-radius: 13px;
+}
+
+.hero-card,
+.programs-header,
+.management-hero,
+.scale-management-hero,
+.users-hero {
+  padding: 20px;
+}
+
+.panel {
+  padding: 18px;
+}
+
+.summary-card,
+.program-metric-card {
+  padding: 14px;
+}
+
+.week-period-card {
+  padding: 13px 15px;
+}
+
+.program-detail-hero {
+  padding: 19px;
+}
+
+.detail-info-card,
+.my-participation-card {
+  padding: 14px;
+}
+
+.program-filters,
+.management-toolbar,
+.users-toolbar {
+  padding: 12px;
+}
+
+.program-list-card,
+.management-program-card,
+.user-card {
+  padding: 13px;
+}
+
+.candidate-function-card {
+  padding: 13px;
+}
+
+.candidate-row,
+.current-scale-card {
+  padding: 9px 10px;
+}
+
+.commitment-card,
+.scale-person,
+.program-card {
+  border-radius: 11px;
+}
+
+.commitment-card {
+  padding: 12px;
+}
+
+.program-card {
+  padding: 13px;
+  gap: 12px;
+}
+
+.scale-person {
+  padding: 9px 11px;
+}
+
+.week-empty {
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+/* ----------------------------------------------------------
+   4. Datas, filtros e formulários
+   ---------------------------------------------------------- */
+
+.program-list-date,
+.management-date {
+  min-height: 62px;
+  border-radius: 11px;
+}
+
+.login-form {
+  gap: 13px;
+}
+
+.login-form label,
+.program-filters label,
+.management-toolbar label,
+.users-toolbar label,
+.user-form label {
+  gap: 5px;
+}
+
+.login-form input,
+.program-filters input,
+.program-filters select,
+.management-toolbar input,
+.users-toolbar input,
+.users-toolbar select,
+.user-form input,
+.user-form select,
+textarea {
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.program-filters input,
+.program-filters select,
+.management-toolbar input,
+.users-toolbar input,
+.users-toolbar select,
+.user-form input,
+.user-form select {
+  min-height: 41px;
+}
+
+/* ----------------------------------------------------------
+   5. Botões
+   Mantemos altura suficiente para toque no celular.
+   ---------------------------------------------------------- */
+
+.button-primary,
+.button-secondary,
+.week-nav-button,
+.participation-action,
+.small-primary-button,
+.small-secondary-button,
+.small-danger-button,
+.management-open-label {
+  border-radius: 8px;
+}
+
+.button-primary,
+.button-secondary,
+.week-nav-button {
+  padding: 9px 13px;
+}
+
+.participation-action {
+  padding: 8px 11px;
+}
+
+.small-primary-button,
+.small-secondary-button,
+.small-danger-button {
+  padding: 7px 9px;
+}
+
+/* ----------------------------------------------------------
+   6. Espaços internos específicos
+   ---------------------------------------------------------- */
+
+.login-brand {
+  margin-bottom: 20px;
+}
+
+.brand,
+.login-brand,
+.user-area {
+  gap: 10px;
+}
+
+.week-header {
+  gap: 16px;
+}
+
+.week-day {
+  min-height: 92px;
+}
+
+.week-day-content {
+  padding-bottom: 12px;
+}
+
+.week-day-header {
+  min-height: 40px;
+  margin-bottom: 5px;
+}
+
+.week-events {
+  gap: 7px;
+}
+
+.program-main {
+  gap: 8px;
+}
+
+.my-role-box {
+  padding-top: 9px;
+  gap: 6px;
+}
+
+.program-list-main {
+  gap: 7px;
+}
+
+.program-list-card,
+.management-program-card {
+  gap: 13px;
+}
+
+.management-meta,
+.program-list-meta,
+.user-card-meta {
+  gap: 5px 12px;
+}
+
+.scale-management-grid {
+  gap: 13px;
+}
+
+.candidate-function-card,
+.scale-group {
+  gap: 9px;
+}
+
+.candidate-list,
+.current-scale-list,
+.scale-list {
+  gap: 6px;
+}
+
+.user-card-main {
+  gap: 6px;
+}
+
+.user-card-actions,
+.user-function-tags,
+.current-scale-actions,
+.participation-actions {
+  gap: 6px;
+}
+
+/* ----------------------------------------------------------
+   7. Arredondamentos que continuam circulares/pílulas
+   Status, avatares e indicadores mantêm sua função visual.
+   ---------------------------------------------------------- */
+
+.brand-mark {
+  border-radius: 9px;
+}
+
+.brand-mark.large {
+  border-radius: 12px;
+}
+
+.brand-logo {
+  border-radius: 7px;
+}
+
+/* ----------------------------------------------------------
+   8. Tablet
+   ---------------------------------------------------------- */
+
+@media (max-width: 980px) {
+  .sidebar {
+    padding: 8px 10px;
+  }
+
+  .sidebar nav {
+    gap: 4px;
+  }
+}
+
+/* ----------------------------------------------------------
+   9. Mobile
+   Aqui a redução é mais perceptível porque espaço vertical
+   é especialmente valioso.
+   ---------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  .topbar {
+    min-height: 60px;
+    padding: 8px 10px;
+  }
+
+  .app-layout {
+    min-height: calc(100vh - 60px);
+  }
+
+  .content {
+    padding: 13px 11px 24px;
+  }
+
+  .sidebar {
+    padding: 6px 8px;
+  }
+
+  .nav-link {
+    padding: 7px 8px;
+    border-radius: 7px;
+    font-size: 0.91rem;
+  }
+
+  .home-page,
+  .week-page,
+  .program-detail-page,
+  .programs-page,
+  .management-page,
+  .scale-management-page,
+  .users-page {
+    gap: 12px;
+  }
+
+  .hero-card,
+  .programs-header,
+  .management-hero,
+  .scale-management-hero,
+  .users-hero,
+  .program-detail-hero {
+    padding: 14px;
+    border-radius: 11px;
+  }
+
+  .panel {
+    padding: 13px;
+    border-radius: 11px;
+  }
+
+  .summary-card,
+  .program-metric-card,
+  .detail-info-card,
+  .my-participation-card {
+    padding: 11px;
+    border-radius: 10px;
+  }
+
+  .program-filters,
+  .management-toolbar,
+  .users-toolbar {
+    padding: 10px;
+    border-radius: 10px;
+    gap: 9px;
+  }
+
+  .program-list-card,
+  .management-program-card,
+  .user-card {
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .program-card {
+    padding: 10px;
+    border-radius: 10px;
+    gap: 8px;
+  }
+
+  .candidate-function-card {
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .candidate-row,
+  .current-scale-card,
+  .scale-person,
+  .commitment-card {
+    padding: 8px 9px;
+    border-radius: 9px;
+  }
+
+  .week-period-card {
+    padding: 10px 11px;
+    border-radius: 10px;
+    gap: 10px;
+  }
+
+  .week-day {
+    grid-template-columns: 25px minmax(0, 1fr);
+    gap: 7px;
+    min-height: 82px;
+  }
+
+  .week-day-content {
+    padding-bottom: 9px;
+  }
+
+  .week-day-header {
+    min-height: 36px;
+    gap: 8px;
+  }
+
+  .week-day-dot {
+    width: 11px;
+    height: 11px;
+    margin-top: 14px;
+    border-width: 2px;
+  }
+
+  .program-list-date,
+  .management-date {
+    min-height: 54px;
+    border-radius: 9px;
+  }
+
+  .management-program-action {
+    padding-left: 70px;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Em vez de quatro cartões em uma longa coluna,
+     os indicadores simples usam grade 2 x 2. */
+  .summary-grid,
+  .programs-summary-grid,
+  .scale-management-summary,
+  .users-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .summary-card,
+  .program-metric-card {
+    min-height: 76px;
+    padding: 10px;
+  }
+
+  .summary-card strong,
+  .program-metric-card strong {
+    font-size: 1.5rem;
+  }
+
+  .login-page,
+  .screen-center {
+    padding: 12px;
+  }
+
+  .login-card {
+    padding: 18px;
+    border-radius: 13px;
+  }
+
+  .login-brand {
+    margin-bottom: 16px;
+  }
+
+  .week-summary-inline {
+    gap: 7px;
+  }
+
+  .program-list-card,
+  .management-program-card {
+    grid-template-columns: 52px minmax(0, 1fr);
+    gap: 9px;
+  }
+
+  .management-program-action {
+    padding-left: 61px;
+  }
+
+  .user-card {
+    gap: 10px;
+  }
+
+  .button-primary,
+  .button-secondary,
+  .week-nav-button {
+    padding: 8px 11px;
+  }
+}
+
+@media (max-width: 380px) {
+  .content {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .topbar {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .nav-link {
+    padding-left: 6px;
+    padding-right: 6px;
+    font-size: 0.86rem;
+  }
+}

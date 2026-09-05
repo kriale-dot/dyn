@@ -1,0 +1,395 @@
+/* ==========================================================
+   SYN — ETAPA 102
+   REFINAMENTO MOBILE DA ÁREA AUTENTICADA
+
+   Problemas corrigidos:
+   - cabeçalho alto e desproporcional;
+   - menu ocupando grande parte da tela;
+   - título da Home grande demais;
+   - excesso de espaços;
+   - cartões muito altos;
+   - tipografia exagerada em alguns elementos;
+   - preserva leitura confortável sem parecer "zoom".
+   ========================================================== */
+
+/* ==========================================================
+   1. BASE MOBILE
+   A Etapa 100 elevou a raiz para 17px. Aqui voltamos a 16px e
+   fazemos os aumentos somente onde são úteis.
+   ========================================================== */
+
+@media (max-width: 700px) {
+  html {
+    font-size: 16px;
+  }
+
+  body {
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  .app-shell {
+    width: 100%;
+    overflow-x: hidden;
+  }
+}
+
+/* ==========================================================
+   2. CABEÇALHO
+   ========================================================== */
+
+@media (max-width: 600px) {
+  .app-shell > .topbar {
+    min-height: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .app-shell > .topbar .brand {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .app-shell > .topbar .brand-logo,
+  .app-shell > .topbar .brand-mark {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    border-radius: 9px;
+  }
+
+  .app-shell > .topbar .brand > div:last-child {
+    min-width: 0;
+    display: grid;
+    gap: 1px;
+  }
+
+  .app-shell > .topbar .brand strong {
+    color: #6d7d77;
+    font-size: 0.78rem;
+    line-height: 1.1;
+    letter-spacing: 0.04em;
+  }
+
+  .app-shell > .topbar .brand span {
+    color: #2f5147;
+    font-size: 1rem;
+    line-height: 1.2;
+    font-weight: 800;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .app-shell > .topbar .user-area {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 7px;
+    padding-top: 7px;
+    border-top: 1px solid #edf1ef;
+  }
+
+  .app-shell > .topbar .user-name {
+    display: none;
+  }
+
+  .app-shell > .topbar .shell-user-avatar {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+  }
+
+  .app-shell > .topbar .button-secondary {
+    min-height: 36px;
+    padding: 7px 11px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+  }
+}
+
+/* ==========================================================
+   3. MENU MOBILE
+   Em vez de duas colunas enormes, usamos uma barra horizontal
+   rolável, comum em aplicativos mobile.
+   ========================================================== */
+
+@media (max-width: 980px) {
+  .app-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 10px;
+    border-right: 0;
+    border-bottom: 1px solid #dde6e2;
+    background: #fff;
+    scrollbar-width: thin;
+  }
+
+  .sidebar nav {
+    position: static;
+    width: max-content;
+    min-width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+
+  .sidebar .nav-link {
+    flex: 0 0 auto;
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 11px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+}
+
+/* ==========================================================
+   4. CONTEÚDO
+   ========================================================== */
+
+@media (max-width: 700px) {
+  .content {
+    padding: 16px 14px 30px;
+  }
+
+  .syn-home-page {
+    gap: 14px;
+  }
+}
+
+/* ==========================================================
+   5. INTRO DA HOME
+   ========================================================== */
+
+@media (max-width: 680px) {
+  .syn-home-intro {
+    gap: 14px;
+    padding-top: 2px;
+  }
+
+  .syn-home-intro .eyebrow {
+    font-size: 0.78rem;
+    letter-spacing: 0.055em;
+  }
+
+  .syn-home-intro h1 {
+    margin: 5px 0 8px;
+    font-size: clamp(1.85rem, 8.4vw, 2.2rem);
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+  }
+
+  .syn-home-intro p {
+    max-width: none;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .syn-home-week-label {
+    padding-top: 10px;
+  }
+
+  .syn-home-week-label-57 > span {
+    font-size: 0.72rem;
+  }
+
+  .syn-home-week-number-57 {
+    font-size: 1.1rem !important;
+  }
+
+  .syn-home-week-label-57 > small {
+    font-size: 0.86rem;
+  }
+}
+
+/* ==========================================================
+   6. CARDS DA HOME
+   ========================================================== */
+
+@media (max-width: 680px) {
+  .syn-home-priority-grid,
+  .syn-home-secondary-grid {
+    gap: 12px;
+  }
+
+  .syn-next-card,
+  .syn-pending-card,
+  .syn-week-map-card,
+  .syn-home-panel,
+  .syn-management-week-card {
+    border-radius: 13px;
+  }
+
+  .syn-next-card {
+    min-height: 0;
+    padding: 17px;
+    gap: 13px;
+  }
+
+  .syn-next-card h2 {
+    font-size: 1.45rem;
+    line-height: 1.15;
+  }
+
+  .syn-next-status {
+    min-height: 28px;
+    font-size: 0.75rem;
+  }
+
+  .syn-next-date strong {
+    font-size: 0.95rem;
+  }
+
+  .syn-next-date span {
+    font-size: 0.86rem;
+  }
+
+  .syn-next-details {
+    gap: 9px 18px;
+  }
+
+  .syn-next-details span {
+    font-size: 0.92rem;
+  }
+
+  .syn-next-details b {
+    font-size: 0.72rem;
+  }
+
+  .syn-pending-card,
+  .syn-week-map-card,
+  .syn-home-panel {
+    padding: 16px;
+  }
+
+  .syn-pending-card h2,
+  .syn-section-heading h2 {
+    font-size: 1.1rem;
+  }
+
+  .syn-pending-empty p,
+  .syn-home-program-copy span,
+  .syn-birthday-row span {
+    font-size: 0.86rem;
+  }
+
+  .syn-home-program-copy strong,
+  .syn-birthday-row strong {
+    font-size: 0.94rem;
+  }
+
+  .syn-text-button {
+    font-size: 0.88rem;
+  }
+}
+
+/* ==========================================================
+   7. MAPA DA SEMANA DA HOME
+   Continua horizontal no celular, porém compacto.
+   ========================================================== */
+
+@media (max-width: 680px) {
+  .syn-week-strip {
+    margin-top: 13px;
+    grid-template-columns: repeat(7, 92px);
+    gap: 6px;
+  }
+
+  .syn-week-day {
+    min-height: 105px;
+    padding: 9px 6px;
+    border-radius: 10px;
+  }
+
+  .syn-week-day-name,
+  .syn-week-day-month,
+  .syn-week-day small {
+    font-size: 0.68rem;
+  }
+
+  .syn-week-day strong {
+    font-size: 1.25rem;
+  }
+}
+
+/* ==========================================================
+   8. RESUMO ADMINISTRATIVO
+   ========================================================== */
+
+@media (max-width: 680px) {
+  .syn-management-week-card,
+  .syn-management-week-card.error-state {
+    padding: 15px;
+    gap: 13px;
+    border-radius: 13px;
+  }
+
+  .syn-management-week-copy h2,
+  .syn-management-week-card.error-state h2 {
+    font-size: 1.05rem;
+  }
+
+  .syn-management-week-copy p,
+  .syn-management-week-card.error-state p {
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+
+  .syn-management-metric strong {
+    font-size: 1.05rem;
+  }
+
+  .syn-management-metric span {
+    font-size: 0.75rem;
+  }
+}
+
+/* ==========================================================
+   9. BOTÕES / CONTROLES
+   ========================================================== */
+
+@media (max-width: 700px) {
+  .content .button-primary,
+  .content .button-secondary,
+  .content .small-primary-button,
+  .content .small-secondary-button,
+  .content .small-danger-button {
+    font-size: 0.9rem;
+  }
+}
+
+/* ==========================================================
+   10. TELAS MUITO ESTREITAS
+   ========================================================== */
+
+@media (max-width: 380px) {
+  .content {
+    padding-left: 11px;
+    padding-right: 11px;
+  }
+
+  .syn-home-intro h1 {
+    font-size: 1.78rem;
+  }
+
+  .sidebar .nav-link {
+    font-size: 0.84rem;
+  }
+}

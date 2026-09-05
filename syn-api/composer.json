@@ -1,14 +1,16 @@
 {
-    "name": "syn/api",
-    "description": "API REST do sistema SYN - Organizacao, programacao e escalas da igreja",
+    "name": "kriale/syn-api",
+    "description": "API REST do sistema SYN - organização, programação e escalas da igreja",
     "type": "project",
+    "license": "proprietary",
     "require": {
-        "php": ">=8.0",
-        "firebase/php-jwt": "6.11",
-        "phpmailer/phpmailer": "6.9",
-        "slim/psr7": "^1.0",
-        "slim/slim": "^4.0",
-        "vlucas/phpdotenv": "^5.6"
+        "php": ">=8.2",
+        "ext-pdo": "*",
+        "firebase/php-jwt": "^6.11",
+        "phpmailer/phpmailer": "^6.9",
+        "slim/psr7": "^1.7",
+        "slim/slim": "^4.14",
+        "vlucas/phpdotenv": "5.6.3"
     },
     "autoload": {
         "psr-4": {

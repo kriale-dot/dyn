@@ -1,0 +1,461 @@
+/* ==========================================================
+   SYN — ETAPA 95
+   CORREÇÃO DEFINITIVA DO LAYOUT DA TELA DE LOGIN
+
+   IMPORTANTE:
+   Os seletores abaixo são propositalmente mais específicos
+   que .login-card, .login-form e outros estilos globais.
+
+   Isso evita que styles.css e styles_compacto.css reduzam
+   novamente o cartão para 430px.
+   ========================================================== */
+
+/* ----------------------------------------------------------
+   Página
+   ---------------------------------------------------------- */
+
+.login-page.login95-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(
+      circle at 10% 8%,
+      rgba(56, 123, 104, 0.09),
+      transparent 31%
+    ),
+    #f3f7f5;
+}
+
+/* ----------------------------------------------------------
+   Card principal
+
+   A especificidade .login-page .login-card.login95-card
+   impede que a regra antiga:
+       .login-card { width: min(100%, 430px); ... }
+   volte a comprimir as duas colunas.
+   ---------------------------------------------------------- */
+
+.login-page .login-card.login95-card {
+  width: min(860px, calc(100vw - 48px));
+  max-width: 860px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 0;
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid #dce5e1;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 18px 48px rgba(23, 48, 42, 0.10);
+}
+
+/* ----------------------------------------------------------
+   Coluna do formulário
+   ---------------------------------------------------------- */
+
+.login95-card .login95-main {
+  min-width: 0;
+  padding: 36px 42px 32px;
+}
+
+.login95-card .login95-brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin: 0 0 28px;
+}
+
+.login95-card .login95-brand-mark {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #24584b;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 850;
+}
+
+.login95-card .login95-brand-copy {
+  min-width: 0;
+}
+
+.login95-card .login95-brand-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.login95-card .login95-brand-title h1 {
+  margin: 0;
+  color: #17302a;
+  font-size: 2rem;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.login95-card .login95-brand-title span {
+  color: #a0793b;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.login95-card .login95-brand-copy p {
+  max-width: 330px;
+  margin: 7px 0 0;
+  color: #6a7974;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+/* ----------------------------------------------------------
+   Formulário
+   ---------------------------------------------------------- */
+
+.login95-card .login-form.login95-form {
+  width: 100%;
+  display: grid;
+  gap: 17px;
+}
+
+.login95-card .login95-field {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+  font-weight: 650;
+}
+
+.login95-card .login95-label {
+  color: #31473f;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.login95-card .login95-password-header {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.login95-card .login95-forgot {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  color: #35685a;
+  font-size: 0.74rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.login95-card .login95-forgot:hover {
+  text-decoration: underline;
+}
+
+.login95-card .login95-field input {
+  width: 100%;
+  min-width: 0;
+  height: 45px;
+  min-height: 45px;
+  padding: 0 13px;
+  border: 1px solid #ccd7d3;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #17302a;
+  font: inherit;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.login95-card .login95-field input::placeholder {
+  color: #9aa7a3;
+}
+
+.login95-card .login95-field input:focus {
+  border-color: #4c7e70;
+  box-shadow: 0 0 0 3px rgba(76, 126, 112, 0.11);
+}
+
+.login95-card .error-message.login95-error {
+  padding: 10px 12px;
+  border-radius: 7px;
+  font-size: 0.78rem;
+}
+
+.login95-card .button-primary.login95-submit {
+  width: 100%;
+  min-height: 45px;
+  padding: 10px 14px;
+  border-radius: 7px;
+  background: #24584b;
+  box-shadow: none;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.login95-card .button-primary.login95-submit:hover:not(:disabled) {
+  background: #1b493e;
+}
+
+.login95-card .auth81-register-link.login95-register {
+  margin-top: 2px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  color: #7b8783;
+  font-size: 0.7rem;
+}
+
+.login95-card .login95-register a {
+  white-space: nowrap;
+}
+
+/* ----------------------------------------------------------
+   Coluna do QR Code
+   ---------------------------------------------------------- */
+
+.login95-card .login95-qr-panel {
+  min-width: 0;
+  padding: 36px 32px;
+  border-left: 1px solid #e0e8e5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #fbfdfc;
+  text-align: center;
+}
+
+.login95-card .login95-qr-kicker {
+  margin-bottom: 7px;
+  color: #4d7468;
+  font-size: 0.67rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.login95-card .login95-qr-panel h2 {
+  margin: 0;
+  color: #17302a;
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.login95-card .login95-qr-panel > p {
+  max-width: 225px;
+  margin: 8px 0 17px;
+  color: #697873;
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.login95-card .login95-qr-box {
+  width: 172px;
+  height: 172px;
+  padding: 8px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #dce6e2;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.login95-card .login95-qr-box img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.login95-card .login95-qr-box span {
+  color: #7a8884;
+  font-size: 0.7rem;
+}
+
+.login95-card .login95-network-note {
+  max-width: 220px;
+  margin-top: 11px;
+  color: #7d735f;
+  font-size: 0.66rem;
+  line-height: 1.4;
+}
+
+/* ----------------------------------------------------------
+   Tablet
+   ---------------------------------------------------------- */
+
+@media (max-width: 780px) {
+  .login-page .login-card.login95-card {
+    width: min(460px, calc(100vw - 28px));
+    max-width: 460px;
+    grid-template-columns: 1fr;
+  }
+
+  .login95-card .login95-main {
+    padding: 30px 30px 27px;
+  }
+
+  .login95-card .login95-qr-panel {
+    padding: 27px 30px 29px;
+    border-left: 0;
+    border-top: 1px solid #e0e8e5;
+  }
+
+  .login95-card .login95-qr-box {
+    width: 156px;
+    height: 156px;
+  }
+}
+
+/* ----------------------------------------------------------
+   Celular
+
+   O QR Code é ocultado porque o usuário já está no aparelho
+   que receberia o endereço.
+   ---------------------------------------------------------- */
+
+@media (max-width: 560px) {
+  .login-page.login95-page {
+    align-items: flex-start;
+    padding: 12px;
+  }
+
+  .login-page .login-card.login95-card {
+    width: 100%;
+    max-width: 430px;
+    margin-top: 18px;
+    border-radius: 9px;
+  }
+
+  .login95-card .login95-main {
+    padding: 24px 20px 22px;
+  }
+
+  .login95-card .login95-brand {
+    margin-bottom: 23px;
+  }
+
+  .login95-card .login95-brand-mark {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+    border-radius: 8px;
+  }
+
+  .login95-card .login95-brand-title h1 {
+    font-size: 1.75rem;
+  }
+
+  .login95-card .login95-brand-copy p {
+    font-size: 0.76rem;
+  }
+
+  .login95-card .login-form.login95-form {
+    gap: 15px;
+  }
+
+  .login95-card .login95-field input,
+  .login95-card .button-primary.login95-submit {
+    min-height: 44px;
+    height: 44px;
+  }
+
+  .login95-card .login95-qr-panel {
+    display: none;
+  }
+}
+
+/* Em telas extremamente estreitas, o link passa para baixo
+   de forma controlada, e não palavra por palavra. */
+@media (max-width: 350px) {
+  .login95-card .login95-password-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+
+/* ==========================================================
+   ETAPA 96 — TIPOGRAFIA MOBILE MAIOR
+   Mantém o layout da Etapa 95 e melhora a leitura no celular.
+   ========================================================== */
+
+@media (max-width: 560px) {
+  .login95-card .login95-brand-title h1 {
+    font-size: 2rem;
+  }
+
+  .login95-card .login95-brand-title span {
+    font-size: 0.9rem;
+  }
+
+  .login95-card .login95-brand-copy p {
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+
+  .login95-card .login95-label {
+    font-size: 0.95rem;
+  }
+
+  .login95-card .login95-forgot {
+    font-size: 0.88rem;
+  }
+
+  .login95-card .login95-field input {
+    height: 48px;
+    min-height: 48px;
+    padding: 0 14px;
+    font-size: 1rem;
+  }
+
+  .login95-card .button-primary.login95-submit {
+    height: 48px;
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  .login95-card .auth81-register-link.login95-register {
+    margin-top: 6px;
+    font-size: 0.88rem;
+    line-height: 1.4;
+  }
+
+  .login95-card .login95-register a {
+    font-size: 0.88rem;
+  }
+
+  .login95-card .error-message.login95-error {
+    font-size: 0.88rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .login95-card .login95-brand-title h1 {
+    font-size: 1.85rem;
+  }
+
+  .login95-card .login95-brand-copy p {
+    font-size: 0.88rem;
+  }
+
+  .login95-card .login95-label {
+    font-size: 0.92rem;
+  }
+
+  .login95-card .login95-forgot {
+    font-size: 0.84rem;
+  }
+}

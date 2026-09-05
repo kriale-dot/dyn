@@ -1,0 +1,394 @@
+/* ==========================================================
+   SYN — ETAPA 99
+   AUMENTO GERAL DA TIPOGRAFIA NO MOBILE
+
+   Objetivo:
+   - aumentar a legibilidade no celular;
+   - preservar o layout compacto;
+   - aplicar os ajustes DEPOIS dos estilos anteriores.
+
+   Esta folha deve ser importada por último no main.jsx.
+   ========================================================== */
+
+/* ==========================================================
+   1) CADASTRO PÚBLICO
+   ========================================================== */
+
+@media (max-width: 600px) {
+  .cadastro81-topbar a {
+    font-size: 0.95rem;
+  }
+
+  .cadastro81-topbar strong {
+    font-size: 1.15rem;
+  }
+
+  .cadastro81-eyebrow {
+    font-size: 0.98rem;
+    letter-spacing: 0.03em;
+  }
+
+  .cadastro81-intro > p {
+    font-size: 1.08rem;
+    line-height: 1.6;
+  }
+
+  .cadastro81-flow {
+    gap: 14px;
+  }
+
+  .cadastro81-flow > div {
+    gap: 12px;
+  }
+
+  .cadastro81-flow strong {
+    width: 44px;
+    height: 44px;
+    font-size: 1.15rem;
+  }
+
+  .cadastro81-flow span {
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .cadastro81-note {
+    gap: 5px;
+  }
+
+  .cadastro81-note strong {
+    font-size: 1.02rem;
+    line-height: 1.35;
+  }
+
+  .cadastro81-note span {
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
+
+  .cadastro81-card {
+    border-radius: 16px;
+  }
+
+  .cadastro81-card > header > span,
+  .cadastro81-success > span {
+    font-size: 0.96rem;
+    letter-spacing: 0.03em;
+  }
+
+  .cadastro81-card > header h2,
+  .cadastro81-success h2 {
+    font-size: 1.9rem;
+    line-height: 1.15;
+  }
+
+  .cadastro81-card > header p,
+  .cadastro81-success p {
+    font-size: 1.02rem;
+    line-height: 1.55;
+  }
+
+  .cadastro81-form {
+    gap: 14px;
+  }
+
+  .cadastro81-form label > span {
+    font-size: 0.98rem;
+  }
+
+  .cadastro81-form label > small {
+    font-size: 0.84rem;
+    line-height: 1.4;
+  }
+
+  .cadastro81-form input {
+    min-height: 52px;
+    padding: 10px 14px;
+    font-size: 1rem;
+  }
+
+  .cadastro81-error {
+    font-size: 0.94rem;
+    line-height: 1.45;
+  }
+
+  .cadastro81-form-footer p {
+    max-width: none;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .cadastro81-form-footer button,
+  .cadastro81-success-actions a.primary,
+  .cadastro81-success-actions a,
+  .cadastro81-success-actions .cadastro84-resend-button {
+    min-height: 46px;
+    padding: 10px 14px;
+    font-size: 0.98rem;
+  }
+
+  .cadastro84-email-box span {
+    font-size: 0.84rem;
+  }
+
+  .cadastro84-email-box strong {
+    font-size: 0.98rem;
+    line-height: 1.4;
+  }
+
+  .cadastro84-resend-message {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+}
+
+/* ==========================================================
+   2) LOGIN / ESQUECI SENHA / CONFIRMAÇÕES
+   ========================================================== */
+
+@media (max-width: 600px) {
+  .login95-card .login95-label,
+  .auth50-card label,
+  .auth50-card .auth-inline-link,
+  .auth50-card .auth-helper-text,
+  .auth50-card p,
+  .auth50-card small {
+    font-size: 0.96rem;
+  }
+
+  .auth50-card input,
+  .auth50-card select,
+  .auth50-card textarea {
+    min-height: 50px;
+    font-size: 1rem;
+  }
+
+  .auth50-card .button-primary,
+  .auth50-card .button-secondary {
+    min-height: 48px;
+    font-size: 0.98rem;
+  }
+}
+
+/* ==========================================================
+   3) PÁGINA PÚBLICA INICIAL
+   ========================================================== */
+
+@media (max-width: 700px) {
+  .public74-brand span {
+    font-size: 0.82rem;
+  }
+
+  .public74-brand strong {
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+
+  .public74-member-button {
+    min-height: 42px;
+    padding: 9px 12px;
+    font-size: 0.92rem;
+  }
+
+  .public74-eyebrow {
+    font-size: 0.88rem;
+    letter-spacing: 0.03em;
+  }
+
+  .public74-hero p {
+    font-size: 1.04rem;
+    line-height: 1.6;
+  }
+
+  .public74-week-controls button.today,
+  .public74-week-controls button {
+    font-size: 0.92rem;
+  }
+
+  .public74-period > div:first-child span {
+    font-size: 0.8rem;
+  }
+
+  .public74-period > div:first-child strong {
+    font-size: 1.18rem;
+  }
+
+  .public74-period > div:first-child small {
+    font-size: 0.9rem;
+  }
+
+  .public74-summary span {
+    font-size: 0.82rem;
+  }
+
+  .public74-error,
+  .public74-loading {
+    font-size: 0.96rem;
+    line-height: 1.5;
+  }
+
+  .public74-map-card h2 {
+    font-size: 1.16rem;
+  }
+
+  .public74-public-note {
+    font-size: 0.82rem;
+  }
+}
+
+/* ==========================================================
+   4) LISTA PÚBLICA DE PROGRAMAÇÕES
+   ========================================================== */
+
+@media (max-width: 700px) {
+  .public75-brand small,
+  .public75-hero > span {
+    font-size: 0.82rem;
+  }
+
+  .public75-brand strong {
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+
+  .public75-header-actions button {
+    min-height: 40px;
+    font-size: 0.9rem;
+  }
+
+  .public75-hero p {
+    font-size: 1.02rem;
+    line-height: 1.6;
+  }
+
+  .public75-toolbar label > span {
+    font-size: 0.84rem;
+  }
+
+  .public75-toolbar input {
+    min-height: 46px;
+    font-size: 1rem;
+  }
+
+  .public75-total span {
+    font-size: 0.82rem;
+  }
+
+  .public75-error,
+  .public75-loading,
+  .public75-empty {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .public75-empty button,
+  .public75-week-group > header > button,
+  .public75-card-main > footer button {
+    min-height: 40px;
+    font-size: 0.9rem;
+  }
+}
+
+/* ==========================================================
+   5) DETALHE PÚBLICO DA PROGRAMAÇÃO
+   ========================================================== */
+
+@media (max-width: 560px) {
+  .public-detail74-back,
+  .public-detail74-member {
+    font-size: 0.9rem;
+  }
+
+  .public-detail74-brand strong {
+    font-size: 0.98rem;
+    line-height: 1.25;
+  }
+
+  .public-detail74-error > span,
+  .public-detail74-type {
+    font-size: 0.82rem;
+  }
+
+  .public-detail74-error p {
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
+
+  .public-detail74-error button {
+    min-height: 42px;
+    font-size: 0.92rem;
+  }
+
+  .public-detail74-status {
+    font-size: 0.8rem;
+  }
+
+  .public-detail74-info span {
+    font-size: 0.8rem;
+  }
+
+  .public-detail74-info strong {
+    font-size: 0.94rem;
+    line-height: 1.45;
+  }
+
+  .public-detail74-description span {
+    font-size: 0.82rem;
+  }
+
+  .public-detail74-description p {
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+}
+
+/* ==========================================================
+   6) BLOCO "INFORMAÇÕES DA IGREJA"
+   ========================================================== */
+
+@media (max-width: 560px) {
+  .public76-church-heading > span {
+    font-size: 0.82rem;
+  }
+
+  .public76-church-heading > strong {
+    font-size: 1rem;
+  }
+
+  .public76-church-item > span {
+    font-size: 0.76rem;
+  }
+
+  .public76-church-item > strong {
+    font-size: 0.94rem;
+    line-height: 1.5;
+  }
+
+  .public76-church-item > a,
+  .public76-church-item > button {
+    font-size: 0.88rem;
+  }
+}
+
+/* ==========================================================
+   7) TELAS MUITO ESTREITAS
+   ========================================================== */
+
+@media (max-width: 380px) {
+  .cadastro81-topbar a,
+  .public74-brand span,
+  .public75-brand small,
+  .public75-hero > span,
+  .public-detail74-back,
+  .public-detail74-member,
+  .public76-church-heading > span {
+    font-size: 0.86rem;
+  }
+
+  .cadastro81-intro > p,
+  .public74-hero p,
+  .public75-hero p,
+  .public-detail74-description p {
+    font-size: 0.96rem;
+  }
+}

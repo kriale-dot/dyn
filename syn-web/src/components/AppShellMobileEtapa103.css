@@ -1,0 +1,94 @@
+/* ==========================================================
+   SYN — ETAPA 103
+   APPSHELL MOBILE — CONTENÇÃO HORIZONTAL
+
+   Este arquivo é importado diretamente por AppShell.jsx,
+   depois de AppShellEtapa44.css.
+   ========================================================== */
+
+@media (max-width: 980px) {
+  .app-shell,
+  .app-shell > .app-layout,
+  .app-shell > .app-layout > .content {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .app-shell {
+    overflow-x: clip;
+  }
+
+  .app-shell > .app-layout {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    overflow-x: clip;
+  }
+
+  .app-shell > .app-layout > .content {
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  /* O menu rola dentro de si, sem aumentar a largura da página. */
+  .app-shell > .app-layout > .sidebar {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    border-right: 0;
+    border-bottom: 1px solid #dde6e2;
+    padding: 7px 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .app-shell > .app-layout > .sidebar > nav {
+    position: static !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    grid-template-columns: none !important;
+    width: max-content !important;
+    min-width: 100% !important;
+    gap: 6px;
+  }
+
+  .app-shell > .app-layout > .sidebar > nav > .nav-link {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 8px 11px;
+    border-radius: 8px;
+    white-space: nowrap;
+    font-size: 0.88rem;
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 600px) {
+  .app-shell > .topbar {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .app-shell > .topbar .brand,
+  .app-shell > .topbar .brand > div:last-child,
+  .app-shell > .topbar .user-area {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .app-shell > .topbar .brand span {
+    overflow-wrap: anywhere;
+  }
+
+  .app-shell > .app-layout > .content {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+}

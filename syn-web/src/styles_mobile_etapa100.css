@@ -1,0 +1,473 @@
+/* ==========================================================
+   SYN — ETAPA 100
+   TIPOGRAFIA MOBILE + IDENTIDADE DA IGREJA
+
+   Esta folha deve ser carregada POR ÚLTIMO.
+   O objetivo é impedir que estilos antigos em .5rem/.6rem
+   permaneçam pequenos em smartphones.
+   ========================================================== */
+
+/* ----------------------------------------------------------
+   Base mobile
+   ---------------------------------------------------------- */
+
+@media (max-width: 700px) {
+  html {
+    font-size: 17px;
+  }
+
+  body {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font-size: 1rem;
+  }
+}
+
+/* ==========================================================
+   ÁREA PÚBLICA PRINCIPAL
+   ========================================================== */
+
+@media (max-width: 700px) {
+  .public74-page {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* Identidade da igreja */
+  .public74-page .public74-topbar {
+    gap: 14px;
+  }
+
+  .public74-page .public74-brand {
+    gap: 12px;
+  }
+
+  .public74-page .public74-brand img,
+  .public74-page .public74-logo-placeholder {
+    width: 58px;
+    height: 58px;
+    flex: 0 0 58px;
+    border-radius: 11px;
+  }
+
+  .public74-page .public74-logo-placeholder {
+    font-size: 1rem;
+  }
+
+  .public74-page .public74-brand span {
+    font-size: 0.95rem;
+    line-height: 1.15;
+    letter-spacing: 0.035em;
+  }
+
+  .public74-page .public74-brand strong {
+    margin-top: 4px;
+    font-size: 1.22rem;
+    line-height: 1.2;
+  }
+
+  /* Ações */
+  .public74-page .public75-top-actions {
+    gap: 8px;
+  }
+
+  .public74-page .public81-register-button,
+  .public74-page .public75-upcoming-button,
+  .public74-page .public74-member-button {
+    min-height: 46px;
+    padding: 10px 14px;
+    font-size: 1rem;
+    line-height: 1.2;
+    border-radius: 10px;
+  }
+
+  /* Hero */
+  .public74-hero {
+    padding-top: 48px;
+  }
+
+  .public74-eyebrow {
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  .public74-hero p {
+    font-size: 1.15rem;
+    line-height: 1.65;
+  }
+
+  .public74-week-controls button {
+    min-width: 52px;
+    min-height: 52px;
+    font-size: 1.05rem;
+  }
+
+  .public74-week-controls button.today {
+    padding: 0 18px;
+    font-size: 1.05rem;
+  }
+
+  /* Cartão do período / hoje */
+  .public74-period > div:first-child span {
+    font-size: 0.9rem;
+  }
+
+  .public74-period > div:first-child strong {
+    font-size: 1.25rem;
+  }
+
+  .public74-period > div:first-child small {
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+
+  .public74-summary strong {
+    font-size: 1.55rem;
+  }
+
+  .public74-summary span {
+    font-size: 0.9rem;
+  }
+
+  .public74-map-card h2 {
+    font-size: 1.25rem;
+  }
+
+  .public74-public-note {
+    font-size: 0.9rem;
+  }
+
+  .public74-error,
+  .public74-loading {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  /* Nós/dias da semana */
+  .public74-day-heading,
+  .public74-day-date,
+  .public74-node-count,
+  .public74-event-time,
+  .public74-event-place,
+  .public74-status,
+  .public74-empty-day {
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .public74-event-main {
+    font-size: 1.02rem;
+    line-height: 1.45;
+  }
+}
+
+/* ==========================================================
+   BLOCOS MAIS NOVOS DA HOME PÚBLICA
+   Etapas 78/79 tinham vários textos em .47rem/.54rem.
+   ========================================================== */
+
+@media (max-width: 700px) {
+  .public78-next-eyebrow,
+  .public79-eyebrow,
+  .public79-today-heading span,
+  .public79-situation,
+  .public79-time,
+  .public79-today-count span {
+    font-size: 0.92rem;
+  }
+
+  .public78-next-main h2,
+  .public79-now-main h2 {
+    font-size: 1.35rem;
+    line-height: 1.25;
+  }
+
+  .public78-next-meta,
+  .public79-item-main,
+  .public79-empty,
+  .public79-now-main p {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .public78-next-actions button,
+  .public79-timeline-item button {
+    min-height: 42px;
+    font-size: 0.94rem;
+  }
+
+  .public79-today-heading strong,
+  .public79-today-count strong {
+    font-size: 1.25rem;
+  }
+}
+
+/* ==========================================================
+   INFORMAÇÕES DA IGREJA
+   ========================================================== */
+
+@media (max-width: 600px) {
+  .public76-church-heading > span {
+    font-size: 0.92rem;
+  }
+
+  .public76-church-heading > strong {
+    font-size: 1.15rem;
+  }
+
+  .public76-church-item > span {
+    font-size: 0.86rem;
+  }
+
+  .public76-church-item > strong {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .public76-church-item > a,
+  .public76-church-item > button {
+    font-size: 0.95rem;
+  }
+}
+
+/* ==========================================================
+   CADASTRO PÚBLICO
+   ========================================================== */
+
+@media (max-width: 600px) {
+  .cadastro81-topbar {
+    min-height: 60px;
+  }
+
+  .cadastro81-topbar a {
+    font-size: 1rem;
+  }
+
+  .cadastro81-topbar strong {
+    font-size: 1.2rem;
+  }
+
+  .cadastro81-eyebrow {
+    font-size: 1rem;
+  }
+
+  .cadastro81-intro h1 {
+    font-size: clamp(2.35rem, 11vw, 3rem);
+  }
+
+  .cadastro81-intro > p {
+    font-size: 1.15rem;
+    line-height: 1.65;
+  }
+
+  .cadastro81-flow {
+    gap: 14px;
+  }
+
+  .cadastro81-flow strong {
+    width: 46px;
+    height: 46px;
+    font-size: 1.15rem;
+  }
+
+  .cadastro81-flow span {
+    font-size: 1.05rem;
+  }
+
+  .cadastro81-note strong {
+    font-size: 1.05rem;
+  }
+
+  .cadastro81-note span {
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .cadastro81-card > header > span,
+  .cadastro81-success > span {
+    font-size: 0.95rem;
+  }
+
+  .cadastro81-card > header h2,
+  .cadastro81-success h2 {
+    font-size: 1.9rem;
+  }
+
+  .cadastro81-card > header p,
+  .cadastro81-success p {
+    font-size: 1.05rem;
+    line-height: 1.55;
+  }
+
+  .cadastro81-form label > span {
+    font-size: 1.05rem;
+  }
+
+  .cadastro81-form label > small {
+    font-size: 0.9rem;
+  }
+
+  .cadastro81-form input {
+    min-height: 54px;
+    padding: 11px 14px;
+    font-size: 1rem;
+  }
+
+  .cadastro81-form-footer p {
+    font-size: 0.96rem;
+    line-height: 1.5;
+  }
+
+  .cadastro81-form-footer button,
+  .cadastro81-success-actions a,
+  .cadastro81-success-actions a.primary,
+  .cadastro81-success-actions .cadastro84-resend-button {
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  .cadastro84-email-box span {
+    font-size: 0.9rem;
+  }
+
+  .cadastro84-email-box strong {
+    font-size: 1rem;
+  }
+
+  .cadastro84-resend-message {
+    font-size: 0.95rem;
+  }
+}
+
+/* ==========================================================
+   LISTA PÚBLICA DE PROGRAMAÇÕES
+   ========================================================== */
+
+@media (max-width: 700px) {
+  .public75-brand small,
+  .public75-hero > span {
+    font-size: 0.92rem;
+  }
+
+  .public75-brand strong {
+    font-size: 1.12rem;
+  }
+
+  .public75-header-actions button {
+    min-height: 44px;
+    font-size: 0.96rem;
+  }
+
+  .public75-hero p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  .public75-toolbar label > span {
+    font-size: 0.92rem;
+  }
+
+  .public75-toolbar input {
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  .public75-total span {
+    font-size: 0.9rem;
+  }
+
+  .public75-error,
+  .public75-loading,
+  .public75-empty {
+    font-size: 1rem;
+  }
+
+  .public75-empty button,
+  .public75-week-group > header > button,
+  .public75-card-main > footer button {
+    min-height: 42px;
+    font-size: 0.94rem;
+  }
+}
+
+/* ==========================================================
+   DETALHE PÚBLICO
+   ========================================================== */
+
+@media (max-width: 600px) {
+  .public-detail74-back,
+  .public-detail74-member {
+    font-size: 0.96rem;
+  }
+
+  .public-detail74-brand strong {
+    font-size: 1.05rem;
+  }
+
+  .public-detail74-error > span,
+  .public-detail74-type {
+    font-size: 0.9rem;
+  }
+
+  .public-detail74-error p {
+    font-size: 1rem;
+  }
+
+  .public-detail74-status {
+    font-size: 0.88rem;
+  }
+
+  .public-detail74-info span {
+    font-size: 0.88rem;
+  }
+
+  .public-detail74-info strong {
+    font-size: 1rem;
+  }
+
+  .public-detail74-description span {
+    font-size: 0.9rem;
+  }
+
+  .public-detail74-description p {
+    font-size: 1.05rem;
+  }
+}
+
+/* ==========================================================
+   ÁREA AUTENTICADA — CABEÇALHO
+   ========================================================== */
+
+@media (max-width: 600px) {
+  .app-shell > .topbar .brand strong {
+    font-size: 0.9rem;
+  }
+
+  .app-shell > .topbar .brand span {
+    font-size: 1.08rem;
+  }
+
+  .app-shell > .topbar .button-secondary {
+    min-height: 40px;
+    font-size: 0.92rem;
+  }
+}
+
+/* ==========================================================
+   Evita inputs com zoom automático no Chrome/Safari mobile
+   e mantém leitura confortável.
+   ========================================================== */
+
+@media (max-width: 700px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}

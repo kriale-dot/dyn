@@ -22,9 +22,26 @@ import {
 
 import './IgrejaConfigPage.css'
 
+/**
+ * Endereço da API.
+ *
+ * Se VITE_API_URL não estiver configurado, usa automaticamente
+ * o mesmo host pelo qual o frontend foi aberto.
+ *
+ * Exemplo no celular:
+ * frontend http://192.168.15.8:5173
+ * API      http://192.168.15.8:8282
+ */
 const API_URL =
-  import.meta.env.VITE_API_URL
-  || 'http://localhost:8282'
+  String(
+    import.meta.env.VITE_API_URL
+    || '',
+  ).trim()
+  || (
+    typeof window !== 'undefined'
+      ? `${window.location.protocol}//${window.location.hostname}:8282`
+      : 'http://localhost:8282'
+  )
 
 const MAX_LOGO_BYTES =
   5 * 1024 * 1024
@@ -767,7 +784,17 @@ function resolverArquivoApi(
     return caminho
   }
 
-  return `${API_URL}${caminho}`
+  return `${
+    API_URL.replace(
+      /\/+$/,
+      '',
+    )
+  }/${
+    String(caminho).replace(
+      /^\/+/,
+      '',
+    )
+  }`
 }
 
 function limparOpcional(

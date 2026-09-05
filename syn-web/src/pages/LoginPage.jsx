@@ -1,6 +1,11 @@
 import {
+  useEffect,
+  useMemo,
   useState,
 } from 'react'
+
+import QRCode
+  from 'qrcode'
 
 import {
   Link,
@@ -14,6 +19,27 @@ import {
 
 import './AuthPagesEtapa50.css'
 import './LoginPageEtapa81.css'
+import './LoginPageEtapa104.css'
+
+function getAppUrl() {
+  const configuredUrl =
+    import.meta.env
+      .VITE_APP_URL
+      ?.trim()
+
+  if (configuredUrl) {
+    const cleanUrl =
+      configuredUrl
+        .replace(/\/+$/, '')
+
+    return cleanUrl
+      .endsWith('/login')
+      ? cleanUrl
+      : `${cleanUrl}/login`
+  }
+
+  return `${window.location.origin}/login`
+}
 
 export default function LoginPage() {
   const navigate =
@@ -36,6 +62,54 @@ export default function LoginPage() {
 
   const [error, setError] =
     useState('')
+
+  const [qrCode, setQrCode] =
+    useState('')
+
+  const appUrl =
+    useMemo(
+      () => getAppUrl(),
+      [],
+    )
+
+  useEffect(
+    () => {
+      let active = true
+
+      QRCode
+        .toDataURL(
+          appUrl,
+          {
+            width: 220,
+            margin: 1,
+            errorCorrectionLevel: 'M',
+          },
+        )
+        .then(
+          (dataUrl) => {
+            if (active) {
+              setQrCode(
+                dataUrl,
+              )
+            }
+          },
+        )
+        .catch(
+          () => {
+            if (active) {
+              setQrCode('')
+            }
+          },
+        )
+
+      return () => {
+        active = false
+      }
+    },
+    [
+      appUrl,
+    ],
+  )
 
   if (loading) {
     return (
@@ -88,101 +162,141 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="login-page">
-      <section className="login-card">
-        <div className="login-brand">
-          <div className="brand-mark large">
-            S
+    <main className="login-page login104-page">
+      <section className="login-card login104-card">
+        <div className="login104-access">
+          <div className="login-brand login104-brand">
+            <div className="brand-mark large">
+              S
+            </div>
+
+            <div>
+              <h1>SYN</h1>
+
+              <p>
+                Organização, programação
+                e escalas da igreja
+              </p>
+            </div>
           </div>
 
-          <div>
-            <h1>SYN</h1>
+          <form
+            onSubmit={handleSubmit}
+            className="login-form login104-form"
+          >
+            <label>
+              E-mail
 
-            <p>
-              Organização, programação
-              e escalas da igreja
-            </p>
-          </div>
-        </div>
+              <input
+                type="email"
+                value={email}
+                onChange={(event) =>
+                  setEmail(
+                    event.target.value,
+                  )
+                }
+                autoComplete="email"
+                required
+              />
+            </label>
 
-        <form
-          onSubmit={handleSubmit}
-          className="login-form"
-        >
-          <label>
-            E-mail
+            <label>
+              <span className="auth-password-label">
+                <span>
+                  Senha
+                </span>
 
-            <input
-              type="email"
-              value={email}
-              onChange={(event) =>
-                setEmail(
-                  event.target.value,
-                )
-              }
-              autoComplete="email"
-              required
-            />
-          </label>
+                <Link
+                  to="/esqueci-senha"
+                  className="auth-inline-link"
+                >
+                  Esqueci minha senha
+                </Link>
+              </span>
 
-          <label>
-            <span className="auth-password-label">
+              <input
+                type="password"
+                value={senha}
+                onChange={(event) =>
+                  setSenha(
+                    event.target.value,
+                  )
+                }
+                autoComplete="current-password"
+                required
+              />
+            </label>
+
+            {error && (
+              <div
+                className="error-message"
+                role="alert"
+              >
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="button-primary"
+              disabled={submitting}
+            >
+              {submitting
+                ? 'Entrando...'
+                : 'Entrar'}
+            </button>
+
+            <div className="auth81-register-link">
               <span>
-                Senha
+                Ainda não possui cadastro?
               </span>
 
               <Link
-                to="/esqueci-senha"
-                className="auth-inline-link"
+                to="/cadastro"
               >
-                Esqueci minha senha
+                Solicitar cadastro
               </Link>
-            </span>
-
-            <input
-              type="password"
-              value={senha}
-              onChange={(event) =>
-                setSenha(
-                  event.target.value,
-                )
-              }
-              autoComplete="current-password"
-              required
-            />
-          </label>
-
-          {error && (
-            <div
-              className="error-message"
-              role="alert"
-            >
-              {error}
             </div>
-          )}
+          </form>
+        </div>
 
-          <button
-            type="submit"
-            className="button-primary"
-            disabled={submitting}
-          >
-            {submitting
-              ? 'Entrando...'
-              : 'Entrar'}
-          </button>
-
-          <div className="auth81-register-link">
-            <span>
-              Ainda não possui cadastro?
+        <aside
+          className="login104-mobile"
+          aria-label="Acesso pelo celular"
+        >
+          <div className="login104-mobile-content">
+            <span className="login104-kicker">
+              Acesso pelo celular
             </span>
 
-            <Link
-              to="/cadastro"
-            >
-              Solicitar cadastro
-            </Link>
+            <h2>
+              Abra o SYN no celular
+            </h2>
+
+            <p>
+              Aponte a câmera para o
+              QR Code e abra o aplicativo.
+            </p>
+
+            <div className="login104-qr">
+              {qrCode ? (
+                <img
+                  src={qrCode}
+                  alt="QR Code para abrir o SYN no celular"
+                />
+              ) : (
+                <span>
+                  Gerando QR Code...
+                </span>
+              )}
+            </div>
+
+            <small>
+              O QR Code abre diretamente
+              a tela de login.
+            </small>
           </div>
-        </form>
+        </aside>
       </section>
     </main>
   )

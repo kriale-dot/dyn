@@ -1,0 +1,385 @@
+/* ==========================================================
+   SYN — ETAPA 104C
+   CORREÇÃO DA LARGURA DO LOGIN COM QR CODE
+
+   Problema corrigido:
+   O styles.css antigo define:
+      .login-card { width: min(100%, 430px); }
+
+   Em algumas ordens de carregamento do Vite essa regra global
+   acabava vencendo a largura da Etapa 104B, comprimindo a coluna
+   do formulário e quebrando "SYN" e os textos em várias linhas.
+
+   A solução abaixo usa seletores mais específicos, de modo que
+   a tela de login com QR Code preserve a largura correta mesmo
+   quando os estilos globais forem carregados depois.
+   ========================================================== */
+
+
+/* ----------------------------------------------------------
+   Desktop / notebook
+   ---------------------------------------------------------- */
+
+main.login-page.login104-page {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  padding: 14px 12px;
+
+  overflow-x: hidden;
+}
+
+main.login-page.login104-page
+section.login-card.login104-card {
+  width: min(
+    720px,
+    calc(100vw - 24px)
+  );
+
+  max-width: 720px;
+  min-width: 0;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    250px;
+
+  padding: 0;
+
+  overflow: hidden;
+
+  border-radius: 14px;
+}
+
+
+/* ----------------------------------------------------------
+   Coluna de acesso
+   ---------------------------------------------------------- */
+
+main.login-page.login104-page
+.login104-access {
+  min-width: 0;
+  width: 100%;
+
+  padding: 24px 26px;
+}
+
+
+/*
+ * Neutraliza regras antigas de .login-brand que poderiam
+ * comprimir o conteúdo.
+ */
+main.login-page.login104-page
+.login-brand.login104-brand {
+  width: 100%;
+  min-width: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 19px;
+}
+
+main.login-page.login104-page
+.login-brand.login104-brand
+.brand-mark.large {
+  flex: 0 0 auto;
+}
+
+main.login-page.login104-page
+.login-brand.login104-brand
+> div:last-child {
+  flex: 1 1 auto;
+
+  min-width: 0;
+}
+
+main.login-page.login104-page
+.login-brand.login104-brand h1 {
+  margin: 0;
+
+  white-space: nowrap;
+
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+main.login-page.login104-page
+.login-brand.login104-brand p {
+  margin: 2px 0 0;
+
+  white-space: normal;
+
+  overflow-wrap: normal;
+  word-break: normal;
+
+  line-height: 1.35;
+}
+
+
+/* ----------------------------------------------------------
+   Formulário
+   ---------------------------------------------------------- */
+
+main.login-page.login104-page
+.login-form.login104-form {
+  width: 100%;
+  min-width: 0;
+
+  display: grid;
+
+  gap: 13px;
+}
+
+main.login-page.login104-page
+.login-form.login104-form label {
+  width: 100%;
+  min-width: 0;
+}
+
+main.login-page.login104-page
+.login-form.login104-form input,
+main.login-page.login104-page
+.login-form.login104-form button {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+main.login-page.login104-page
+.auth-password-label {
+  width: 100%;
+  min-width: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+}
+
+main.login-page.login104-page
+.auth-password-label
+.auth-inline-link {
+  flex: 0 0 auto;
+
+  white-space: nowrap;
+}
+
+
+/* ----------------------------------------------------------
+   Área do QR Code
+   ---------------------------------------------------------- */
+
+main.login-page.login104-page
+.login104-mobile {
+  min-width: 0;
+
+  display: grid;
+  place-items: center;
+
+  padding: 20px 18px;
+
+  border-left:
+    1px solid #dfe7e4;
+
+  background:
+    linear-gradient(
+      160deg,
+      #edf6f2,
+      #f8f4ea
+    );
+}
+
+main.login-page.login104-page
+.login104-mobile-content {
+  width: 100%;
+  min-width: 0;
+
+  display: grid;
+
+  justify-items: center;
+
+  gap: 8px;
+
+  text-align: center;
+}
+
+main.login-page.login104-page
+.login104-mobile h2,
+main.login-page.login104-page
+.login104-mobile p,
+main.login-page.login104-page
+.login104-mobile small {
+  max-width: 100%;
+
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+main.login-page.login104-page
+.login104-qr {
+  width: 148px;
+  height: 148px;
+
+  max-width: 100%;
+
+  display: grid;
+  place-items: center;
+
+  margin: 4px 0 1px;
+
+  padding: 6px;
+
+  border:
+    1px solid #d7e2de;
+
+  border-radius: 8px;
+
+  background: #fff;
+}
+
+main.login-page.login104-page
+.login104-qr img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  max-width: 100%;
+
+  object-fit: contain;
+}
+
+
+/* ----------------------------------------------------------
+   Tablets estreitos
+   ---------------------------------------------------------- */
+
+@media (
+  min-width: 701px
+) and (
+  max-width: 780px
+) {
+  main.login-page.login104-page
+  section.login-card.login104-card {
+    width:
+      calc(100vw - 20px);
+
+    grid-template-columns:
+      minmax(0, 1fr)
+      220px;
+  }
+
+  main.login-page.login104-page
+  .login104-access {
+    padding:
+      21px 20px;
+  }
+
+  main.login-page.login104-page
+  .login104-mobile {
+    padding:
+      18px 14px;
+  }
+
+  main.login-page.login104-page
+  .login104-qr {
+    width: 138px;
+    height: 138px;
+  }
+}
+
+
+/* ----------------------------------------------------------
+   Celular
+   ---------------------------------------------------------- */
+
+@media (
+  max-width: 700px
+) {
+  main.login-page.login104-page {
+    min-height: 100dvh;
+
+    padding: 10px 8px;
+  }
+
+  main.login-page.login104-page
+  section.login-card.login104-card {
+    width:
+      min(
+        430px,
+        calc(100vw - 16px)
+      );
+
+    max-width: 430px;
+
+    display: block;
+
+    padding: 0;
+
+    border-radius: 11px;
+  }
+
+  main.login-page.login104-page
+  .login104-access {
+    padding:
+      18px 14px;
+  }
+
+  main.login-page.login104-page
+  .login104-mobile {
+    display: none;
+  }
+
+  main.login-page.login104-page
+  .login-brand.login104-brand {
+    margin-bottom: 16px;
+  }
+
+  main.login-page.login104-page
+  .auth-password-label {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 3px;
+  }
+
+  main.login-page.login104-page
+  .auth-password-label
+  .auth-inline-link {
+    white-space: normal;
+  }
+}
+
+
+/* ----------------------------------------------------------
+   Celulares muito estreitos
+   ---------------------------------------------------------- */
+
+@media (
+  max-width: 360px
+) {
+  main.login-page.login104-page {
+    padding: 7px;
+  }
+
+  main.login-page.login104-page
+  section.login-card.login104-card {
+    width:
+      calc(100vw - 14px);
+  }
+
+  main.login-page.login104-page
+  .login104-access {
+    padding:
+      16px 12px;
+  }
+}

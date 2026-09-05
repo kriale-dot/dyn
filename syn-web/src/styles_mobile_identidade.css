@@ -1,0 +1,312 @@
+/* ==========================================================
+   SYN — ETAPA 97
+   IDENTIDADE DA IGREJA VISÍVEL NO CELULAR
+
+   Motivo da correção:
+   em telas estreitas, os botões do cabeçalho podiam disputar
+   largura com o bloco da igreja. O nome podia ficar comprimido
+   e a marca perder destaque.
+
+   Esta folha é carregada por último e prioriza explicitamente
+   a identidade institucional no mobile.
+   ========================================================== */
+
+/* ==========================================================
+   1. ÁREA AUTENTICADA — AppShell
+   ========================================================== */
+
+@media (max-width: 600px) {
+  /*
+   * No celular usamos duas linhas:
+   * 1ª linha = identidade da igreja
+   * 2ª linha = usuário, notificações e sair
+   *
+   * Dessa forma os controles nunca comprimem o nome/logotipo.
+   */
+  .app-shell > .topbar {
+    min-height: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+    gap: 7px;
+    padding: 8px 10px 9px;
+  }
+
+  .app-shell > .topbar .brand {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .app-shell > .topbar .brand-logo,
+  .app-shell > .topbar .brand-mark {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border-radius: 8px;
+  }
+
+  .app-shell > .topbar .brand > div:last-child {
+    min-width: 0;
+    display: grid;
+    gap: 1px;
+  }
+
+  /*
+   * SYN fica como identificação secundária.
+   * O nome da igreja recebe o maior destaque.
+   */
+  .app-shell > .topbar .brand strong {
+    display: block;
+    color: #75837e;
+    font-size: 0.68rem;
+    line-height: 1.1;
+    font-weight: 850;
+    letter-spacing: 0.05em;
+  }
+
+  .app-shell > .topbar .brand span {
+    display: block;
+    min-width: 0;
+    color: #304d44;
+    font-size: 0.94rem;
+    line-height: 1.2;
+    font-weight: 800;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .app-shell > .topbar .user-area {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 7px;
+    padding-top: 6px;
+    border-top: 1px solid #edf1ef;
+  }
+
+  .app-shell > .topbar .user-name {
+    display: none;
+  }
+
+  .app-shell > .topbar .shell-user-avatar {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+  }
+
+  .app-shell > .topbar .button-secondary {
+    min-height: 34px;
+    padding: 6px 10px;
+    border-radius: 7px;
+    font-size: 0.78rem;
+  }
+}
+
+/* ==========================================================
+   2. PÁGINA PÚBLICA PRINCIPAL
+   ========================================================== */
+
+@media (max-width: 700px) {
+  /*
+   * O bloco da igreja passa a ocupar sua própria linha.
+   * Os botões ficam embaixo e não conseguem mais "espremer"
+   * a identidade da igreja.
+   */
+  .public74-page .public74-topbar {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+    gap: 9px;
+  }
+
+  .public74-page .public74-brand {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .public74-page .public74-brand img,
+  .public74-page .public74-logo-placeholder {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    border-radius: 9px;
+  }
+
+  .public74-page .public74-brand > div {
+    min-width: 0;
+  }
+
+  .public74-page .public74-brand span {
+    font-size: 0.65rem;
+    line-height: 1.1;
+  }
+
+  .public74-page .public74-brand strong {
+    display: block;
+    margin-top: 2px;
+    color: #304d44;
+    font-size: 0.98rem;
+    line-height: 1.2;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .public74-page .public75-top-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px 7px;
+  }
+
+  .public74-page .public75-upcoming-button {
+    min-height: 34px;
+    padding: 6px 8px;
+  }
+
+  .public74-page .public74-member-button {
+    max-width: none;
+    min-height: 34px;
+    padding: 6px 9px;
+  }
+
+  .public74-page .public81-register-button {
+    min-height: 34px;
+    padding: 6px 9px;
+  }
+}
+
+/* ==========================================================
+   3. LISTA PÚBLICA DE PROGRAMAÇÕES
+   ========================================================== */
+
+@media (max-width: 620px) {
+  .public75-page .public75-header {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+    gap: 9px;
+  }
+
+  .public75-page .public75-brand {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .public75-page .public75-brand img,
+  .public75-page .public75-brand > span {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    border-radius: 8px;
+  }
+
+  .public75-page .public75-brand > div {
+    min-width: 0;
+  }
+
+  .public75-page .public75-brand small {
+    font-size: 0.63rem;
+  }
+
+  .public75-page .public75-brand strong {
+    display: block;
+    margin-top: 2px;
+    color: #304d44;
+    font-size: 0.94rem;
+    line-height: 1.2;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .public75-page .public75-header-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+  }
+}
+
+/* ==========================================================
+   4. DETALHE PÚBLICO DA PROGRAMAÇÃO
+   ========================================================== */
+
+@media (max-width: 480px) {
+  /*
+   * A identidade continua em uma linha exclusiva,
+   * porém alinhada à esquerda para ficar mais legível.
+   */
+  .public-detail74-page .public-detail74-topbar {
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+  }
+
+  .public-detail74-page .public-detail74-brand {
+    width: 100%;
+    min-width: 0;
+    grid-row: 2;
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    justify-content: flex-start;
+    padding-top: 5px;
+  }
+
+  .public-detail74-page .public-detail74-brand img,
+  .public-detail74-page .public-detail74-brand > span {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    border-radius: 8px;
+  }
+
+  .public-detail74-page .public-detail74-brand strong {
+    color: #304d44;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* ==========================================================
+   5. TELAS MUITO ESTREITAS
+   ========================================================== */
+
+@media (max-width: 360px) {
+  .app-shell > .topbar .brand-logo,
+  .app-shell > .topbar .brand-mark {
+    width: 39px;
+    height: 39px;
+    flex-basis: 39px;
+  }
+
+  .app-shell > .topbar .brand span {
+    font-size: 0.9rem;
+  }
+
+  .public74-page .public74-brand img,
+  .public74-page .public74-logo-placeholder {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+  }
+
+  .public74-page .public74-brand strong {
+    font-size: 0.93rem;
+  }
+}
