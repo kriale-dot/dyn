@@ -1,0 +1,5 @@
+# O diretório deve existir, mas logs reais não devem ir para o Git.
+*.log
+*.log.1
+
+!.gitignore

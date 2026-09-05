@@ -11,6 +11,13 @@ declare(strict_types=1);
 require __DIR__ . '/cors.php';
 
 /**
+ * Saúde da aplicação.
+ *
+ * Deve ficar antes das rotas de negócio e não exige autenticação.
+ */
+require __DIR__ . '/saude.php';
+
+/**
  * Rotas públicas: não dependem de autenticação.
  */
 require __DIR__ . '/publico.php';

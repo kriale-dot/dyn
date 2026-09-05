@@ -1,0 +1,731 @@
+/* ==========================================================
+   SYN — ETAPA 107
+   REVISÃO FINAL DE DENSIDADE E CONSISTÊNCIA MOBILE
+
+   Base:
+   - Etapa 93  -> layout compacto
+   - Etapa 103 -> correção de overflow horizontal
+   - Etapas 104–106 -> login, QR Code e PWA
+
+   Objetivos:
+   1. reduzir padding/margin excessivos;
+   2. reduzir arredondamentos;
+   3. manter fontes legíveis;
+   4. preservar áreas de toque confortáveis;
+   5. impedir novos estouros horizontais;
+   6. tornar formulários, cards e modais consistentes;
+   7. aproveitar melhor a tela do celular.
+   ========================================================== */
+
+
+/* ==========================================================
+   TABLET E MOBILE
+   ========================================================== */
+
+@media (max-width: 980px) {
+  /*
+   * Todo conteúdo flex/grid pode encolher sem empurrar
+   * o viewport para a direita.
+   */
+  .content,
+  .content > *,
+  .panel,
+  .hero-card,
+  .loading-card,
+  .modal-card,
+  .program-list-card,
+  .management-program-card,
+  .user-card,
+  .candidate-function-card,
+  .current-scale-card,
+  .detail-info-card,
+  .my-participation-card,
+  .church-data-card,
+  .church-brand-card,
+  .profile-main-card,
+  .profile-side-card,
+  .profile-functions-card,
+  .profile85-security-card,
+  .profile86-password-card,
+  .profile87-email-card,
+  .profile90-activity-card,
+  .serie-editor-card,
+  .serie-info-card,
+  .serie-occurrences-card,
+  .serie-preview-card,
+  .public77-card,
+  .public79-now-card {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  img,
+  svg,
+  canvas,
+  video {
+    max-width: 100%;
+  }
+
+  /*
+   * Rolagem deve ocorrer dentro do bloco que realmente precisa,
+   * nunca no body inteiro.
+   */
+  .audit-table-wrap,
+  .program-history-shell,
+  .audit-list-shell,
+  .week56-map-shell {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+
+/* ==========================================================
+   MOBILE PRINCIPAL
+   ========================================================== */
+
+@media (max-width: 700px) {
+  /* --------------------------------------------------------
+     1. Estrutura geral
+     -------------------------------------------------------- */
+
+  .app-shell > .topbar {
+    min-height: 56px !important;
+    padding: 7px 9px !important;
+    gap: 7px;
+  }
+
+  .app-shell > .topbar .brand {
+    min-width: 0;
+    gap: 8px;
+  }
+
+  .app-shell > .topbar .brand-logo,
+  .app-shell > .topbar .brand-mark {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    border-radius: 7px;
+  }
+
+  .app-shell > .topbar .brand strong {
+    font-size: 0.88rem;
+    line-height: 1.1;
+  }
+
+  .app-shell > .topbar .brand span {
+    display: block;
+    max-width: min(45vw, 190px);
+    font-size: 0.72rem;
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .app-shell > .topbar .user-area {
+    flex: 0 0 auto;
+    gap: 6px;
+  }
+
+  .app-shell > .topbar .shell-user-avatar {
+    width: 32px;
+    height: 32px;
+    flex-basis: 32px;
+  }
+
+  /*
+   * O nome do usuário ocupa bastante largura no celular.
+   * Mantemos a identidade da igreja no cabeçalho e o avatar
+   * do usuário continua disponível.
+   */
+  .app-shell > .topbar .user-name {
+    display: none;
+  }
+
+  .app-shell > .topbar .button-secondary {
+    min-height: 36px;
+    padding: 7px 9px;
+    border-radius: 7px;
+    font-size: 0.78rem;
+  }
+
+  .app-shell > .app-layout > .sidebar {
+    padding: 5px 7px !important;
+  }
+
+  .app-shell > .app-layout > .sidebar > nav {
+    gap: 4px !important;
+  }
+
+  .app-shell > .app-layout > .sidebar > nav > .nav-link {
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 9px !important;
+    border-radius: 7px !important;
+    font-size: 0.82rem !important;
+  }
+
+  .app-shell > .app-layout > .content {
+    padding: 10px 9px 20px !important;
+  }
+
+
+  /* --------------------------------------------------------
+     2. Ritmo vertical das páginas
+     -------------------------------------------------------- */
+
+  .home-page,
+  .week-page,
+  .week56-page,
+  .program-detail-page,
+  .programs-page,
+  .management-page,
+  .scale-management-page,
+  .scale-week-page,
+  .users-page,
+  .profile-page,
+  .structure-page,
+  .type-functions-page,
+  .needs-page,
+  .church-settings-page,
+  .audit-page,
+  .cadastros81-page,
+  .program-form-page,
+  .series-page,
+  .serie-form-page,
+  .serie-detail-page,
+  .syn-home-page,
+  .public74-page,
+  .public75-page,
+  .public77-page {
+    gap: 10px !important;
+  }
+
+  .panel-heading,
+  .section-heading,
+  .profile-section-heading,
+  .detail-panel-heading,
+  .syn-section-heading {
+    gap: 7px;
+    margin-bottom: 8px;
+  }
+
+  /*
+   * Títulos grandes consumiam muito espaço vertical.
+   * Não reduzimos demais para preservar legibilidade.
+   */
+  .hero-card h1,
+  .programs-header h1,
+  .management-hero h1,
+  .scale-management-hero h1,
+  .users-hero h1,
+  .profile-hero h1,
+  .structure-hero h1,
+  .type-functions-hero h1,
+  .needs-hero h1,
+  .church-settings-hero h1,
+  .audit-hero h1,
+  .program-form-hero h1,
+  .series-hero h1,
+  .serie-form-hero h1,
+  .serie-detail-hero h1,
+  .week56-hero h1 {
+    font-size: clamp(1.28rem, 5.8vw, 1.55rem) !important;
+    line-height: 1.15;
+  }
+
+
+  /* --------------------------------------------------------
+     3. Cards / superfícies
+     -------------------------------------------------------- */
+
+  .hero-card,
+  .programs-header,
+  .management-hero,
+  .scale-management-hero,
+  .users-hero,
+  .profile-hero,
+  .structure-hero,
+  .type-functions-hero,
+  .needs-hero,
+  .church-settings-hero,
+  .audit-hero,
+  .program-form-hero,
+  .series-hero,
+  .serie-form-hero,
+  .serie-detail-hero,
+  .program-detail-hero,
+  .scale-week-hero,
+  .week56-hero {
+    padding: 12px !important;
+    border-radius: 9px !important;
+  }
+
+  .panel,
+  .profile-main-card,
+  .profile-side-card,
+  .profile-functions-card,
+  .profile85-security-card,
+  .profile86-password-card,
+  .profile87-email-card,
+  .profile90-activity-card,
+  .church-data-card,
+  .church-brand-card,
+  .serie-editor-card,
+  .serie-info-card,
+  .serie-occurrences-card,
+  .serie-preview-card,
+  .public77-card,
+  .public79-now-card {
+    padding: 11px !important;
+    border-radius: 9px !important;
+  }
+
+  .summary-card,
+  .program-metric-card,
+  .detail-info-card,
+  .my-participation-card,
+  .needs-person-card,
+  .candidate-function-card,
+  .current-scale-card,
+  .user-card,
+  .management-program-card,
+  .program-list-card,
+  .commitment-card,
+  .scale-person {
+    border-radius: 8px !important;
+  }
+
+  .summary-card,
+  .program-metric-card,
+  .detail-info-card,
+  .my-participation-card {
+    padding: 9px !important;
+  }
+
+  .user-card,
+  .management-program-card,
+  .program-list-card,
+  .candidate-function-card {
+    padding: 9px !important;
+  }
+
+  .current-scale-card,
+  .scale-person,
+  .commitment-card,
+  .candidate-row {
+    padding: 7px 8px !important;
+  }
+
+  .loading-card,
+  .empty-state,
+  .error-message,
+  .success-message,
+  .form-note {
+    border-radius: 8px !important;
+  }
+
+  .loading-card {
+    padding: 12px !important;
+  }
+
+  .error-message,
+  .success-message {
+    padding: 8px 10px !important;
+  }
+
+
+  /* --------------------------------------------------------
+     4. Grids: priorizar largura útil
+     -------------------------------------------------------- */
+
+  .form-grid.two-columns,
+  .profile-grid,
+  .church-settings-grid,
+  .detail-info-grid,
+  .public-detail74-info-grid,
+  .serie-fields,
+  .serie67-range,
+  .audit-detail-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .summary-grid,
+  .programs-summary-grid,
+  .scale-management-summary,
+  .users-summary-grid,
+  .needs-summary-grid,
+  .audit-summary-grid,
+  .series-summary-grid,
+  .serie-detail-summary {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .summary-card,
+  .program-metric-card {
+    min-height: 68px !important;
+  }
+
+  .summary-card strong,
+  .program-metric-card strong {
+    font-size: 1.35rem !important;
+  }
+
+
+  /* --------------------------------------------------------
+     5. Formulários
+     -------------------------------------------------------- */
+
+  .form-grid,
+  .profile-form,
+  .profile86-password-form,
+  .profile87-email-form,
+  .needs-form,
+  .auth-public-form,
+  .cadastro81-form,
+  .user-form {
+    gap: 10px !important;
+  }
+
+  input,
+  select,
+  textarea {
+    max-width: 100%;
+    min-width: 0;
+    border-radius: 7px !important;
+  }
+
+  /*
+   * 16px evita zoom automático do Safari/iPhone ao focar
+   * campos de formulário.
+   */
+  .content input,
+  .content select,
+  .content textarea,
+  .login-page input,
+  .auth-public-page input,
+  .auth-public-page select,
+  .auth-public-page textarea {
+    font-size: 16px !important;
+  }
+
+  .content input,
+  .content select,
+  .login-page input,
+  .auth-public-page input,
+  .auth-public-page select {
+    min-height: 40px;
+    padding: 8px 10px !important;
+  }
+
+  .content textarea,
+  .auth-public-page textarea {
+    padding: 8px 10px !important;
+  }
+
+  .program-filters,
+  .management-toolbar,
+  .users-toolbar,
+  .needs-toolbar,
+  .type-functions-toolbar,
+  .series-toolbar,
+  .cadastros81-filters,
+  .audit-filters {
+    padding: 9px !important;
+    gap: 8px !important;
+    border-radius: 8px !important;
+  }
+
+
+  /* --------------------------------------------------------
+     6. Botões / ações
+     -------------------------------------------------------- */
+
+  .button-primary,
+  .button-secondary,
+  .week-nav-button,
+  .participation-action,
+  .small-primary-button,
+  .small-secondary-button,
+  .small-danger-button,
+  .management-open-label,
+  .week56-nav-button,
+  .week56-details-button,
+  .week70-response-button,
+  .syn-text-button {
+    border-radius: 7px !important;
+  }
+
+  .button-primary,
+  .button-secondary,
+  .week-nav-button {
+    min-height: 40px;
+    padding: 8px 11px !important;
+  }
+
+  .small-primary-button,
+  .small-secondary-button,
+  .small-danger-button,
+  .participation-action {
+    min-height: 36px;
+    padding: 7px 9px !important;
+  }
+
+  .modal-actions,
+  .user-card-actions,
+  .management-hero-actions,
+  .management-hero-button-group,
+  .program-management-actions,
+  .current-scale-actions,
+  .participation-actions,
+  .church-form-actions,
+  .church-logo-actions,
+  .profile-form-actions,
+  .serie-editor-actions,
+  .serie-occurrence-actions,
+  .serie-detail-actions,
+  .public75-header-actions,
+  .public75-top-actions,
+  .public-detail74-actions {
+    flex-wrap: wrap;
+    gap: 6px !important;
+  }
+
+
+  /* --------------------------------------------------------
+     7. Listas / linhas de dados
+     -------------------------------------------------------- */
+
+  .programs-list,
+  .management-list,
+  .management-list-59,
+  .users-list,
+  .needs-list,
+  .scale-list,
+  .candidate-list,
+  .current-scale-list,
+  .profile-functions-list,
+  .profile90-activity-list,
+  .series-list,
+  .serie-occurrence-list,
+  .serie68-occurrence-list,
+  .syn-home-program-list,
+  .syn-pending-list {
+    gap: 7px !important;
+  }
+
+  .management-meta,
+  .program-list-meta,
+  .user-card-meta,
+  .series-card-meta,
+  .public75-card-meta {
+    gap: 4px 8px !important;
+  }
+
+
+  /* --------------------------------------------------------
+     8. Modal
+     -------------------------------------------------------- */
+
+  .modal-backdrop {
+    padding: 8px !important;
+  }
+
+  .modal-card {
+    width: min(100%, 680px) !important;
+    max-height: calc(100dvh - 16px) !important;
+    padding: 12px !important;
+    border-radius: 10px !important;
+  }
+
+  .modal-header {
+    gap: 9px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .modal-close {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    border-radius: 7px !important;
+  }
+
+  .user-form {
+    padding-top: 10px !important;
+  }
+
+  .functions-picker {
+    margin-top: 10px !important;
+    gap: 7px !important;
+  }
+
+  .function-choice {
+    padding: 9px 10px !important;
+    border-radius: 8px !important;
+  }
+
+
+  /* --------------------------------------------------------
+     9. Página Minha Semana / mapa
+     -------------------------------------------------------- */
+
+  .week56-day-panel {
+    border-radius: 9px !important;
+  }
+
+  .week56-controls,
+  .week64-jump-controls,
+  .scale-week-nav {
+    gap: 6px !important;
+  }
+
+  .week56-events {
+    gap: 6px !important;
+  }
+
+  .week56-map {
+    max-width: 100%;
+  }
+
+  /*
+   * Mantém a rolagem horizontal do mapa apenas no componente.
+   */
+  .week56-map-shell,
+  .syn-week-strip {
+    max-width: 100%;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+
+  /* --------------------------------------------------------
+     10. Login / páginas públicas de autenticação
+     -------------------------------------------------------- */
+
+  .login-page,
+  .screen-center,
+  .auth-public-page,
+  .cadastro81-page,
+  .confirm84-page,
+  .confirm87-page {
+    padding: 8px !important;
+  }
+
+  .auth-public-card,
+  .cadastro81-card,
+  .confirm84-card,
+  .confirm87-card {
+    padding: 14px !important;
+    border-radius: 10px !important;
+  }
+
+
+  /* --------------------------------------------------------
+     11. Páginas públicas
+     -------------------------------------------------------- */
+
+  .public74-hero,
+  .public74-map-card,
+  .public74-day-panel,
+  .public75-hero,
+  .public75-card-main,
+  .public77-card,
+  .public79-now-card {
+    border-radius: 9px !important;
+  }
+
+  .public74-hero,
+  .public75-hero,
+  .public77-card,
+  .public79-now-card {
+    padding: 11px !important;
+  }
+}
+
+
+/* ==========================================================
+   CELULARES MAIS ESTREITOS
+   ========================================================== */
+
+@media (max-width: 430px) {
+  .app-shell > .topbar .brand span {
+    max-width: 38vw;
+  }
+
+  .app-shell > .topbar .button-secondary {
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+
+  .summary-grid,
+  .programs-summary-grid,
+  .scale-management-summary,
+  .users-summary-grid,
+  .needs-summary-grid,
+  .audit-summary-grid,
+  .series-summary-grid,
+  .serie-detail-summary {
+    gap: 5px !important;
+  }
+
+  /*
+   * Linhas com data + conteúdo passam a usar uma coluna de
+   * data um pouco menor, deixando mais espaço para o título.
+   */
+  .program-list-card,
+  .management-program-card {
+    grid-template-columns:
+      48px minmax(0, 1fr) !important;
+    gap: 7px !important;
+  }
+
+  .program-list-date,
+  .management-date {
+    min-height: 50px !important;
+    border-radius: 7px !important;
+  }
+
+  .management-program-action {
+    padding-left: 55px !important;
+  }
+}
+
+
+/* ==========================================================
+   CELULARES MUITO ESTREITOS
+   ========================================================== */
+
+@media (max-width: 360px) {
+  .app-shell > .app-layout > .content {
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+  }
+
+  .app-shell > .topbar {
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+  }
+
+  .app-shell > .topbar .brand span {
+    max-width: 34vw;
+  }
+
+  .app-shell > .app-layout > .sidebar > nav > .nav-link {
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+    font-size: 0.79rem !important;
+  }
+
+  .summary-card strong,
+  .program-metric-card strong {
+    font-size: 1.25rem !important;
+  }
+}

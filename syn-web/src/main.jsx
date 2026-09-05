@@ -10,12 +10,17 @@ import {
   AuthProvider,
 } from './contexts/AuthContext'
 
+import {
+  registrarServiceWorker,
+} from './pwa/registerServiceWorker'
+
 import './styles.css'
 import './styles_compacto.css'
 import './styles_mobile_identidade.css'
 import './styles_mobile_etapa100.css'
 import './styles_mobile_etapa102.css'
 import './styles_mobile_etapa103.css'
+import './styles_mobile_etapa107.css'
 
 ReactDOM
   .createRoot(
@@ -32,3 +37,5 @@ ReactDOM
       </BrowserRouter>
     </React.StrictMode>,
   )
+
+registrarServiceWorker()

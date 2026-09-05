@@ -1,32 +1,13 @@
 /* ==========================================================
-   SYN — ETAPA 104C
-   CORREÇÃO DA LARGURA DO LOGIN COM QR CODE
-
-   Problema corrigido:
-   O styles.css antigo define:
-      .login-card { width: min(100%, 430px); }
-
-   Em algumas ordens de carregamento do Vite essa regra global
-   acabava vencendo a largura da Etapa 104B, comprimindo a coluna
-   do formulário e quebrando "SYN" e os textos em várias linhas.
-
-   A solução abaixo usa seletores mais específicos, de modo que
-   a tela de login com QR Code preserve a largura correta mesmo
-   quando os estilos globais forem carregados depois.
+   SYN — ETAPA 104D + 106
+   LOGIN + IDENTIDADE + QR CODE + INSTALAÇÃO DO PWA
    ========================================================== */
-
-
-/* ----------------------------------------------------------
-   Desktop / notebook
-   ---------------------------------------------------------- */
 
 main.login-page.login104-page {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-
   padding: 14px 12px;
-
   overflow-x: hidden;
 }
 
@@ -36,103 +17,113 @@ section.login-card.login104-card {
     720px,
     calc(100vw - 24px)
   );
-
   max-width: 720px;
   min-width: 0;
-
   display: grid;
-
   grid-template-columns:
     minmax(0, 1fr)
     250px;
-
   padding: 0;
-
   overflow: hidden;
-
   border-radius: 14px;
 }
-
-
-/* ----------------------------------------------------------
-   Coluna de acesso
-   ---------------------------------------------------------- */
 
 main.login-page.login104-page
 .login104-access {
   min-width: 0;
   width: 100%;
-
-  padding: 24px 26px;
+  padding: 22px 26px;
 }
 
-
-/*
- * Neutraliza regras antigas de .login-brand que poderiam
- * comprimir o conteúdo.
- */
 main.login-page.login104-page
-.login-brand.login104-brand {
+.login104-church {
   width: 100%;
   min-width: 0;
-
   display: flex;
-
   align-items: center;
-
-  gap: 12px;
-
-  margin-bottom: 19px;
+  gap: 13px;
+  margin-bottom: 20px;
 }
 
 main.login-page.login104-page
-.login-brand.login104-brand
-.brand-mark.large {
-  flex: 0 0 auto;
+.login104-church-logo {
+  flex: 0 0 64px;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border:
+    1px solid #dce6e2;
+  border-radius: 9px;
+  background: #fff;
 }
 
 main.login-page.login104-page
-.login-brand.login104-brand
-> div:last-child {
+.login104-church-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  padding: 4px;
+  object-fit: contain;
+}
+
+main.login-page.login104-page
+.login104-church-logo--fallback {
+  color: #fff;
+  border: 0;
+  background:
+    linear-gradient(
+      145deg,
+      #255f50,
+      #478775
+    );
+  font-size: 1.45rem;
+  font-weight: 850;
+}
+
+main.login-page.login104-page
+.login104-church-text {
   flex: 1 1 auto;
-
   min-width: 0;
 }
 
 main.login-page.login104-page
-.login-brand.login104-brand h1 {
+.login104-system-name {
+  display: block;
+  margin-bottom: 2px;
+  color: #397766;
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.09em;
+}
+
+main.login-page.login104-page
+.login104-church-text h1 {
   margin: 0;
-
-  white-space: nowrap;
-
+  color: #162c27;
+  font-size: 1.23rem;
+  line-height: 1.2;
   overflow-wrap: normal;
   word-break: normal;
 }
 
 main.login-page.login104-page
-.login-brand.login104-brand p {
-  margin: 2px 0 0;
-
-  white-space: normal;
-
+.login104-church-text p {
+  margin: 4px 0 0;
+  color: #6b7a75;
+  font-size: 0.76rem;
+  line-height: 1.35;
   overflow-wrap: normal;
   word-break: normal;
-
-  line-height: 1.35;
 }
-
-
-/* ----------------------------------------------------------
-   Formulário
-   ---------------------------------------------------------- */
 
 main.login-page.login104-page
 .login-form.login104-form {
   width: 100%;
   min-width: 0;
-
   display: grid;
-
   gap: 13px;
 }
 
@@ -152,15 +143,30 @@ main.login-page.login104-page
 }
 
 main.login-page.login104-page
+.login104-form input {
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+main.login-page.login104-page
+.login104-form .button-primary {
+  padding: 10px 14px;
+  border-radius: 8px;
+}
+
+main.login-page.login104-page
+.login104-form .error-message {
+  padding: 9px 11px;
+  border-radius: 8px;
+}
+
+main.login-page.login104-page
 .auth-password-label {
   width: 100%;
   min-width: 0;
-
   display: flex;
-
   align-items: center;
   justify-content: space-between;
-
   gap: 10px;
 }
 
@@ -168,27 +174,17 @@ main.login-page.login104-page
 .auth-password-label
 .auth-inline-link {
   flex: 0 0 auto;
-
   white-space: nowrap;
 }
-
-
-/* ----------------------------------------------------------
-   Área do QR Code
-   ---------------------------------------------------------- */
 
 main.login-page.login104-page
 .login104-mobile {
   min-width: 0;
-
   display: grid;
   place-items: center;
-
   padding: 20px 18px;
-
   border-left:
     1px solid #dfe7e4;
-
   background:
     linear-gradient(
       160deg,
@@ -201,14 +197,35 @@ main.login-page.login104-page
 .login104-mobile-content {
   width: 100%;
   min-width: 0;
-
   display: grid;
-
   justify-items: center;
-
   gap: 8px;
-
   text-align: center;
+}
+
+main.login-page.login104-page
+.login104-kicker {
+  color: #35685a;
+  font-size: 0.66rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+main.login-page.login104-page
+.login104-mobile h2 {
+  margin: 0;
+  color: #17302a;
+  font-size: 1.05rem;
+  line-height: 1.2;
+}
+
+main.login-page.login104-page
+.login104-mobile p {
+  margin: 0;
+  color: #6a7974;
+  font-size: 0.76rem;
+  line-height: 1.4;
 }
 
 main.login-page.login104-page
@@ -218,7 +235,6 @@ main.login-page.login104-page
 main.login-page.login104-page
 .login104-mobile small {
   max-width: 100%;
-
   overflow-wrap: normal;
   word-break: normal;
 }
@@ -227,40 +243,124 @@ main.login-page.login104-page
 .login104-qr {
   width: 148px;
   height: 148px;
-
   max-width: 100%;
-
   display: grid;
   place-items: center;
-
   margin: 4px 0 1px;
-
   padding: 6px;
-
   border:
     1px solid #d7e2de;
-
   border-radius: 8px;
-
   background: #fff;
 }
 
 main.login-page.login104-page
 .login104-qr img {
   display: block;
-
   width: 100%;
   height: 100%;
-
   max-width: 100%;
-
   object-fit: contain;
 }
 
+main.login-page.login104-page
+.login104-qr span {
+  color: #788681;
+  font-size: 0.7rem;
+}
 
-/* ----------------------------------------------------------
+main.login-page.login104-page
+.login104-mobile small {
+  max-width: 180px;
+  color: #7b8783;
+  font-size: 0.66rem;
+  line-height: 1.35;
+}
+
+
+/* ==========================================================
+   Etapa 106 — Instalação do aplicativo
+   ========================================================== */
+
+main.login-page.login104-page
+.login106-install {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top:
+    1px solid #e3e9e7;
+}
+
+main.login-page.login104-page
+.login106-install-button {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border:
+    1px solid #b9d0c8;
+  border-radius: 8px;
+  background: #f4faf7;
+  color: #245b4c;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+main.login-page.login104-page
+.login106-install-button:hover {
+  background: #eaf5f0;
+}
+
+main.login-page.login104-page
+.login106-install-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+main.login-page.login104-page
+.login106-ios-hint,
+main.login-page.login104-page
+.login106-installed {
+  margin: 0;
+  color: #687873;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
+main.login-page.login104-page
+.login106-installed {
+  color: #346c5c;
+  font-weight: 700;
+}
+
+main.login-page.login104-page
+.login106-install small {
+  color: #77857f;
+  font-size: 0.67rem;
+  text-align: center;
+}
+
+main.login-page.login104-page
+.login106-qr-note {
+  margin-top: 3px;
+  color: #65766f;
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+
+/* ==========================================================
    Tablets estreitos
-   ---------------------------------------------------------- */
+   ========================================================== */
 
 @media (
   min-width: 701px
@@ -271,7 +371,6 @@ main.login-page.login104-page
   section.login-card.login104-card {
     width:
       calc(100vw - 20px);
-
     grid-template-columns:
       minmax(0, 1fr)
       220px;
@@ -280,7 +379,7 @@ main.login-page.login104-page
   main.login-page.login104-page
   .login104-access {
     padding:
-      21px 20px;
+      20px 20px;
   }
 
   main.login-page.login104-page
@@ -297,16 +396,15 @@ main.login-page.login104-page
 }
 
 
-/* ----------------------------------------------------------
+/* ==========================================================
    Celular
-   ---------------------------------------------------------- */
+   ========================================================== */
 
 @media (
   max-width: 700px
 ) {
   main.login-page.login104-page {
     min-height: 100dvh;
-
     padding: 10px 8px;
   }
 
@@ -317,20 +415,17 @@ main.login-page.login104-page
         430px,
         calc(100vw - 16px)
       );
-
     max-width: 430px;
-
     display: block;
-
     padding: 0;
-
     border-radius: 11px;
   }
 
   main.login-page.login104-page
   .login104-access {
+    min-width: 0;
     padding:
-      18px 14px;
+      17px 14px;
   }
 
   main.login-page.login104-page
@@ -339,16 +434,33 @@ main.login-page.login104-page
   }
 
   main.login-page.login104-page
-  .login-brand.login104-brand {
+  .login104-church {
+    gap: 11px;
     margin-bottom: 16px;
+  }
+
+  main.login-page.login104-page
+  .login104-church-logo {
+    flex-basis: 56px;
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+  }
+
+  main.login-page.login104-page
+  .login104-church-text h1 {
+    font-size: 1.1rem;
+  }
+
+  main.login-page.login104-page
+  .login104-form {
+    gap: 11px;
   }
 
   main.login-page.login104-page
   .auth-password-label {
     align-items: flex-start;
-
     flex-direction: column;
-
     gap: 3px;
   }
 
@@ -357,12 +469,18 @@ main.login-page.login104-page
   .auth-inline-link {
     white-space: normal;
   }
+
+  main.login-page.login104-page
+  .login106-install {
+    margin-top: 12px;
+    padding-top: 11px;
+  }
 }
 
 
-/* ----------------------------------------------------------
+/* ==========================================================
    Celulares muito estreitos
-   ---------------------------------------------------------- */
+   ========================================================== */
 
 @media (
   max-width: 360px
@@ -380,6 +498,13 @@ main.login-page.login104-page
   main.login-page.login104-page
   .login104-access {
     padding:
-      16px 12px;
+      15px 12px;
+  }
+
+  main.login-page.login104-page
+  .login104-church-logo {
+    flex-basis: 50px;
+    width: 50px;
+    height: 50px;
   }
 }

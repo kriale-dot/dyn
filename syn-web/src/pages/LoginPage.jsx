@@ -14,12 +14,33 @@ import {
 } from 'react-router-dom'
 
 import {
+  getIgrejaPublica,
+} from '../api/api'
+
+import {
   useAuth,
 } from '../contexts/AuthContext'
 
 import './AuthPagesEtapa50.css'
 import './LoginPageEtapa81.css'
 import './LoginPageEtapa104.css'
+
+/**
+ * Endereço da API.
+ *
+ * Se VITE_API_URL não estiver definido, usa o mesmo host
+ * pelo qual o frontend foi aberto e a porta 8282.
+ */
+const API_URL =
+  String(
+    import.meta.env.VITE_API_URL
+    || '',
+  ).trim()
+  || (
+    typeof window !== 'undefined'
+      ? `${window.location.protocol}//${window.location.hostname}:8282`
+      : 'http://localhost:8282'
+  )
 
 function getAppUrl() {
   const configuredUrl =
@@ -39,6 +60,79 @@ function getAppUrl() {
   }
 
   return `${window.location.origin}/login`
+}
+
+function resolverArquivoApi(
+  caminho,
+) {
+  if (!caminho) {
+    return null
+  }
+
+  if (
+    /^https?:\/\//i.test(
+      caminho,
+    )
+  ) {
+    return caminho
+  }
+
+  return `${
+    API_URL.replace(
+      /\/+$/,
+      '',
+    )
+  }/${
+    String(caminho).replace(
+      /^\/+/,
+      '',
+    )
+  }`
+}
+
+function estaEmModoAplicativo() {
+  if (
+    typeof window === 'undefined'
+  ) {
+    return false
+  }
+
+  return (
+    window.matchMedia?.(
+      '(display-mode: standalone)',
+    )?.matches
+    || window.navigator
+      .standalone === true
+  )
+}
+
+function ehIOS() {
+  if (
+    typeof navigator === 'undefined'
+  ) {
+    return false
+  }
+
+  const ua =
+    navigator.userAgent
+    || ''
+
+  const iOSTradicional =
+    /iPad|iPhone|iPod/i
+      .test(
+        ua,
+      )
+
+  const iPadOS =
+    navigator.platform
+      === 'MacIntel'
+    && navigator.maxTouchPoints
+      > 1
+
+  return (
+    iOSTradicional
+    || iPadOS
+  )
 }
 
 export default function LoginPage() {
@@ -66,9 +160,40 @@ export default function LoginPage() {
   const [qrCode, setQrCode] =
     useState('')
 
+  const [igreja, setIgreja] =
+    useState(null)
+
+  /*
+   * Evento oferecido por navegadores Chromium quando o PWA
+   * está apto a ser instalado.
+   */
+  const [
+    installPrompt,
+    setInstallPrompt,
+  ] = useState(null)
+
+  const [
+    aplicativoInstalado,
+    setAplicativoInstalado,
+  ] = useState(
+    () =>
+      estaEmModoAplicativo(),
+  )
+
+  const [
+    mensagemInstalacao,
+    setMensagemInstalacao,
+  ] = useState('')
+
   const appUrl =
     useMemo(
       () => getAppUrl(),
+      [],
+    )
+
+  const isIOS =
+    useMemo(
+      () => ehIOS(),
       [],
     )
 
@@ -109,6 +234,96 @@ export default function LoginPage() {
     [
       appUrl,
     ],
+  )
+
+  useEffect(
+    () => {
+      let active = true
+
+      async function carregarIgreja() {
+        try {
+          const response =
+            await getIgrejaPublica()
+
+          if (!active) {
+            return
+          }
+
+          setIgreja(
+            response?.dados
+            ?? null,
+          )
+        } catch {
+          if (active) {
+            setIgreja(null)
+          }
+        }
+      }
+
+      carregarIgreja()
+
+      return () => {
+        active = false
+      }
+    },
+    [],
+  )
+
+  useEffect(
+    () => {
+      function handleBeforeInstallPrompt(
+        event,
+      ) {
+        /*
+         * Impede o navegador de mostrar um prompt automático.
+         * Guardamos o evento para o botão "Instalar aplicativo".
+         */
+        event.preventDefault()
+
+        setInstallPrompt(
+          event,
+        )
+
+        setMensagemInstalacao('')
+      }
+
+      function handleAppInstalled() {
+        setAplicativoInstalado(
+          true,
+        )
+
+        setInstallPrompt(
+          null,
+        )
+
+        setMensagemInstalacao(
+          'Aplicativo instalado.',
+        )
+      }
+
+      window.addEventListener(
+        'beforeinstallprompt',
+        handleBeforeInstallPrompt,
+      )
+
+      window.addEventListener(
+        'appinstalled',
+        handleAppInstalled,
+      )
+
+      return () => {
+        window.removeEventListener(
+          'beforeinstallprompt',
+          handleBeforeInstallPrompt,
+        )
+
+        window.removeEventListener(
+          'appinstalled',
+          handleAppInstalled,
+        )
+      }
+    },
+    [],
   )
 
   if (loading) {
@@ -161,21 +376,95 @@ export default function LoginPage() {
     }
   }
 
+  async function handleInstallApp() {
+    if (
+      !installPrompt
+    ) {
+      return
+    }
+
+    try {
+      await installPrompt
+        .prompt()
+
+      const choice =
+        await installPrompt
+          .userChoice
+
+      if (
+        choice?.outcome
+        === 'accepted'
+      ) {
+        setMensagemInstalacao(
+          'Instalação iniciada.',
+        )
+      }
+
+      setInstallPrompt(
+        null,
+      )
+    } catch {
+      setMensagemInstalacao(
+        'Não foi possível iniciar a instalação.',
+      )
+    }
+  }
+
+  const logoIgreja =
+    resolverArquivoApi(
+      igreja?.logotipo,
+    )
+
+  const mostrarBotaoInstalar =
+    Boolean(
+      installPrompt,
+    )
+    && !aplicativoInstalado
+
+  const mostrarOrientacaoIOS =
+    isIOS
+    && !aplicativoInstalado
+    && !mostrarBotaoInstalar
+
   return (
     <main className="login-page login104-page">
       <section className="login-card login104-card">
         <div className="login104-access">
-          <div className="login-brand login104-brand">
-            <div className="brand-mark large">
-              S
-            </div>
 
-            <div>
-              <h1>SYN</h1>
+          <div className="login104-church">
+            {logoIgreja ? (
+              <div className="login104-church-logo">
+                <img
+                  src={logoIgreja}
+                  alt={
+                    igreja?.nome
+                      ? `Logotipo de ${igreja.nome}`
+                      : 'Logotipo da igreja'
+                  }
+                />
+              </div>
+            ) : (
+              <div
+                className="login104-church-logo login104-church-logo--fallback"
+                aria-hidden="true"
+              >
+                S
+              </div>
+            )}
+
+            <div className="login104-church-text">
+              <span className="login104-system-name">
+                SYN
+              </span>
+
+              <h1>
+                {igreja?.nome
+                  || 'Organização da Igreja'}
+              </h1>
 
               <p>
-                Organização, programação
-                e escalas da igreja
+                Programação, compromissos
+                e escalas em um só lugar.
               </p>
             </div>
           </div>
@@ -258,6 +547,56 @@ export default function LoginPage() {
               </Link>
             </div>
           </form>
+
+          {(mostrarBotaoInstalar
+            || mostrarOrientacaoIOS
+            || aplicativoInstalado
+            || mensagemInstalacao) && (
+            <div
+              className="login106-install"
+              aria-live="polite"
+            >
+              {mostrarBotaoInstalar && (
+                <button
+                  type="button"
+                  className="login106-install-button"
+                  onClick={
+                    handleInstallApp
+                  }
+                >
+                  <span
+                    className="login106-install-icon"
+                    aria-hidden="true"
+                  >
+                    ↓
+                  </span>
+
+                  Instalar aplicativo
+                </button>
+              )}
+
+              {mostrarOrientacaoIOS && (
+                <p className="login106-ios-hint">
+                  No iPhone/iPad:
+                  use Compartilhar e depois
+                  “Adicionar à Tela de Início”.
+                </p>
+              )}
+
+              {aplicativoInstalado && (
+                <p className="login106-installed">
+                  SYN já está instalado
+                  neste dispositivo.
+                </p>
+              )}
+
+              {mensagemInstalacao && (
+                <small>
+                  {mensagemInstalacao}
+                </small>
+              )}
+            </div>
+          )}
         </div>
 
         <aside
@@ -295,6 +634,14 @@ export default function LoginPage() {
               O QR Code abre diretamente
               a tela de login.
             </small>
+
+            {mostrarBotaoInstalar && (
+              <p className="login106-qr-note">
+                Depois de abrir no celular,
+                você poderá instalar o SYN
+                na tela inicial.
+              </p>
+            )}
           </div>
         </aside>
       </section>
