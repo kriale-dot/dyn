@@ -1,13 +1,11 @@
+import './pwaInstallManager'
+
 /**
- * SYN — Etapa 105
- * Registro do Service Worker.
+ * SYN — Etapa 112C
  *
- * IMPORTANTE:
- * Em desenvolvimento não registramos o SW para evitar cache antigo
- * durante as alterações do Vite.
- *
- * O PWA passa a funcionar no build de produção, servido por HTTPS
- * (ou localhost, que os navegadores tratam como origem segura).
+ * Registra o Service Worker somente no build de produção.
+ * O import acima também captura o beforeinstallprompt ANTES
+ * de o React montar a LoginPage.
  */
 export function registrarServiceWorker() {
   if (
@@ -20,24 +18,54 @@ export function registrarServiceWorker() {
     return
   }
 
-  window.addEventListener(
-    'load',
-    async () => {
-      try {
+  async function registrar() {
+    try {
+      const registration =
         await navigator
           .serviceWorker
           .register(
             '/sw.js',
             {
               scope: '/',
+              updateViaCache:
+                'none',
             },
           )
-      } catch (error) {
-        console.error(
-          'Não foi possível registrar o Service Worker do SYN.',
-          error,
-        )
-      }
-    },
-  )
+
+      await registration
+        .update()
+
+      console.info(
+        'SYN PWA: Service Worker registrado.',
+      )
+    } catch (
+      error
+    ) {
+      console.error(
+        'SYN PWA: erro ao registrar Service Worker.',
+        error,
+      )
+    }
+  }
+
+  if (
+    document.readyState
+    === 'complete'
+  ) {
+    registrar()
+  } else {
+    window.addEventListener(
+      'load',
+      registrar,
+      {
+        once: true,
+      },
+    )
+  }
 }
+
+/*
+ * Alias para manter compatibilidade.
+ */
+export const registerServiceWorker =
+  registrarServiceWorker

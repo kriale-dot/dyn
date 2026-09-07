@@ -4,12 +4,12 @@
   "short_name": "SYN",
   "description": "Programação, compromissos e escalas da igreja.",
   "lang": "pt-BR",
-  "start_url": "/login",
+  "start_url": "/login?source=pwa",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait-primary",
-  "background_color": "#f4f7f5",
-  "theme_color": "#255f50",
+  "background_color": "#F4F7F5",
+  "theme_color": "#255F50",
+  "prefer_related_applications": false,
   "categories": [
     "productivity",
     "utilities"

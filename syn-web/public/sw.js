@@ -1,16 +1,4 @@
-/**
- * SYN — Etapa 105
- * Service Worker simples e conservador.
- *
- * Objetivos:
- * - permitir instalação como PWA;
- * - manter o shell visual disponível após a primeira carga;
- * - não armazenar respostas da API nem uploads;
- * - evitar comportamento agressivo de cache.
- */
-
-const CACHE_NAME =
-  'syn-pwa-v105'
+const CACHE_NAME = 'syn-pwa-v112c'
 
 const APP_SHELL = [
   '/',
@@ -26,20 +14,16 @@ self.addEventListener(
   (event) => {
     event.waitUntil(
       caches
-        .open(
-          CACHE_NAME,
-        )
+        .open(CACHE_NAME)
         .then(
           (cache) =>
             cache.addAll(
               APP_SHELL,
             ),
-        )
-        .then(
-          () =>
-            self.skipWaiting(),
         ),
     )
+
+    self.skipWaiting()
   },
 )
 
@@ -64,12 +48,10 @@ self.addEventListener(
                     ),
                 ),
             ),
-        )
-        .then(
-          () =>
-            self.clients.claim(),
         ),
     )
+
+    self.clients.claim()
   },
 )
 
@@ -91,7 +73,9 @@ self.addEventListener(
       )
 
     /*
-     * Nunca cacheia serviços externos.
+     * Nunca intercepta chamadas da API ou de outra origem.
+     * Dados de escala/programação continuam vindo sempre
+     * da API para evitar conteúdo antigo.
      */
     if (
       url.origin
@@ -101,49 +85,17 @@ self.addEventListener(
     }
 
     /*
-     * Nunca cacheia API nem arquivos enviados pelo usuário.
+     * React Router:
+     * tenta a rede e, se estiver offline, abre o shell.
      */
     if (
-      url.pathname
-        .startsWith('/api/')
-      || url.pathname
-        .startsWith('/uploads/')
-    ) {
-      return
-    }
-
-    /*
-     * Navegação SPA:
-     * tenta a rede primeiro para sempre receber a versão mais nova.
-     * Se estiver offline, usa o index.html já armazenado.
-     */
-    if (
-      request.mode === 'navigate'
+      request.mode
+      === 'navigate'
     ) {
       event.respondWith(
         fetch(
           request,
         )
-          .then(
-            (response) => {
-              const clone =
-                response.clone()
-
-              caches
-                .open(
-                  CACHE_NAME,
-                )
-                .then(
-                  (cache) =>
-                    cache.put(
-                      '/index.html',
-                      clone,
-                    ),
-                )
-
-              return response
-            },
-          )
           .catch(
             () =>
               caches.match(
@@ -157,8 +109,7 @@ self.addEventListener(
 
     /*
      * Assets estáticos:
-     * responde do cache quando existir.
-     * Caso contrário, busca na rede e guarda uma cópia válida.
+     * cache-first.
      */
     event.respondWith(
       caches
@@ -166,43 +117,35 @@ self.addEventListener(
           request,
         )
         .then(
-          (cached) => {
-            if (cached) {
-              return cached
-            }
-
-            return fetch(
+          (cached) =>
+            cached
+            || fetch(
               request,
             )
               .then(
                 (response) => {
                   if (
-                    !response
-                    || response.status !== 200
-                    || response.type === 'opaque'
+                    response.ok
                   ) {
-                    return response
+                    const copy =
+                      response.clone()
+
+                    caches
+                      .open(
+                        CACHE_NAME,
+                      )
+                      .then(
+                        (cache) =>
+                          cache.put(
+                            request,
+                            copy,
+                          ),
+                      )
                   }
-
-                  const clone =
-                    response.clone()
-
-                  caches
-                    .open(
-                      CACHE_NAME,
-                    )
-                    .then(
-                      (cache) =>
-                        cache.put(
-                          request,
-                          clone,
-                        ),
-                    )
 
                   return response
                 },
-              )
-          },
+              ),
         ),
     )
   },
