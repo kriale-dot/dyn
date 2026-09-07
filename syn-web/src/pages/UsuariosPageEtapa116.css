@@ -1,0 +1,108 @@
+/* SYN — ETAPA 116 — Administrador: foto dos usuários */
+
+.usuario116-photo-modal {
+  width: min(100%, 560px);
+}
+
+.usuario116-photo-content {
+  display: grid;
+  grid-template-columns: 118px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.usuario116-photo-preview {
+  width: 118px;
+  height: 118px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(47, 111, 94, 0.18);
+  background: #eef6f3;
+  color: #285f51;
+  font-size: 1.65rem;
+  font-weight: 800;
+}
+
+.usuario116-photo-preview img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.usuario116-photo-info {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.usuario116-photo-info strong {
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.usuario116-photo-info > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: #63736e;
+}
+
+.usuario116-photo-info p {
+  margin: 7px 0 0;
+  color: #63736e;
+  line-height: 1.45;
+}
+
+.usuario116-photo-actions {
+  flex-wrap: wrap;
+}
+
+.usuario116-photo-select {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  text-align: center;
+}
+
+.usuario116-photo-select input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.usuario116-photo-select.is-disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .usuario116-photo-content {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .usuario116-photo-preview {
+    width: 132px;
+    height: 132px;
+  }
+
+  .usuario116-photo-info {
+    width: 100%;
+  }
+
+  .usuario116-photo-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .usuario116-photo-actions > * {
+    width: 100%;
+    min-height: 46px;
+  }
+}

@@ -16,19 +16,19 @@
   ],
   "icons": [
     {
-      "src": "/icons/syn-192.png",
+      "src": "/ic/syn-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/syn-512.png",
+      "src": "/ic/syn-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/syn-maskable-512.png",
+      "src": "/ic/syn-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

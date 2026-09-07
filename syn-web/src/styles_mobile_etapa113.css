@@ -1,0 +1,226 @@
+/* ==========================================================
+   SYN — ETAPA 113
+   TIPOGRAFIA MOBILE MAIS LEGÍVEL
+
+   Objetivo:
+   - aumentar textos pequenos no celular;
+   - preservar a compactação conquistada nas etapas anteriores;
+   - evitar voltar a estourar conteúdo horizontalmente;
+   - manter campos com 16px para evitar zoom automático no iPhone.
+   ========================================================== */
+
+@media (max-width: 700px) {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    font-size: 16px !important;
+    line-height: 1.45;
+  }
+
+  /*
+   * Base de leitura das principais áreas.
+   */
+  .app-shell > .app-layout > .content,
+  .modal-card,
+  .login-page,
+  .auth-public-page,
+  .public74-page,
+  .public75-page,
+  .public77-page,
+  .syn-home-page {
+    font-size: 1rem;
+  }
+
+  /*
+   * Identidade no topo.
+   * A etapa 107 deixava o subtítulo em 0.72rem.
+   */
+  .app-shell > .topbar .brand strong {
+    font-size: 0.96rem !important;
+    line-height: 1.15 !important;
+  }
+
+  .app-shell > .topbar .brand span {
+    font-size: 0.84rem !important;
+    line-height: 1.2 !important;
+  }
+
+  /*
+   * Menu lateral / menu mobile.
+   */
+  .app-shell > .app-layout > .sidebar > nav > .nav-link {
+    font-size: 0.92rem !important;
+    line-height: 1.25 !important;
+  }
+
+  /*
+   * Parágrafos, listas e rótulos comuns.
+   */
+  .content p,
+  .content li,
+  .content label,
+  .modal-card p,
+  .modal-card li,
+  .modal-card label,
+  .login-page p,
+  .login-page label,
+  .auth-public-page p,
+  .auth-public-page label {
+    font-size: 0.95rem !important;
+    line-height: 1.45 !important;
+  }
+
+  /*
+   * Textos auxiliares e metadados.
+   * Muitos componentes do SYN usam nomes de classe terminados
+   * em meta, subtitle, caption, helper, hint, description etc.
+   */
+  .content small,
+  .modal-card small,
+  .login-page small,
+  .auth-public-page small,
+  .content [class*="meta"],
+  .content [class*="subtitle"],
+  .content [class*="caption"],
+  .content [class*="helper"],
+  .content [class*="hint"],
+  .content [class*="description"],
+  .modal-card [class*="meta"],
+  .modal-card [class*="subtitle"],
+  .modal-card [class*="caption"],
+  .modal-card [class*="helper"],
+  .modal-card [class*="hint"],
+  .login-page [class*="hint"],
+  .login-page [class*="helper"],
+  .auth-public-page [class*="hint"],
+  .auth-public-page [class*="helper"] {
+    font-size: 0.9rem !important;
+    line-height: 1.4 !important;
+  }
+
+  /*
+   * Metadados usados nas listas principais.
+   */
+  .management-meta,
+  .program-list-meta,
+  .user-card-meta,
+  .series-card-meta,
+  .public75-card-meta,
+  .profile90-activity-meta,
+  .serie68-occurrence-meta,
+  .syn-program-meta,
+  .syn-pending-meta {
+    font-size: 0.9rem !important;
+    line-height: 1.4 !important;
+  }
+
+  /*
+   * Cards-resumo: números continuam destacados, mas a descrição
+   * não fica pequena demais.
+   */
+  .summary-card span,
+  .program-metric-card span,
+  .detail-info-card span,
+  .my-participation-card span {
+    font-size: 0.9rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .summary-card strong,
+  .program-metric-card strong {
+    font-size: 1.42rem !important;
+  }
+
+  /*
+   * Badges, chips, estados e etiquetas.
+   */
+  .content .badge,
+  .content [class*="badge"],
+  .content [class*="chip"],
+  .content [class*="pill"],
+  .content [class*="tag"],
+  .content [class*="status"] {
+    font-size: 0.84rem !important;
+    line-height: 1.25 !important;
+  }
+
+  /*
+   * Botões e links de ação.
+   */
+  .button-primary,
+  .button-secondary,
+  .week-nav-button,
+  .participation-action,
+  .small-primary-button,
+  .small-secondary-button,
+  .small-danger-button,
+  .management-open-label,
+  .week56-nav-button,
+  .week56-details-button,
+  .week70-response-button,
+  .syn-text-button,
+  .login112-public-access {
+    font-size: 0.92rem !important;
+    line-height: 1.25 !important;
+  }
+
+  /*
+   * Links pequenos de autenticação.
+   */
+  .login-page a,
+  .auth-public-page a,
+  .auth81-register-link,
+  .login104-forgot-link,
+  .login104-install-help {
+    font-size: 0.9rem !important;
+    line-height: 1.35 !important;
+  }
+
+  /*
+   * Campos: 16px evita zoom automático do Safari/iPhone.
+   */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /*
+   * Títulos secundários.
+   */
+  .content h2,
+  .modal-card h2 {
+    font-size: 1.14rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .content h3,
+  .modal-card h3 {
+    font-size: 1.02rem !important;
+    line-height: 1.3 !important;
+  }
+}
+
+
+/* ==========================================================
+   CELULARES ESTREITOS
+   Não reduzimos mais a fonte para caber: priorizamos leitura.
+   ========================================================== */
+
+@media (max-width: 360px) {
+  .app-shell > .app-layout > .sidebar > nav > .nav-link {
+    font-size: 0.9rem !important;
+  }
+
+  .app-shell > .topbar .brand span {
+    font-size: 0.82rem !important;
+  }
+
+  .summary-card strong,
+  .program-metric-card strong {
+    font-size: 1.35rem !important;
+  }
+}

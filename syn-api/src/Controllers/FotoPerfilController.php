@@ -114,6 +114,113 @@ final class FotoPerfilController
         }
     }
 
+    /**
+     * Administrador altera a foto de um usuário.
+     *
+     * @param array<string, string> $args
+     */
+    public function salvarUsuario(
+        Request $request,
+        Response $response,
+        array $args
+    ): Response {
+        $arquivos =
+            $request->getUploadedFiles();
+
+        $foto =
+            $arquivos['foto']
+            ?? null;
+
+        if (
+            !$foto
+            instanceof UploadedFileInterface
+        ) {
+            return $this->json(
+                $response,
+                [
+                    'status' => 'erro',
+                    'mensagem' =>
+                        'Envie a imagem no campo multipart/form-data chamado "foto".',
+                ],
+                400
+            );
+        }
+
+        try {
+            $resultado =
+                $this->service
+                    ->salvar(
+                        (int) (
+                            $args['id']
+                            ?? 0
+                        ),
+                        $foto
+                    );
+
+            return $this->json(
+                $response,
+                [
+                    'status' => 'ok',
+                    'mensagem' =>
+                        'Foto do usuário atualizada com sucesso.',
+                    'dados' =>
+                        $resultado,
+                ],
+                200
+            );
+        } catch (
+            UsuarioNaoEncontradoException
+            | DadosInvalidosException $e
+        ) {
+            return $this->erroConhecido(
+                $response,
+                $e
+            );
+        }
+    }
+
+    /**
+     * Administrador remove a foto de um usuário.
+     *
+     * @param array<string, string> $args
+     */
+    public function removerUsuario(
+        Request $request,
+        Response $response,
+        array $args
+    ): Response {
+        try {
+            $resultado =
+                $this->service
+                    ->remover(
+                        (int) (
+                            $args['id']
+                            ?? 0
+                        )
+                    );
+
+            return $this->json(
+                $response,
+                [
+                    'status' => 'ok',
+                    'mensagem' =>
+                        'Foto do usuário removida com sucesso.',
+                    'dados' =>
+                        $resultado,
+                ],
+                200
+            );
+        } catch (
+            UsuarioNaoEncontradoException
+            | DadosInvalidosException $e
+        ) {
+            return $this->erroConhecido(
+                $response,
+                $e
+            );
+        }
+    }
+
     private function usuarioAutenticadoId(
         Request $request
     ): int {

@@ -508,3 +508,63 @@ main.login-page.login104-page
     height: 50px;
   }
 }
+
+/* ==========================================================
+   SYN — ETAPA 112
+   BOTÃO DE ACESSO PÚBLICO
+   ========================================================== */
+
+main.login-page.login104-page
+.login112-public-access {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 14px;
+  border: 1px solid #397766;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #2f6b5b;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+main.login-page.login104-page
+.login112-public-access:hover {
+  border-color: #2f6657;
+  background: #eef7f3;
+  color: #214f43;
+}
+
+main.login-page.login104-page
+.login112-public-access:active {
+  transform: translateY(1px);
+}
+
+main.login-page.login104-page
+.login112-public-access:focus-visible {
+  outline: 3px solid rgba(57, 119, 102, 0.22);
+  outline-offset: 2px;
+}
+
+@media (max-width: 700px) {
+  main.login-page.login104-page
+  .login112-public-access {
+    min-height: 46px;
+    font-size: 0.95rem;
+  }
+}
+

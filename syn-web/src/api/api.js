@@ -1,31 +1,6 @@
-/**
- * URL base da API.
- *
- * Regra da Etapa 100:
- * - se VITE_API_URL estiver configurado, ele continua tendo prioridade;
- * - sem configuração, usamos automaticamente o mesmo host pelo qual
- *   o frontend foi aberto, na porta 8282.
- *
- * Exemplos:
- *   frontend: http://localhost:5173
- *   API:      http://localhost:8282
- *
- *   frontend: http://192.168.15.8:5173
- *   API:      http://192.168.15.8:8282
- *
- * Isso evita que o celular tente acessar "localhost:8282",
- * que apontaria para o próprio celular.
- */
 const API_URL =
-  String(
-    import.meta.env.VITE_API_URL
-    || '',
-  ).trim()
-  || (
-    typeof window !== 'undefined'
-      ? `${window.location.protocol}//${window.location.hostname}:8282`
-      : 'http://localhost:8282'
-  )
+  import.meta.env.VITE_API_URL
+  || 'http://localhost:8282'
 
 const TOKEN_KEY = 'syn_token'
 
@@ -552,6 +527,43 @@ export async function enviarFotoPerfil(
 export async function removerFotoPerfil() {
   return apiRequest(
     '/meu-perfil/foto',
+    {
+      method: 'DELETE',
+    },
+  )
+}
+
+
+/* ==========================================================
+   ETAPA 116 — ADMINISTRADOR: FOTO DOS USUÁRIOS
+   ========================================================== */
+
+export async function enviarFotoUsuario(
+  usuarioId,
+  arquivo,
+) {
+  const formData =
+    new FormData()
+
+  formData.append(
+    'foto',
+    arquivo,
+  )
+
+  return apiRequest(
+    `/usuarios/${usuarioId}/foto`,
+    {
+      method: 'POST',
+      body: formData,
+    },
+  )
+}
+
+export async function removerFotoUsuario(
+  usuarioId,
+) {
+  return apiRequest(
+    `/usuarios/${usuarioId}/foto`,
     {
       method: 'DELETE',
     },

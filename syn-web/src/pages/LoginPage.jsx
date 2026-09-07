@@ -21,12 +21,6 @@ import {
   useAuth,
 } from '../contexts/AuthContext'
 
-import {
-  assinarEstadoPwa,
-  obterEstadoPwa,
-  solicitarInstalacaoPwa,
-} from '../pwa/pwaInstallManager'
-
 import './AuthPagesEtapa50.css'
 import './LoginPageEtapa81.css'
 import './LoginPageEtapa104.css'
@@ -96,6 +90,51 @@ function resolverArquivoApi(
   }`
 }
 
+function estaEmModoAplicativo() {
+  if (
+    typeof window === 'undefined'
+  ) {
+    return false
+  }
+
+  return (
+    window.matchMedia?.(
+      '(display-mode: standalone)',
+    )?.matches
+    || window.navigator
+      .standalone === true
+  )
+}
+
+function ehIOS() {
+  if (
+    typeof navigator === 'undefined'
+  ) {
+    return false
+  }
+
+  const ua =
+    navigator.userAgent
+    || ''
+
+  const iOSTradicional =
+    /iPad|iPhone|iPod/i
+      .test(
+        ua,
+      )
+
+  const iPadOS =
+    navigator.platform
+      === 'MacIntel'
+    && navigator.maxTouchPoints
+      > 1
+
+  return (
+    iOSTradicional
+    || iPadOS
+  )
+}
+
 export default function LoginPage() {
   const navigate =
     useNavigate()
@@ -124,12 +163,21 @@ export default function LoginPage() {
   const [igreja, setIgreja] =
     useState(null)
 
+  /*
+   * Evento oferecido por navegadores Chromium quando o PWA
+   * está apto a ser instalado.
+   */
   const [
-    estadoPwa,
-    setEstadoPwa,
+    installPrompt,
+    setInstallPrompt,
+  ] = useState(null)
+
+  const [
+    aplicativoInstalado,
+    setAplicativoInstalado,
   ] = useState(
     () =>
-      obterEstadoPwa(),
+      estaEmModoAplicativo(),
   )
 
   const [
@@ -143,6 +191,11 @@ export default function LoginPage() {
       [],
     )
 
+  const isIOS =
+    useMemo(
+      () => ehIOS(),
+      [],
+    )
 
   useEffect(
     () => {
@@ -217,10 +270,59 @@ export default function LoginPage() {
   )
 
   useEffect(
-    () =>
-      assinarEstadoPwa(
-        setEstadoPwa,
-      ),
+    () => {
+      function handleBeforeInstallPrompt(
+        event,
+      ) {
+        /*
+         * Impede o navegador de mostrar um prompt automático.
+         * Guardamos o evento para o botão "Instalar aplicativo".
+         */
+        event.preventDefault()
+
+        setInstallPrompt(
+          event,
+        )
+
+        setMensagemInstalacao('')
+      }
+
+      function handleAppInstalled() {
+        setAplicativoInstalado(
+          true,
+        )
+
+        setInstallPrompt(
+          null,
+        )
+
+        setMensagemInstalacao(
+          'Aplicativo instalado.',
+        )
+      }
+
+      window.addEventListener(
+        'beforeinstallprompt',
+        handleBeforeInstallPrompt,
+      )
+
+      window.addEventListener(
+        'appinstalled',
+        handleAppInstalled,
+      )
+
+      return () => {
+        window.removeEventListener(
+          'beforeinstallprompt',
+          handleBeforeInstallPrompt,
+        )
+
+        window.removeEventListener(
+          'appinstalled',
+          handleAppInstalled,
+        )
+      }
+    },
     [],
   )
 
@@ -275,9 +377,19 @@ export default function LoginPage() {
   }
 
   async function handleInstallApp() {
+    if (
+      !installPrompt
+    ) {
+      return
+    }
+
     try {
+      await installPrompt
+        .prompt()
+
       const choice =
-        await solicitarInstalacaoPwa()
+        await installPrompt
+          .userChoice
 
       if (
         choice?.outcome
@@ -286,14 +398,11 @@ export default function LoginPage() {
         setMensagemInstalacao(
           'Instalação iniciada.',
         )
-      } else if (
-        choice?.outcome
-        === 'unavailable'
-      ) {
-        setMensagemInstalacao(
-          'A instalação ainda não foi liberada pelo navegador.',
-        )
       }
+
+      setInstallPrompt(
+        null,
+      )
     } catch {
       setMensagemInstalacao(
         'Não foi possível iniciar a instalação.',
@@ -306,15 +415,14 @@ export default function LoginPage() {
       igreja?.logotipo,
     )
 
-  const aplicativoInstalado =
-    estadoPwa.instalado
-
   const mostrarBotaoInstalar =
-    estadoPwa.podeInstalar
+    Boolean(
+      installPrompt,
+    )
     && !aplicativoInstalado
 
   const mostrarOrientacaoIOS =
-    estadoPwa.ios
+    isIOS
     && !aplicativoInstalado
     && !mostrarBotaoInstalar
 
@@ -426,6 +534,13 @@ export default function LoginPage() {
                 ? 'Entrando...'
                 : 'Entrar'}
             </button>
+
+            <Link
+              to="/publico"
+              className="login112-public-access"
+            >
+              Acesso público
+            </Link>
 
             <div className="auth81-register-link">
               <span>

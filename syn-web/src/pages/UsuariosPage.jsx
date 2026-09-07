@@ -6,6 +6,7 @@ import {
 } from 'react'
 
 import './UsuariosPageFoto.css'
+import './UsuariosPageEtapa116.css'
 
 import UsuarioPermissoesModal
   from '../components/UsuarioPermissoesModal'
@@ -18,6 +19,8 @@ import {
   getFuncoes,
   getUsuario,
   getUsuarios,
+  enviarFotoUsuario,
+  removerFotoUsuario,
   removerFuncaoUsuario,
 } from '../api/api'
 
@@ -41,6 +44,229 @@ const API_URL =
       ? `${window.location.protocol}//${window.location.hostname}:8282`
       : 'http://localhost:8282'
   )
+
+const MAX_FOTO_BYTES =
+  5 * 1024 * 1024
+
+const MIME_FOTO_PERMITIDOS =
+  new Set([
+    'image/jpeg',
+    'image/png',
+    'image/webp',
+  ])
+
+const FOTO_MAX_DIMENSAO =
+  2000
+
+const FOTO_QUALIDADE_JPEG =
+  0.88
+
+function carregarImagemLocal(
+  arquivo,
+) {
+  return new Promise(
+    (resolve, reject) => {
+      const url =
+        URL.createObjectURL(
+          arquivo,
+        )
+
+      const imagem =
+        new Image()
+
+      imagem.onload =
+        () => {
+          URL.revokeObjectURL(
+            url,
+          )
+          resolve(imagem)
+        }
+
+      imagem.onerror =
+        () => {
+          URL.revokeObjectURL(
+            url,
+          )
+          reject(
+            new Error(
+              'Não foi possível processar a foto selecionada.',
+            ),
+          )
+        }
+
+      imagem.src =
+        url
+    },
+  )
+}
+
+async function prepararFotoUsuario(
+  arquivo,
+) {
+  if (
+    !MIME_FOTO_PERMITIDOS.has(
+      arquivo.type,
+    )
+  ) {
+    throw new Error(
+      'Formato não permitido. Use JPEG, PNG ou WEBP.',
+    )
+  }
+
+  if (
+    arquivo.size
+    > MAX_FOTO_BYTES
+  ) {
+    throw new Error(
+      'A foto deve possuir no máximo 5 MB.',
+    )
+  }
+
+  const imagem =
+    await carregarImagemLocal(
+      arquivo,
+    )
+
+  const largura =
+    Number(
+      imagem.naturalWidth
+      || imagem.width
+      || 0,
+    )
+
+  const altura =
+    Number(
+      imagem.naturalHeight
+      || imagem.height
+      || 0,
+    )
+
+  if (
+    largura <= 0
+    || altura <= 0
+  ) {
+    throw new Error(
+      'Não foi possível identificar as dimensões da foto.',
+    )
+  }
+
+  if (
+    largura <= FOTO_MAX_DIMENSAO
+    && altura <= FOTO_MAX_DIMENSAO
+  ) {
+    return arquivo
+  }
+
+  const escala =
+    Math.min(
+      FOTO_MAX_DIMENSAO / largura,
+      FOTO_MAX_DIMENSAO / altura,
+    )
+
+  const novaLargura =
+    Math.max(
+      1,
+      Math.round(
+        largura * escala,
+      ),
+    )
+
+  const novaAltura =
+    Math.max(
+      1,
+      Math.round(
+        altura * escala,
+      ),
+    )
+
+  const canvas =
+    document.createElement(
+      'canvas',
+    )
+
+  canvas.width =
+    novaLargura
+
+  canvas.height =
+    novaAltura
+
+  const contexto =
+    canvas.getContext(
+      '2d',
+    )
+
+  if (!contexto) {
+    throw new Error(
+      'Seu navegador não conseguiu preparar a foto para envio.',
+    )
+  }
+
+  contexto.fillStyle =
+    '#ffffff'
+
+  contexto.fillRect(
+    0,
+    0,
+    novaLargura,
+    novaAltura,
+  )
+
+  contexto.drawImage(
+    imagem,
+    0,
+    0,
+    novaLargura,
+    novaAltura,
+  )
+
+  const blob =
+    await new Promise(
+      (resolve, reject) => {
+        canvas.toBlob(
+          (resultado) => {
+            if (!resultado) {
+              reject(
+                new Error(
+                  'Não foi possível reduzir a resolução da foto.',
+                ),
+              )
+              return
+            }
+
+            resolve(resultado)
+          },
+          'image/jpeg',
+          FOTO_QUALIDADE_JPEG,
+        )
+      },
+    )
+
+  const nomeOriginal =
+    String(
+      arquivo.name
+      || 'foto',
+    )
+
+  const nomeSemExtensao =
+    nomeOriginal
+      .replace(
+        /\.[^.]+$/,
+        '',
+      )
+      .trim()
+      || 'foto'
+
+  return new File(
+    [blob],
+    `${nomeSemExtensao}.jpg`,
+    {
+      type:
+        'image/jpeg',
+      lastModified:
+        Date.now(),
+    },
+  )
+}
 
 const PAPEIS = [
   {
@@ -317,6 +543,39 @@ export default function UsuariosPage() {
     })
   }
 
+  async function abrirFoto(
+    usuario,
+  ) {
+    setError('')
+    setSuccess('')
+
+    try {
+      const response =
+        await getUsuario(
+          usuario.id,
+        )
+
+      const detalhe =
+        extrairObjeto(
+          response,
+          'usuario',
+        )
+
+      setModal({
+        tipo: 'FOTO',
+        usuario:
+          normalizarUsuario(
+            detalhe,
+          ),
+      })
+    } catch (err) {
+      setError(
+        err?.message
+        || 'Não foi possível abrir a foto do usuário.',
+      )
+    }
+  }
+
   async function confirmarDesativacao(
     usuario,
   ) {
@@ -501,6 +760,11 @@ export default function UsuariosPage() {
                     usuario,
                   )
                 }
+                onPhoto={() =>
+                  abrirFoto(
+                    usuario,
+                  )
+                }
                 onDeactivate={() =>
                   confirmarDesativacao(
                     usuario,
@@ -534,6 +798,41 @@ export default function UsuariosPage() {
           onClose={() =>
             setModal(null)
           }
+        />
+      )}
+
+      {modal?.tipo === 'FOTO' && (
+        <UsuarioFotoModal
+          usuario={modal.usuario}
+          onClose={() =>
+            setModal(null)
+          }
+          onUpdated={async (
+            mensagem,
+          ) => {
+            setSuccess(mensagem)
+
+            const response =
+              await getUsuario(
+                modal.usuario.id,
+              )
+
+            const detalhe =
+              extrairObjeto(
+                response,
+                'usuario',
+              )
+
+            setModal({
+              tipo: 'FOTO',
+              usuario:
+                normalizarUsuario(
+                  detalhe,
+                ),
+            })
+
+            await carregar()
+          }}
         />
       )}
 
@@ -581,6 +880,7 @@ function UsuarioCard({
   onEdit,
   onFunctions,
   onPermissions,
+  onPhoto,
   onDeactivate,
 }) {
   return (
@@ -682,6 +982,16 @@ function UsuarioCard({
           Editar
         </button>
 
+        {usuario.status === 'ATIVO' && (
+          <button
+            type="button"
+            className="small-secondary-button"
+            onClick={onPhoto}
+          >
+            Foto
+          </button>
+        )}
+
         <button
           type="button"
           className="small-secondary-button"
@@ -712,6 +1022,234 @@ function UsuarioCard({
         )}
       </div>
     </article>
+  )
+}
+
+function UsuarioFotoModal({
+  usuario,
+  onClose,
+  onUpdated,
+}) {
+  const [busy, setBusy] =
+    useState(false)
+
+  const [error, setError] =
+    useState('')
+
+  async function selecionarFoto(
+    event,
+  ) {
+    const arquivo =
+      event.target.files?.[0]
+
+    event.target.value = ''
+
+    if (!arquivo) {
+      return
+    }
+
+    setBusy(true)
+    setError('')
+
+    try {
+      const fotoPreparada =
+        await prepararFotoUsuario(
+          arquivo,
+        )
+
+      if (
+        fotoPreparada.size
+        > MAX_FOTO_BYTES
+      ) {
+        throw new Error(
+          'Mesmo após o ajuste automático, a foto ficou acima de 5 MB.',
+        )
+      }
+
+      await enviarFotoUsuario(
+        usuario.id,
+        fotoPreparada,
+      )
+
+      await onUpdated(
+        fotoPreparada === arquivo
+          ? `Foto de ${usuario.nome} atualizada com sucesso.`
+          : `Foto de ${usuario.nome} atualizada. A resolução foi ajustada automaticamente.`,
+      )
+    } catch (err) {
+      setError(
+        err?.message
+        || 'Não foi possível atualizar a foto do usuário.',
+      )
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function removerFoto() {
+    if (!usuario.foto) {
+      return
+    }
+
+    const confirmou =
+      window.confirm(
+        `Remover a foto de ${usuario.nome}?`,
+      )
+
+    if (!confirmou) {
+      return
+    }
+
+    setBusy(true)
+    setError('')
+
+    try {
+      await removerFotoUsuario(
+        usuario.id,
+      )
+
+      await onUpdated(
+        `Foto de ${usuario.nome} removida com sucesso.`,
+      )
+    } catch (err) {
+      setError(
+        err?.message
+        || 'Não foi possível remover a foto do usuário.',
+      )
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div
+      className="modal-backdrop"
+      role="presentation"
+      onMouseDown={(event) => {
+        if (
+          !busy
+          && event.target
+            === event.currentTarget
+        ) {
+          onClose()
+        }
+      }}
+    >
+      <section
+        className="modal-card usuario116-photo-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="usuario116-foto-title"
+      >
+        <header className="modal-header">
+          <div>
+            <span className="eyebrow">
+              Administração
+            </span>
+
+            <h2 id="usuario116-foto-title">
+              Foto do usuário
+            </h2>
+          </div>
+
+          <button
+            type="button"
+            className="modal-close"
+            onClick={onClose}
+            disabled={busy}
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </header>
+
+        <div className="usuario116-photo-content">
+          <div className="usuario116-photo-preview">
+            {usuario.foto ? (
+              <img
+                src={resolverArquivoApi(
+                  usuario.foto,
+                )}
+                alt={`Foto de ${usuario.nome}`}
+              />
+            ) : (
+              <span>
+                {iniciais(
+                  usuario.nome,
+                )}
+              </span>
+            )}
+          </div>
+
+          <div className="usuario116-photo-info">
+            <strong>
+              {usuario.nome}
+            </strong>
+
+            <span>
+              {usuario.email}
+            </span>
+
+            <p>
+              JPEG, PNG ou WEBP. Máximo de 5 MB.
+              Fotos em alta resolução são ajustadas automaticamente.
+            </p>
+          </div>
+        </div>
+
+        {error && (
+          <div
+            className="error-message"
+            role="alert"
+          >
+            {error}
+          </div>
+        )}
+
+        <footer className="modal-actions usuario116-photo-actions">
+          {usuario.foto && (
+            <button
+              type="button"
+              className="small-danger-button"
+              onClick={removerFoto}
+              disabled={busy}
+            >
+              Remover foto
+            </button>
+          )}
+
+          <label
+            className={
+              `button-primary usuario116-photo-select ${
+                busy
+                  ? 'is-disabled'
+                  : ''
+              }`
+            }
+          >
+            {busy
+              ? 'Enviando...'
+              : 'Escolher foto'}
+
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={selecionarFoto}
+              disabled={busy}
+            />
+          </label>
+
+          <button
+            type="button"
+            className="button-secondary"
+            onClick={onClose}
+            disabled={busy}
+          >
+            Fechar
+          </button>
+        </footer>
+      </section>
+    </div>
   )
 }
 

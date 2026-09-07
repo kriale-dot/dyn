@@ -53,3 +53,24 @@ $app->delete(
     '/meu-perfil/foto',
     [$fotoPerfilController, 'remover']
 )->add($authMiddleware);
+
+
+/**
+ * ETAPA 116 — Administração da foto dos usuários.
+ *
+ * Somente Administradores podem alterar ou remover a foto
+ * de outro usuário.
+ */
+$app->post(
+    '/usuarios/{id:[0-9]+}/foto',
+    [$fotoPerfilController, 'salvarUsuario']
+)
+    ->add($adminMiddleware)
+    ->add($authMiddleware);
+
+$app->delete(
+    '/usuarios/{id:[0-9]+}/foto',
+    [$fotoPerfilController, 'removerUsuario']
+)
+    ->add($adminMiddleware)
+    ->add($authMiddleware);

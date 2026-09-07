@@ -21,6 +21,8 @@ import './styles_mobile_etapa100.css'
 import './styles_mobile_etapa102.css'
 import './styles_mobile_etapa103.css'
 import './styles_mobile_etapa107.css'
+import './styles_mobile_etapa113.css'
+import './styles_mobile_etapa114.css'
 
 ReactDOM
   .createRoot(

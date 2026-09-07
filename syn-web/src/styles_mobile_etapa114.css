@@ -1,0 +1,196 @@
+/* ==========================================================
+   SYN — ETAPA 114
+   PISO TIPOGRÁFICO MOBILE
+
+   Objetivo:
+   eliminar os últimos textos excessivamente pequenos no celular
+   sem aumentar demais os textos que já estavam corretos.
+
+   Estratégia:
+   - define um tamanho mínimo para elementos textuais;
+   - preserva títulos e textos já maiores;
+   - mantém campos com 16px;
+   - atua somente em telas móveis.
+   ========================================================== */
+
+@media (max-width: 700px) {
+
+  /* Base geral */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    font-size: 16px !important;
+    line-height: 1.45;
+  }
+
+  /*
+   * Piso tipográfico.
+   *
+   * max(0.94rem, 1em):
+   * - nunca deixa o texto cair abaixo de ~15px;
+   * - se o texto já herda um tamanho maior, ele permanece maior.
+   */
+  main :where(
+    p,
+    span,
+    small,
+    a,
+    button,
+    label,
+    li,
+    td,
+    th,
+    time,
+    strong,
+    em
+  ),
+  .app-shell :where(
+    p,
+    span,
+    small,
+    a,
+    button,
+    label,
+    li,
+    td,
+    th,
+    time
+  ),
+  .modal-card :where(
+    p,
+    span,
+    small,
+    a,
+    button,
+    label,
+    li,
+    td,
+    th,
+    time
+  ) {
+    font-size: max(0.94rem, 1em) !important;
+    line-height: 1.4 !important;
+  }
+
+  /*
+   * Classes que normalmente carregam textos auxiliares.
+   */
+  :where(
+    [class*="meta"],
+    [class*="subtitle"],
+    [class*="caption"],
+    [class*="helper"],
+    [class*="hint"],
+    [class*="description"],
+    [class*="secondary"],
+    [class*="muted"],
+    [class*="detail"],
+    [class*="info"],
+    [class*="note"],
+    [class*="date"],
+    [class*="time"],
+    [class*="label"]
+  ) {
+    font-size: max(0.94rem, 1em) !important;
+    line-height: 1.4 !important;
+  }
+
+  /*
+   * Status, badges, chips e etiquetas podem ser um pouco menores,
+   * mas nunca minúsculos.
+   */
+  :where(
+    [class*="badge"],
+    [class*="chip"],
+    [class*="pill"],
+    [class*="tag"],
+    [class*="status"]
+  ) {
+    font-size: max(0.88rem, 1em) !important;
+    line-height: 1.3 !important;
+  }
+
+  /*
+   * Tabelas e listas administrativas.
+   */
+  table {
+    font-size: 0.95rem !important;
+  }
+
+  table th,
+  table td {
+    font-size: 0.95rem !important;
+    line-height: 1.4 !important;
+  }
+
+  /*
+   * Navegação e ações.
+   */
+  .nav-link,
+  .button-primary,
+  .button-secondary,
+  .small-primary-button,
+  .small-secondary-button,
+  .small-danger-button,
+  .week-nav-button,
+  .participation-action,
+  .management-open-label,
+  .login112-public-access {
+    font-size: 0.95rem !important;
+    line-height: 1.3 !important;
+  }
+
+  /*
+   * Formulários: 16px evita zoom automático em iOS/Safari.
+   */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+    line-height: 1.35 !important;
+  }
+
+  /*
+   * Mantém títulos claramente maiores que o corpo.
+   */
+  h1 {
+    font-size: clamp(1.35rem, 5vw, 1.6rem) !important;
+    line-height: 1.2 !important;
+  }
+
+  h2 {
+    font-size: clamp(1.16rem, 4.2vw, 1.35rem) !important;
+    line-height: 1.25 !important;
+  }
+
+  h3 {
+    font-size: clamp(1.03rem, 3.8vw, 1.18rem) !important;
+    line-height: 1.3 !important;
+  }
+}
+
+
+/* Celulares muito estreitos: não reduzimos abaixo do piso */
+@media (max-width: 360px) {
+  body {
+    font-size: 16px !important;
+  }
+
+  main :where(
+    p,
+    span,
+    small,
+    a,
+    button,
+    label,
+    li,
+    td,
+    th,
+    time
+  ) {
+    font-size: max(0.93rem, 1em) !important;
+  }
+}

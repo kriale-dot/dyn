@@ -65,6 +65,217 @@ const MIME_PERMITIDOS =
     'image/webp',
   ])
 
+/**
+ * Fotos de perfil não precisam manter a resolução original da câmera.
+ *
+ * O backend possui limites de segurança por quantidade de pixels.
+ * Uma foto de celular pode ter menos de 5 MB e, ainda assim, ter
+ * 24, 48 ou mais megapixels.
+ *
+ * Antes do upload, imagens muito grandes são reduzidas no navegador.
+ */
+const FOTO_MAX_DIMENSAO =
+  2000
+
+const FOTO_QUALIDADE_JPEG =
+  0.88
+
+function carregarImagemLocal(
+  arquivo,
+) {
+  return new Promise(
+    (resolve, reject) => {
+      const url =
+        URL.createObjectURL(
+          arquivo,
+        )
+
+      const imagem =
+        new Image()
+
+      imagem.onload =
+        () => {
+          URL.revokeObjectURL(
+            url,
+          )
+
+          resolve(imagem)
+        }
+
+      imagem.onerror =
+        () => {
+          URL.revokeObjectURL(
+            url,
+          )
+
+          reject(
+            new Error(
+              'Não foi possível processar as dimensões da foto.',
+            ),
+          )
+        }
+
+      imagem.src =
+        url
+    },
+  )
+}
+
+async function prepararFotoPerfil(
+  arquivo,
+) {
+  const imagem =
+    await carregarImagemLocal(
+      arquivo,
+    )
+
+  const largura =
+    Number(
+      imagem.naturalWidth
+      || imagem.width
+      || 0,
+    )
+
+  const altura =
+    Number(
+      imagem.naturalHeight
+      || imagem.height
+      || 0,
+    )
+
+  if (
+    largura <= 0
+    || altura <= 0
+  ) {
+    throw new Error(
+      'Não foi possível identificar as dimensões da foto.',
+    )
+  }
+
+  /**
+   * Fotos já adequadas seguem sem recompressão.
+   */
+  if (
+    largura <= FOTO_MAX_DIMENSAO
+    && altura <= FOTO_MAX_DIMENSAO
+  ) {
+    return arquivo
+  }
+
+  const escala =
+    Math.min(
+      FOTO_MAX_DIMENSAO / largura,
+      FOTO_MAX_DIMENSAO / altura,
+    )
+
+  const novaLargura =
+    Math.max(
+      1,
+      Math.round(
+        largura * escala,
+      ),
+    )
+
+  const novaAltura =
+    Math.max(
+      1,
+      Math.round(
+        altura * escala,
+      ),
+    )
+
+  const canvas =
+    document.createElement(
+      'canvas',
+    )
+
+  canvas.width =
+    novaLargura
+
+  canvas.height =
+    novaAltura
+
+  const contexto =
+    canvas.getContext(
+      '2d',
+    )
+
+  if (!contexto) {
+    throw new Error(
+      'Seu navegador não conseguiu preparar a foto para envio.',
+    )
+  }
+
+  /**
+   * Como foto de perfil não precisa de transparência,
+   * usamos fundo branco antes de converter para JPEG.
+   */
+  contexto.fillStyle =
+    '#ffffff'
+
+  contexto.fillRect(
+    0,
+    0,
+    novaLargura,
+    novaAltura,
+  )
+
+  contexto.drawImage(
+    imagem,
+    0,
+    0,
+    novaLargura,
+    novaAltura,
+  )
+
+  const blob =
+    await new Promise(
+      (resolve, reject) => {
+        canvas.toBlob(
+          (resultado) => {
+            if (!resultado) {
+              reject(
+                new Error(
+                  'Não foi possível reduzir a resolução da foto.',
+                ),
+              )
+              return
+            }
+
+            resolve(resultado)
+          },
+          'image/jpeg',
+          FOTO_QUALIDADE_JPEG,
+        )
+      },
+    )
+
+  const nomeOriginal =
+    String(
+      arquivo.name
+      || 'foto',
+    )
+
+  const nomeSemExtensao =
+    nomeOriginal
+      .replace(
+        /\.[^.]+$/,
+        '',
+      )
+      .trim()
+      || 'foto'
+
+  return new File(
+    [blob],
+    `${nomeSemExtensao}.jpg`,
+    {
+      type: 'image/jpeg',
+      lastModified:
+        Date.now(),
+    },
+  )
+}
+
 export default function PerfilPage() {
   const {
     refreshBootstrap,
@@ -365,15 +576,36 @@ export default function PerfilPage() {
     setSuccess('')
 
     try {
+      const fotoPreparada =
+        await prepararFotoPerfil(
+          arquivo,
+        )
+
+      /**
+       * Normalmente a redução para até 2000 px deixa a foto
+       * muito abaixo de 5 MB. Mantemos esta proteção caso
+       * algum navegador produza um arquivo inesperadamente grande.
+       */
+      if (
+        fotoPreparada.size
+        > MAX_FOTO_BYTES
+      ) {
+        throw new Error(
+          'Mesmo após o ajuste automático, a foto ficou acima de 5 MB. Escolha outra imagem.',
+        )
+      }
+
       await enviarFotoPerfil(
-        arquivo,
+        fotoPreparada,
       )
 
       await carregar()
       await refreshBootstrap()
 
       setSuccess(
-        'Foto de perfil atualizada.',
+        fotoPreparada === arquivo
+          ? 'Foto de perfil atualizada.'
+          : 'Foto de perfil atualizada. A resolução foi ajustada automaticamente.',
       )
     } catch (err) {
       setError(
@@ -788,6 +1020,7 @@ export default function PerfilPage() {
           <p className="profile-photo-help">
             JPEG, PNG ou WEBP.
             Máximo de 5 MB.
+            Fotos em alta resolução são ajustadas automaticamente.
           </p>
         </aside>
 
